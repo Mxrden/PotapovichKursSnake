@@ -2,11 +2,11 @@ package Model.GameField;
 
 import Model.Units.Snake;
 
-public class Edge {
+public class Wall {
 
     private final boolean _isWall;
 
-    public Edge(boolean isWall) {
+    public Wall(boolean isWall) {
         _isWall = isWall;
     }
 

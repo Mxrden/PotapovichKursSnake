@@ -9,6 +9,10 @@ public abstract class Unit {
         return _pos;
     }
 
+    protected void setPosition(Cell cell) {
+        _pos = cell;
+    }
+
     public abstract boolean canBelongTo(Cell cell);
 
 }
