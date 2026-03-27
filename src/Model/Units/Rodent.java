@@ -1,14 +1,17 @@
 package Model.Units;
 
 import Model.Effects.RodentEffect;
-import Model.Units.Snake;
+import Model.Snake.Snake;
 
-public abstract class Rodent {
+public abstract class Rodent extends Unit {
 
     protected final RodentEffect _effect;
 
+    protected boolean _isActive;
+
     public Rodent(RodentEffect effect) {
         this._effect = effect;
+        _isActive = true;
     }
 
     public RodentEffect getEffect() {
@@ -17,10 +20,10 @@ public abstract class Rodent {
 
     /**
      * Вызывается, когда змея съедает грызуна.
-     * Базовая реализация применяет эффект.
      * Наследники могут расширить поведение.
      */
-    public void onEaten(Snake snake) {
-        _effect.applyTo(snake);
+    public void onEaten() {
+        _isActive = false;
+        getPos().extractUnit();
     }
 }
