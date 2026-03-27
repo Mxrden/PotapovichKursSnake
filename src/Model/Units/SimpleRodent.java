@@ -1,13 +1,12 @@
 package Model.Units;
 
-import Model.Effects.RodentEffect;
+import Model.Effects.NoEffect;
 
-public class SimpleRodent extends Rodent{
+public class SimpleRodent extends Rodent {
 
     public SimpleRodent() {
-        super(RodentEffect.NO_EFFECT);
+        super(new NoEffect());
     }
 
-    @Override
-    public void onEaten(Snake snake) { }
+    // Ќикакой дополнительной логики не нужно
 }

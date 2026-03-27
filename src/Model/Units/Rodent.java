@@ -1,15 +1,26 @@
-    package Model.Units;
+package Model.Units;
 
+import Model.Effects.RodentEffect;
+import Model.Units.Snake;
 
-    import Model.Effects.RodentEffect;
+public abstract class Rodent {
 
-    public abstract class Rodent {
-        protected final RodentEffect _effect;
+    protected final RodentEffect _effect;
 
-        public abstract void onEaten(Snake snake);
-
-        public Rodent(RodentEffect effect) {
-            this._effect = effect;
-        }
-
+    public Rodent(RodentEffect effect) {
+        this._effect = effect;
     }
+
+    public RodentEffect getEffect() {
+        return _effect;
+    }
+
+    /**
+     * Вызывается, когда змея съедает грызуна.
+     * Базовая реализация применяет эффект.
+     * Наследники могут расширить поведение.
+     */
+    public void onEaten(Snake snake) {
+        _effect.applyTo(snake);
+    }
+}
