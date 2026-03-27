@@ -76,13 +76,13 @@ public class Cell {
     // Препятствия
     // -----------------------------
 
-    private final Map<Direction, EdgeObject> _edges = new HashMap<>();
+    private final Map<Direction, Edge> _edges = new HashMap<>();
 
-    public void setEdgeObject(Direction dir, EdgeObject obj) {
+    public void setEdgeObject(Direction dir, Edge obj) {
         _edges.put(dir, obj);
     }
 
-    public EdgeObject getEdgeObject(Direction dir) {
+    public Edge getEdgeObject(Direction dir) {
         return _edges.get(dir);
     }
 
