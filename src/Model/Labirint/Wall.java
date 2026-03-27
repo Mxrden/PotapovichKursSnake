@@ -1,6 +1,4 @@
-package Model.GameField;
-
-import Model.Snake.Snake;
+package Model.Labirint;
 
 public class Wall {
 

@@ -1,4 +1,5 @@
 package Model.GameField;
+import Model.Labirint.Wall;
 import Model.Units.Unit;
 
 import java.awt.geom.Point2D;
