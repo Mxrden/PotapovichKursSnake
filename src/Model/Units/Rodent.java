@@ -1,5 +1,8 @@
     package Model.Units;
 
+
+    import Model.Effects.RodentEffect;
+
     public abstract class Rodent {
         protected final RodentEffect _effect;
 
