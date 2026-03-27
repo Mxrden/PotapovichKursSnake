@@ -1,11 +1,14 @@
 package Model.Snake;
 
 import Model.GameField.Cell;
+import Model.GameField.Direction;
 import Model.Units.Unit;
 
 public class SnakePart extends Unit {
     private boolean _isHead;
     private float _thickness;
+
+    private Direction _direction;
 
     public boolean isHead() {
         return _isHead;
@@ -36,5 +39,13 @@ public class SnakePart extends Unit {
         setHead(isHead);
         setThickness(thickness);
         setPosition(position);
+    }
+
+    public Direction getDirection() {
+        return _direction;
+    }
+
+    public void setDirection(Direction dir) {
+        _direction = dir;
     }
 }

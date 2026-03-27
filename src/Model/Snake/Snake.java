@@ -12,63 +12,145 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Snake {
-    private List<SnakePart> _parts = new ArrayList<>();
 
+    // -----------------------------
+    // Поля состояния
+    // -----------------------------
+
+    private final List<SnakePart> _parts = new ArrayList<>();
     private int _life;
+    private final int _minLenght;
+    private int _growthQueue;
+    private final List<RodentEffect> _effects = new ArrayList<>();
 
-    private final int minLenght;
 
-    private final int growthQueue;
+    // -----------------------------
+    // Конструктор
+    // -----------------------------
 
-    private Direction _direction;
-
-    private List<RodentEffect> _effects = new ArrayList<>();
-
-    public Snake(int minLenght, int growthQueue) {
-        this.minLenght = minLenght;
-        this.growthQueue = growthQueue;
+    public Snake(int minLenght) {
+        _minLenght = minLenght;
+        _growthQueue = 0;
+        _life = 3;
     }
+
+
+    // -----------------------------
+    // Доступ к частям тела
+    // -----------------------------
 
     public SnakePart getHead() {
         return _parts.getFirst();
+    }
+
+    public SnakePart getTail() {
+        return _parts.getLast();
     }
 
     public List<SnakePart> getParts() {
         return _parts;
     }
 
+    public void joinNewPart(SnakePart part) {
+        _parts.add(part);
+    }
+
+
+    // -----------------------------
+    // Перемещение
+    // -----------------------------
+
     private boolean moveTo(Cell target) {
+        if (isDead()) return false;
+
         Unit targetUnit = target.getUnit();
-        if (targetUnit instanceof Stone) return false;
-        if(targetUnit instanceof Rodent) {
-            Rodent rodent = (Rodent) targetUnit;
+
+
+        if (targetUnit instanceof Stone) {
+            kill();
+            return false;
+        }
+
+
+        if (targetUnit instanceof Rodent rodent) {
             RodentEffect effect = rodent.getEffect();
             putEffect(effect);
             rodent.onEaten();
-            grow();
-
+            increaseGrowthQueue();
         }
-        //TODO: перемещение тела змеи
+
+        moveBody(target);
+
         return true;
     }
 
     public boolean move(Direction direction) {
-        if (isDead()) return false;
-        Cell target = getHead().getPos().getNeighbor(direction);
+
+        if (direction == getHead().getDirection().opposite()) return false;
+
+        Cell headCell = getHead().getPos();
+        Cell target = headCell.getNeighbor(direction);
+
+
+        if (headCell.getWall(direction) != null) {
+            kill();
+            return false;
+        }
+
+
         if (!moveTo(target)) return false;
+
+        getHead().setDirection(direction);
+
         return true;
     }
 
-    public void changeDirection (Direction newDir) {
-        _direction = newDir;
+
+    // -----------------------------
+    // Логика перемещения тела
+    // -----------------------------
+
+    private void moveBody(Cell newHeadCell) {
+
+        List<Cell> oldPositions = new ArrayList<>();
+        for (SnakePart part : _parts) {
+            oldPositions.add(part.getPos());
+        }
+
+        SnakePart head = getHead();
+        head.moveTo(newHeadCell);
+
+        for (int i = 1; i < _parts.size(); i++) {
+            SnakePart part = _parts.get(i);
+            part.moveTo(oldPositions.get(i - 1));
+            part.setDirection(_parts.get(i - 1).getDirection());
+        }
+
+        if (_growthQueue > 0) {
+            decreaseGrowthQueue();
+        } else {
+            shrink();
+        }
     }
 
-    public void grow() {
-        //TODO
-    }
+
+    // -----------------------------
+    // Уменьшение (удаление хвоста)
+    // -----------------------------
 
     public void shrink() {
-        //TODO
+        SnakePart tail = getTail();
+        tail.getPos().extractUnit();
+        _parts.removeLast();
+    }
+
+
+    // -----------------------------
+    // Жизнь
+    // -----------------------------
+
+    public void increaseLife() {
+        _life++;
     }
 
     public void decreaseLife() {
@@ -76,13 +158,38 @@ public class Snake {
     }
 
     public boolean isDead() {
-        return _life<=0;
+        return _life <= 0;
     }
+
+    public void kill() {
+        _life = 0;
+    }
+
+
+    // -----------------------------
+    // Очередь роста
+    // -----------------------------
+
+    public int getGrowthQueue() {
+        return _growthQueue;
+    }
+
+    public void increaseGrowthQueue() {
+        _growthQueue++;
+    }
+
+    public void decreaseGrowthQueue() {
+        _growthQueue--;
+    }
+
+
+    // -----------------------------
+    // Эффекты
+    // -----------------------------
 
     public boolean putEffect(RodentEffect effect) {
         if (effect.getType() == RodentEffectEnum.NO_EFFECT) return false;
         _effects.add(effect);
         return true;
     }
-
 }

@@ -1,6 +1,6 @@
 package Model.GameField;
 
-import Model.Units.Snake;
+import Model.Snake.Snake;
 
 public class Wall {
 
@@ -14,9 +14,4 @@ public class Wall {
         return _isWall;
     }
 
-    public boolean isPassableFor(Snake snake) {
-        if (!_isWall) return true;
-
-        return snake.canPassWalls();
-    }
 }

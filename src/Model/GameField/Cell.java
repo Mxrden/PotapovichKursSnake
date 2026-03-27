@@ -78,18 +78,18 @@ public class Cell {
     // Препятствия
     // -----------------------------
 
-    private final Map<Direction, Wall> _edges = new HashMap<>();
+    private final Map<Direction, Wall> _walls = new HashMap<>();
 
     public void setEdgeObject(Direction dir, Wall obj) {
-        _edges.put(dir, obj);
+        _walls.put(dir, obj);
     }
 
-    public Wall getEdgeObject(Direction dir) {
-        return _edges.get(dir);
+    public Wall getWall(Direction dir) {
+        return _walls.get(dir);
     }
 
     public void removeEdgeObject(Direction dir) {
-        _edges.remove(dir);
+        _walls.remove(dir);
     }
 
 }
