@@ -63,26 +63,27 @@ public class Snake {
     private boolean moveTo(Cell target) {
         if (isDead()) return false;
 
-        Unit targetUnit = target.getUnit();
+        Unit unit = target.getUnit();
 
-
-        if (targetUnit instanceof Stone) {
-            kill();
-            return false;
+        // столкновение с телом змеи
+        if (unit != null && _parts.contains(unit)) {
+            if (unit != getTail()) {
+                kill();
+                return false;
+            }
         }
 
-
-        if (targetUnit instanceof Rodent rodent) {
-            RodentEffect effect = rodent.getEffect();
-            putEffect(effect);
-            rodent.onEaten();
-            increaseGrowthQueue();
+        // реакция юнита
+        if (unit != null) {
+            unit.onSteppedBy(this);
+            if (isDead()) return false;
         }
 
         moveBody(target);
-
         return true;
     }
+
+
 
     public boolean move(Direction direction) {
 
@@ -91,14 +92,12 @@ public class Snake {
         Cell headCell = getHead().getPos();
         Cell target = headCell.getNeighbor(direction);
 
-
         if (headCell.getWall(direction) != null) {
             kill();
             return false;
         }
 
-
-        if (!moveTo(target)) return false;
+        if (!moveTo(target) || isDead()) return false;
 
         getHead().setDirection(direction);
 

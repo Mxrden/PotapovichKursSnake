@@ -35,6 +35,11 @@ public class SnakePart extends Unit {
         return cell.isEmpty();
     }
 
+    @Override
+    public void onSteppedBy(Snake snake) {
+        snake.kill();
+    }
+
     public SnakePart(boolean isHead, float thickness, Cell position) {
         setHead(isHead);
         setThickness(thickness);

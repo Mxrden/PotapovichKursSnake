@@ -2,6 +2,7 @@ package Model.Units;
 
 import Model.Effects.NoEffect;
 import Model.GameField.Cell;
+import Model.Snake.Snake;
 
 public class SimpleRodent extends Rodent {
 
@@ -14,5 +15,9 @@ public class SimpleRodent extends Rodent {
         return cell.isEmpty();
     }
 
-    // Ќикакой дополнительной логики не нужно
+    @Override
+    public void onSteppedBy(Snake snake) {
+        snake.increaseGrowthQueue();
+    }
+
 }
