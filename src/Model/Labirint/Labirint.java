@@ -4,10 +4,8 @@ import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.GameField.GridRegion;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Labirint {
+
     private final GridRegion _region;
 
     public Labirint(Cell leftTop, int width, int height) {
@@ -18,17 +16,45 @@ public class Labirint {
         _region = region;
     }
 
+    // -----------------------------
+    // Границы лабиринта
+    // -----------------------------
 
-    public boolean containsCell(Cell position) {
-        //TODO
-        return true;
+    public boolean containsCell(Cell cell) {
+        int row = cell.getRow();
+        int col = cell.getCol();
+
+        return row >= _region.getTop()
+                && row <= _region.getBottom()
+                && col >= _region.getLeft()
+                && col <= _region.getRight();
     }
 
-    public int getWidth() {return _region.getWidth(); }
+    public Cell getEntranceCell() {
+        return _region.getField().getCell(
+                _region.getBottom(),
+                _region.getLeft()
+        );
+    }
+
+    public Cell getExitCell() {
+        return _region.getField().getCell(
+                _region.getBottom(),
+                _region.getRight()
+        );
+    }
+
+    public int getWidth() {
+        return _region.getWidth();
+    }
 
     public int getHeight() {
         return _region.getHeight();
     }
+
+    // -----------------------------
+    // Генерация стен
+    // -----------------------------
 
     private void setWall(Cell cell, Direction dir) {
         cell.setEdgeObject(dir, new Wall(true));
@@ -40,7 +66,6 @@ public class Labirint {
     }
 
     public void generateThreeColumnsWithGaps() {
-
         int left = _region.getLeft();
         int right = _region.getRight();
         int width = _region.getWidth();
@@ -54,23 +79,13 @@ public class Labirint {
             int row = cell.getRow();
 
             // Внешние стены
-            if (row == _region.getTop()) {
-                setWall(cell, Direction.north());
-            }
-            if (row == _region.getBottom()) {
-                setWall(cell, Direction.south());
-            }
-            if (col == left) {
-                setWall(cell, Direction.west());
-            }
-            if (col == right) {
-                setWall(cell, Direction.east());
-            }
+            if (row == _region.getTop()) setWall(cell, Direction.north());
+            if (row == _region.getBottom()) setWall(cell, Direction.south());
+            if (col == left) setWall(cell, Direction.west());
+            if (col == right) setWall(cell, Direction.east());
 
-            // Вертикальные колонны — ставим стену между колонной и левым коридором
+            // Вертикальные колонны
             if (col == col1 || col == col2 || col == col3) {
-
-                // Делаем дырки каждые 3 клетки
                 if (row % 3 != 0) {
                     setWall(cell, Direction.west());
                 }
@@ -78,12 +93,7 @@ public class Labirint {
         }
 
         // Вход и выход
-        _region.getField().getCell(_region.getBottom(), left)
-                .removeEdgeObject(Direction.south());
-        _region.getField().getCell(_region.getBottom(), right)
-                .removeEdgeObject(Direction.south());
+        getEntranceCell().removeEdgeObject(Direction.south());
+        getExitCell().removeEdgeObject(Direction.south());
     }
-
-
-
 }
