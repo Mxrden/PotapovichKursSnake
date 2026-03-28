@@ -8,12 +8,23 @@ import java.util.*;
 public class Cell {
 
     // -----------------------------
+    // Порождение
+    // -----------------------------
+
+    private final GameField _field;
+
+    public GameField getField() {
+        return _field;
+    }
+
+    // -----------------------------
     // Позиция
     // -----------------------------
 
     private Point2D _position;
 
-    public Cell(int row, int col) {
+    public Cell(GameField field, int row, int col) {
+        _field = field;
         _position = new Point2D.Double(row, col);
     }
 

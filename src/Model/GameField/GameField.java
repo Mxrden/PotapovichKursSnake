@@ -1,5 +1,7 @@
 package Model.GameField;
 
+import Model.Labirint.Wall;
+
 import java.util.Iterator;
 
 public class GameField implements Iterable<Cell> {
@@ -50,6 +52,19 @@ public class GameField implements Iterable<Cell> {
 
                 if (col < getWidth() - 1)
                     cell.setNeighbor(Direction.east(), _cells[row][col + 1]);
+
+                // Добавление стен
+                if (row == 0)
+                    cell.setEdgeObject(Direction.north(), new Wall(true));
+
+                if (col == 0)
+                    cell.setEdgeObject(Direction.west(), new Wall(true));
+
+                if (row == getHeight() - 1)
+                    cell.setEdgeObject(Direction.south(), new Wall(true));
+
+                if (col == getWidth() - 1)
+                    cell.setEdgeObject(Direction.east(), new Wall(true));
             }
         }
     }
