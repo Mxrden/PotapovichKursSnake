@@ -1,8 +1,6 @@
 package Model.Timer;
 
-import java.util.Timer;
-
-public class TickTimer {
+public class MillisecondTimer {
     private java.util.Timer executor;
 
     public void start(long periodMs, Runnable task) {
