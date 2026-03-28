@@ -1,6 +1,7 @@
 package Model.Labirint;
 
 import Model.GameField.Cell;
+import Model.GameField.GridRegion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +9,15 @@ import java.util.List;
 public class Labirint {
     private List<Wall> _walls = new ArrayList<>();
 
-    private final int _width;
-    private final int _height;
 
-    public Labirint(int width, int height) {
-        this._width = width;
-        this._height = height;
+    private final GridRegion _region;
+
+    public Labirint(Cell leftTop, int width, int height) {
+        _region = new GridRegion(leftTop, width, height);
+    }
+
+    public Labirint(GridRegion region) {
+        _region = region;
     }
 
     public List<Wall> getWalls() {
@@ -29,11 +33,9 @@ public class Labirint {
         return true;
     }
 
-    public int getWidth() {
-        return _width;
-    }
+    public int getWidth() {return _region.getWidth(); }
 
     public int getHeight() {
-        return _height;
+        return _region.getHeight();
     }
 }

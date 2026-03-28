@@ -21,7 +21,7 @@ public class Cell {
     // Позиция
     // -----------------------------
 
-    private Point2D _position;
+    private final Point2D _position;
 
     public Cell(GameField field, int row, int col) {
         _field = field;

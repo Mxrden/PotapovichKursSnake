@@ -32,7 +32,7 @@ public class GameField implements Iterable<Cell> {
         // создание клеток
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
-                _cells[row][col] = new Cell(row, col);
+                _cells[row][col] = new Cell(this, row, col);
             }
         }
 
