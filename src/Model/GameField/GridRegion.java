@@ -68,6 +68,9 @@ public class GridRegion implements Iterable<Cell> {
         return getTop() + _height - 1;
     }
 
+    public GameField getField() {
+        return _leftTop.getField();
+    }
 
     // -----------------------------
     // Принадлежность клетки
