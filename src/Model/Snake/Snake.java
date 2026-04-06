@@ -182,11 +182,6 @@ public class Snake {
 
         Cell target = move.target;
 
-        if (target != null && target.getUnit() instanceof SnakeSegment) {
-            hunger.kill();
-            return false;
-        }
-
         boolean grow = hunger.shouldGrow();
 
         if (target != null && !target.isEmpty()) {
