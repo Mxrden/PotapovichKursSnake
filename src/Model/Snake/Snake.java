@@ -15,17 +15,13 @@ public class Snake {
     private final SnakeMovement movement = new SnakeMovement();
     private final SnakeHunger hunger;
 
-    // Одноразовые эффекты
     private boolean ignoreNextWall = false;
     private boolean ignoreNextStone = false;
 
-    // Флаг, был ли съеден грызун на этом ходу (для уведомлений)
     private boolean rodentEaten = false;
 
-    // Список активных расширений (временные боковые сегменты)
     private final List<TemporaryExpansion> expansions = new ArrayList<>();
 
-    // Буферизированное направление, запрошенное игроком между тиками
     private Direction requestedDirection = null;
 
     public Snake(int minLength, int initialLife,
@@ -81,7 +77,6 @@ public class Snake {
 
     public void kill() {
         hunger.kill();
-        // Удаляем все расширения при смерти змеи
         for (TemporaryExpansion exp : expansions) {
             exp.dispose();
         }
@@ -150,13 +145,12 @@ public class Snake {
     // Основной шаг движения
     // -----------------------------
     public boolean move() {
-        // Применяем буферизированное направление, если оно допустимо
         if (requestedDirection != null) {
             Direction currentDir = movement.getDirection();
             if (!currentDir.isOpposite(requestedDirection)) {
                 movement.setDirection(requestedDirection);
             }
-            requestedDirection = null; // сбрасываем запрос
+            requestedDirection = null;
         }
 
         rodentEaten = false;
@@ -188,7 +182,6 @@ public class Snake {
 
         Cell target = move.target;
 
-        // Запрещаем наступать на любой сегмент змеи (включая хвост)
         if (target != null && target.getUnit() instanceof SnakeSegment) {
             hunger.kill();
             return false;

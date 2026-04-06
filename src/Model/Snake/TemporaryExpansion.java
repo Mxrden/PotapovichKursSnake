@@ -6,7 +6,7 @@ import Model.GameField.Direction;
 public class TemporaryExpansion {
     private final SnakeSegment left;
     private final SnakeSegment right;
-    private int lifetime; // количество оставшихся тиков
+    private int lifetime;
 
     public TemporaryExpansion(Snake snake, Cell headCell, Direction headDir, int lifetimeTicks) {
         Cell leftCell = getSideCell(headCell, headDir, true);

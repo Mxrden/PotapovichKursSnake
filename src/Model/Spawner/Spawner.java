@@ -64,14 +64,12 @@ public class Spawner {
                 }
                 if (!ok) continue;
 
-                // Размещаем голову
                 SnakeSegment head = new SnakeSegment(true, 1.0f, null);
-                head.setDirection(tailDir.opposite()); // визуальное направление
+                head.setDirection(tailDir.opposite());
                 head.setPosition(headCell);
                 headCell.putUnit(head);
                 snake.getBody().addHead(head);
 
-                // Размещаем тело
                 Cell prev = headCell;
                 for (int i = 1; i < minLength; i++) {
                     Cell next = prev.getNeighbor(tailDir);
@@ -82,7 +80,6 @@ public class Spawner {
                     prev = next;
                 }
 
-                // !!! КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: синхронизируем направление движения
                 snake.setDirection(tailDir.opposite());
 
                 return;
@@ -131,7 +128,6 @@ public class Spawner {
             if (isCellFree(cell)) return cell;
         }
 
-        // fallback
         for (int r = 0; r < field.getHeight(); r++) {
             for (int c = 0; c < field.getWidth(); c++) {
                 Cell cell = field.getCell(r, c);
@@ -148,17 +144,13 @@ public class Spawner {
     private boolean isCellFree(Cell cell) {
         if (cell == null) return false;
 
-        // нельзя ставить на вход/выход лабиринта
         if (cell == labirint.getEntranceCell()) return false;
         if (cell == labirint.getExitCell()) return false;
 
-        // клетка должна быть пустой
         if (!cell.isEmpty()) return false;
 
-        // дополнительная явная проверка на стену
         if (cell.getUnit() instanceof WallUnit) return false;
 
-        // нельзя ставить на змею
         if (snake != null) {
             for (SnakeSegment seg : snake.getSegments()) {
                 if (seg.getPos() == cell) return false;

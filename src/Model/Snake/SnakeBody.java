@@ -36,15 +36,13 @@ public class SnakeBody {
      * ¬ыполн€ет сдвиг тела: нова€ голова в targetCell,
      * стара€ голова становитс€ телом, при необходимости удал€етс€ хвост.
      * @param targetCell клетка дл€ новой головы
-     * @param grow должен ли зме€ расти (не удал€ть хвост)
+     * @param grow должна ли зме€ расти (не удал€ть хвост)
      * @param direction направление движени€
      * @return true если успешно
      */
     public boolean shiftTo(Cell targetCell, boolean grow, Direction direction) {
-        // —тара€ голова больше не голова
         head().setHead(false);
 
-        // —оздаЄм новую голову
         SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
         newHead.setDirection(direction);
         if (!targetCell.putUnit(newHead)) {
@@ -52,10 +50,8 @@ public class SnakeBody {
         }
         addHead(newHead);
 
-        // ќбновл€ем направлени€ всех сегментов
         updateDirections();
 
-        // ”дал€ем хвост, если не растем
         if (!grow) {
             Cell tailCell = tail().getPos();
             if (tailCell != null && tailCell.getUnit() == tail()) {

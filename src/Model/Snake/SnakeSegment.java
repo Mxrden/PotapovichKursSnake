@@ -33,6 +33,6 @@ public class SnakeSegment extends Unit {
 
     @Override
     public void onSteppedBy(Snake snake) {
-        // Никогда не вызывается, т.к. столкновение с телом обрабатывается отдельно
+
     }
 }

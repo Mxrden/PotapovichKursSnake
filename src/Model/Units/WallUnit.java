@@ -11,6 +11,6 @@ public class WallUnit extends Unit {
 
     @Override
     public void onSteppedBy(Snake snake) {
-        snake.kill();  // или нанести урон, если нужно
+        snake.kill();
     }
 }

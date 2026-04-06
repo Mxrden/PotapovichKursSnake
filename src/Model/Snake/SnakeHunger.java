@@ -44,7 +44,7 @@ public class SnakeHunger {
         if (currentSize > minLength) {
             if (ticksSinceShrink >= shrinkInterval) {
                 ticksSinceShrink = 0;
-                return true; // требуется укорачивание
+                return true;
             }
         } else {
             if (ticksSinceHpLoss >= hpLossInterval) {
