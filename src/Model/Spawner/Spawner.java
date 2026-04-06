@@ -7,7 +7,7 @@ import Model.Labirint.Labirint;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
 import Model.Units.WallUnit;
-import Model.RodentFactory;
+import Model.FactoryRodents.RodentFactory;
 import Model.Snake.Snake;
 import Model.Snake.SnakeSegment;
 

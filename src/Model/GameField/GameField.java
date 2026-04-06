@@ -27,14 +27,12 @@ public class GameField implements Iterable<Cell> {
 
         _cells = new Cell[height][width];
 
-        // создание клеток
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
                 _cells[row][col] = new Cell(this, row, col);
             }
         }
 
-        // установка соседей (без стен на границах)
         for (int row = 0; row < getHeight(); row++) {
             for (int col = 0; col < getWidth(); col++) {
                 Cell cell = _cells[row][col];

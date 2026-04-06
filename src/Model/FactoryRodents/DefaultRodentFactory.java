@@ -1,7 +1,7 @@
 package Model.FactoryRodents;
 
 import Model.GameField.Cell;
-import Model.RodentFactory;
+import Model.FactoryRodents.RodentFactory;
 import Model.Units.Rodent;
 import Model.Units.SimpleRodent;
 
@@ -17,12 +17,9 @@ public class DefaultRodentFactory implements RodentFactory {
 
         SimpleRodent r = new SimpleRodent();
 
-        // сначала ставим позицию
         r.setPosition(cell);
 
-        // затем кладём в клетку
         if (!cell.putUnit(r)) {
-            // если не удалось — откатываем позицию
             r.setPosition(null);
             return null;
         }

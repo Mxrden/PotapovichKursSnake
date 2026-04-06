@@ -1,6 +1,7 @@
 package Model;
 
 import Model.FactoryRodents.DefaultRodentFactory;
+import Model.FactoryRodents.RodentFactory;
 import Model.GameField.Cell;
 import Model.GameField.GameField;
 import Model.GameField.GridRegion;
@@ -30,7 +31,7 @@ public class Game {
         this(width, height, snakeMinLength, new DefaultRodentFactory());
     }
 
-    public Game(int width, int height, int snakeMinLength, Model.RodentFactory rodentFactory) {
+    public Game(int width, int height, int snakeMinLength, RodentFactory rodentFactory) {
 
         field = new GameField(height, width);
 

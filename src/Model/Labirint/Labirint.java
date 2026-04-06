@@ -58,17 +58,15 @@ public class Labirint {
         int width = region.getWidth();
         int height = region.getHeight();
 
-        // 1. ¬нешн€€ рамка (стены по кра€м региона)
         for (int c = left; c <= right; c++) {
-            putWall(field.getCell(top, c));     // верхн€€ граница
-            putWall(field.getCell(bottom, c));  // нижн€€ граница
+            putWall(field.getCell(top, c));
+            putWall(field.getCell(bottom, c));
         }
         for (int r = top + 1; r < bottom; r++) {
-            putWall(field.getCell(r, left));    // лева€ граница
-            putWall(field.getCell(r, right));   // права€ граница
+            putWall(field.getCell(r, left));
+            putWall(field.getCell(r, right));
         }
 
-        // 2. ¬ертикальные шахматные стены (как в старой логике, но теперь целые клетки)
         int segmentHeight = height / 2;
 
         for (int col = left + 2; col < right - 1; col += 3) {
@@ -82,7 +80,6 @@ public class Labirint {
             }
         }
 
-        // 3. ѕроходы в стенах (убираем одну клетку-стену)
         for (int col = left + 2; col < right - 1; col += 3) {
             boolean offset = ((col - left) / 3) % 2 == 1;
             int passRow = offset ? top + segmentHeight - 1 : top + segmentHeight + 1;
@@ -92,7 +89,6 @@ public class Labirint {
             }
         }
 
-        // 4. ”бираем стены на входе и выходе (на вс€кий случай, если попали)
         removeWall(getEntranceCell());
         removeWall(getExitCell());
     }

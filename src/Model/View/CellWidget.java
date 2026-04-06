@@ -24,10 +24,8 @@ public class CellWidget extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         g.setColor(BACKGROUND);
         g.fillRect(0, 0, SIZE, SIZE);
-
         if (!_cell.isEmpty()) {
             drawUnit(g);
         }
@@ -35,7 +33,6 @@ public class CellWidget extends JComponent {
 
     private void drawUnit(Graphics g) {
         var unit = _cell.getUnit();
-
         if (unit instanceof SnakeSegment seg) {
             if (seg.isHead()) {
                 drawSnakeHead(g, seg);
@@ -52,7 +49,6 @@ public class CellWidget extends JComponent {
     }
 
     private void drawWall(Graphics g) {
-        // Кирпичный цвет
         g.setColor(new Color(180, 100, 60));
         g.fillRect(4, 4, SIZE - 8, SIZE - 8);
         g.setColor(Color.BLACK);
@@ -71,7 +67,7 @@ public class CellWidget extends JComponent {
 
     private void drawSnakeBody(Graphics g, SnakeSegment seg) {
         if (seg.getThickness() > 1.0f) {
-            g.setColor(new Color(255, 140, 0)); // оранжевый для расширения
+            g.setColor(new Color(255, 140, 0));
         } else {
             g.setColor(Color.YELLOW);
         }
@@ -81,16 +77,12 @@ public class CellWidget extends JComponent {
     private void drawSnakeHead(Graphics g, SnakeSegment seg) {
         g.setColor(Color.GREEN);
         g.fillRect(4, 4, SIZE - 8, SIZE - 8);
-
         Direction d = seg.getDirection();
         if (d == null) return;
-
         g.setColor(Color.WHITE);
-
         int cx = SIZE / 2;
         int cy = SIZE / 2;
         int tip = 6;
-
         Polygon arrow = new Polygon();
         switch (d.toString()) {
             case "N" -> {

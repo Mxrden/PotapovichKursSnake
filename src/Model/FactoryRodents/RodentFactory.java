@@ -1,4 +1,4 @@
-package Model;
+package Model.FactoryRodents;
 
 import Model.GameField.Cell;
 import Model.Units.Rodent;

@@ -2,7 +2,6 @@ package Model.Units;
 
 import Model.Effects.RodentEffect;
 import Model.GameField.Cell;
-import Model.Snake.Snake;
 
 public abstract class Rodent extends Unit {
 
