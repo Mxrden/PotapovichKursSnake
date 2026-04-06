@@ -180,7 +180,7 @@ class SnakeTest {
         GameField field = new GameField(20, 20);
         Snake snake = new Snake(2, 10, 30, 4, 2);
         Cell headCell = field.getCell(5, 5);
-        Cell tailCell = field.getCell(5, 6); // хвост справа
+        Cell tailCell = field.getCell(5, 6);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
         snake.getBody().addHead(head);

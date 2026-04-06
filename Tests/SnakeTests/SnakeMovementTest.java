@@ -85,8 +85,8 @@ class SnakeMovementTest {
 
     @Test
     void testSetDirectionOpposite() {
-        movement.setDirection(Direction.west()); // opposite to east
-        assertEquals(Direction.east(), movement.getDirection()); // unchanged
+        movement.setDirection(Direction.west());
+        assertEquals(Direction.east(), movement.getDirection());
     }
 
     @Test

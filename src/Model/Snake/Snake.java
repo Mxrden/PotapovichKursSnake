@@ -219,4 +219,8 @@ public class Snake {
         updateExpansions();
         return !hunger.isDead();
     }
+
+    public void setDirectionImmediate(Direction dir) {
+        movement.setDirection(dir);
+    }
 }
