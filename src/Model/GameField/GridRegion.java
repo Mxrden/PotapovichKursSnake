@@ -151,11 +151,15 @@ public class GridRegion implements Iterable<Cell> {
 
         @Override
         public boolean hasNext() {
-            return _row <= _region.getBottom();
+            return _row <= _region.getBottom()
+                    && _row < _field.getHeight();
         }
+
 
         @Override
         public Cell next() {
+            if (!hasNext()) throw new IndexOutOfBoundsException();
+
             Cell cell = _field.getCell(_row, _col);
 
             _col++;
@@ -166,5 +170,6 @@ public class GridRegion implements Iterable<Cell> {
 
             return cell;
         }
+
     }
 }

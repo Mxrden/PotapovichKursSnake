@@ -1,0 +1,68 @@
+package Model.Snake;
+
+import Model.GameField.Cell;
+import Model.GameField.Direction;
+import java.util.LinkedList;
+import java.util.List;
+
+public class SnakeBody {
+
+    private final LinkedList<SnakeSegment> segments = new LinkedList<>();
+
+    public SnakeSegment head() { return segments.getFirst(); }
+    public SnakeSegment tail() { return segments.getLast(); }
+    public List<SnakeSegment> all() { return segments; }
+    public int size() { return segments.size(); }
+    public boolean isEmpty() { return segments.isEmpty(); }
+
+    public void addHead(SnakeSegment seg) { segments.addFirst(seg); }
+    public void addTail(SnakeSegment seg) { segments.addLast(seg); }
+    public void removeTail() { segments.removeLast(); }
+
+    /**
+     * ќбновл€ет направление каждого сегмента (кроме головы),
+     * чтобы оно указывало на следующий сегмент по направлению к голове.
+     */
+    public void updateDirections() {
+        for (int i = 1; i < segments.size(); i++) {
+            SnakeSegment prev = segments.get(i - 1);
+            SnakeSegment curr = segments.get(i);
+            Direction dir = curr.getPos().getDirectionTo(prev.getPos());
+            if (dir != null) curr.setDirection(dir);
+        }
+    }
+
+    /**
+     * ¬ыполн€ет сдвиг тела: нова€ голова в targetCell,
+     * стара€ голова становитс€ телом, при необходимости удал€етс€ хвост.
+     * @param targetCell клетка дл€ новой головы
+     * @param grow должен ли зме€ расти (не удал€ть хвост)
+     * @param direction направление движени€
+     * @return true если успешно
+     */
+    public boolean shiftTo(Cell targetCell, boolean grow, Direction direction) {
+        // —тара€ голова больше не голова
+        head().setHead(false);
+
+        // —оздаЄм новую голову
+        SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
+        newHead.setDirection(direction);
+        if (!targetCell.putUnit(newHead)) {
+            return false;
+        }
+        addHead(newHead);
+
+        // ќбновл€ем направлени€ всех сегментов
+        updateDirections();
+
+        // ”дал€ем хвост, если не растем
+        if (!grow) {
+            Cell tailCell = tail().getPos();
+            if (tailCell != null && tailCell.getUnit() == tail()) {
+                tailCell.extractUnit();
+            }
+            removeTail();
+        }
+        return true;
+    }
+}

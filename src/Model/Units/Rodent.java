@@ -1,6 +1,7 @@
 package Model.Units;
 
 import Model.Effects.RodentEffect;
+import Model.GameField.Cell;
 import Model.Snake.Snake;
 
 public abstract class Rodent extends Unit {
@@ -18,12 +19,15 @@ public abstract class Rodent extends Unit {
         return _effect;
     }
 
-    /**
-     * Вызывается, когда змея съедает грызуна.
-     * Наследники могут расширить поведение.
-     */
     public void onEaten() {
         _isActive = false;
-        getPos().extractUnit();
+
+        Cell cell = getPos();
+        if (cell != null && cell.getUnit() == this) {
+            cell.extractUnit();
+        }
+
+        setPosition(null);
     }
+
 }

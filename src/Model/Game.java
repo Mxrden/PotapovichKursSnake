@@ -1,101 +1,132 @@
 package Model;
 
+import Model.FactoryRodents.DefaultRodentFactory;
+import Model.RodentFactory;
 import Model.GameField.Cell;
-import Model.GameField.Direction;
 import Model.GameField.GameField;
+import Model.GameField.GridRegion;
 import Model.Labirint.Labirint;
 import Model.Snake.Snake;
-import Model.Snake.SnakePart;
 import Model.Spawner.Spawner;
 import Model.Units.Rodent;
-import Model.Units.SimpleRodent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Game {
 
-    private final GameField _field;
-    private final Labirint _labirint;
-    private final Snake _snake;
-    private final Spawner _spawner;
+    private final GameField field;
+    private final Labirint labirint;
+    private final Snake snake;
+    private final Spawner spawner;
 
-    private Rodent _rodent;
-    private boolean _isOver = false;
+    private Rodent rodent;
+    private boolean isOver = false;
 
-    // -----------------------------
-    // Конструктор
-    // -----------------------------
+    private final List<GameListener> listeners = new ArrayList<>();
+    private final Random rnd = new Random();
+
     public Game(int width, int height, int snakeMinLength) {
+        this(width, height, snakeMinLength, new DefaultRodentFactory());
+    }
 
-        // 1. Поле
-        _field = new GameField(width, height);
+    public Game(int width, int height, int snakeMinLength, RodentFactory rodentFactory) {
 
-        // 2. Лабиринт
-        Cell leftTop = _field.getCell(0, 0);
-        _labirint = new Labirint(leftTop, width, height);
-        _labirint.generateThreeColumnsWithGaps();
+        field = new GameField(height, width);
 
-        // 3. Змея
-        _snake = new Snake(snakeMinLength);
+        // -----------------------------
+        // СЛУЧАЙНОЕ РАЗМЕЩЕНИЕ ЛАБИРИНТА
+        // -----------------------------
+        int labW = width / 2;
+        int labH = height / 2;
 
-        Cell start = _field.getCell(height / 2, width / 2);
-        SnakePart head = new SnakePart(true, 1.0f, start);
-        head.setDirection(Direction.north());
-        start.putUnit(head);
-        _snake.joinNewPart(head);
+        int labLeft = rnd.nextInt(width - labW);
+        int labTop  = rnd.nextInt(height - labH);
 
-        // 4. Спавнер
-        _spawner = new Spawner(_field, _labirint);
+        Cell labStart = field.getCell(labTop, labLeft);
+        GridRegion region = new GridRegion(labStart, labW, labH);
 
-        // 5. Первый грызун
-        _rodent = _spawner.spawnRodent();
+        labirint = new Labirint(region);
+        labirint.generateSimple();
 
-        // 6. Камни
-        _spawner.spawnStones(3);
+        // -----------------------------
+        // СПАВНЕР И ЗМЕЯ
+        // -----------------------------
+        spawner = new Spawner(field, labirint, rodentFactory);
+
+        snake = new Snake(
+                snakeMinLength,
+                8,
+                30,
+                4,
+                2
+        );
+
+        spawner.placeSnake(snake, snakeMinLength);
+
+        rodent = spawner.spawnRodent();
+        spawner.spawnStones(3);
     }
 
     // -----------------------------
-    // Один шаг игры
+    // Шаг игры
     // -----------------------------
-    public boolean step(Direction dir) {
+    public boolean step() {
+        if (isOver) return false;
 
-        if (_isOver) return false;
+        boolean moved = snake.move();
 
-        boolean moved = _snake.move(dir);
-
-        if (!_snake.isDead() && moved) {
-
-            // Проверяем: голова в клетке грызуна?
-            if (_snake.getHead().getPos() == _rodent.getPos()) {
-                _rodent.onEaten();
-                _rodent = _spawner.spawnRodent();
-            }
-
-            return true;
+        if (snake.isDead()) {
+            isOver = true;
+            notifyGameOver();
+            return false;
         }
 
-        _isOver = true;
-        return false;
+        if (moved) {
+            notifySnakeMoved();
+
+            if (snake.wasRodentEaten()) {
+                notifyRodentEaten();
+                rodent = spawner.spawnRodent();
+                // Флаг сбрасывается автоматически при следующем move
+            }
+        }
+
+        return moved;
     }
 
     // -----------------------------
-    // Доступ к состоянию
+    // Слушатели
     // -----------------------------
-    public boolean isOver() {
-        return _isOver;
+    public void addListener(GameListener l) {
+        if (l != null && !listeners.contains(l)) listeners.add(l);
     }
 
-    public GameField getField() {
-        return _field;
+    private void notifySnakeMoved() {
+        for (GameListener l : listeners) {
+            l.onSnakeMoved(snake, snake.getDirection());
+        }
     }
 
-    public Labirint getLabirint() {
-        return _labirint;
+    private void notifyRodentEaten() {
+        for (GameListener l : listeners) {
+            l.onRodentEaten(snake);
+        }
     }
 
-    public Snake getSnake() {
-        return _snake;
+    private void notifyGameOver() {
+        for (GameListener l : listeners) {
+            l.onGameOver();
+        }
     }
 
-    public Rodent getRodent() {
-        return _rodent;
-    }
+    // -----------------------------
+    // Геттеры
+    // -----------------------------
+    public boolean isOver() { return isOver; }
+    public GameField getField() { return field; }
+    public Labirint getLabirint() { return labirint; }
+    public Snake getSnake() { return snake; }
+    public Rodent getRodent() { return rodent; }
 }

@@ -1,194 +1,234 @@
 package Model.Snake;
 
-import Model.Effects.RodentEffect;
-import Model.Effects.RodentEffectEnum;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Units.Rodent;
-import Model.Units.Stone;
 import Model.Units.Unit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Snake {
 
-    // -----------------------------
-    // Поля состояния
-    // -----------------------------
+    private final SnakeBody body = new SnakeBody();
+    private final SnakeMovement movement = new SnakeMovement();
+    private final SnakeHunger hunger;
 
-    private final List<SnakePart> _parts = new ArrayList<>();
-    private int _life;
-    private final int _minLenght;
-    private int _growthQueue;
-    private final List<RodentEffect> _effects = new ArrayList<>();
+    // Одноразовые эффекты
+    private boolean ignoreNextWall = false;
+    private boolean ignoreNextStone = false;
 
+    // Флаг, был ли съеден грызун на этом ходу (для уведомлений)
+    private boolean rodentEaten = false;
 
-    // -----------------------------
-    // Конструктор
-    // -----------------------------
+    // Список активных расширений (временные боковые сегменты)
+    private final List<TemporaryExpansion> expansions = new ArrayList<>();
 
-    public Snake(int minLenght) {
-        _minLenght = minLenght;
-        _growthQueue = 0;
-        _life = 3;
+    // Буферизированное направление, запрошенное игроком между тиками
+    private Direction requestedDirection = null;
+
+    public Snake(int minLength, int initialLife,
+                 int shrinkInterval, int hpLossInterval, int hungerDamage) {
+        this.hunger = new SnakeHunger(minLength, initialLife,
+                shrinkInterval, hpLossInterval, hungerDamage);
     }
 
-
     // -----------------------------
-    // Доступ к частям тела
+    // Управление эффектами
     // -----------------------------
-
-    public SnakePart getHead() {
-        return _parts.getFirst();
+    public void activateIgnoreWall() {
+        ignoreNextWall = true;
     }
 
-    public SnakePart getTail() {
-        return _parts.getLast();
+    public void activateIgnoreStone() {
+        ignoreNextStone = true;
     }
-
-    public List<SnakePart> getParts() {
-        return _parts;
-    }
-
-    public void joinNewPart(SnakePart part) {
-        _parts.add(part);
-    }
-
 
     // -----------------------------
-    // Перемещение
+    // Направление – теперь только запоминаем запрос
     // -----------------------------
-
-    private boolean moveTo(Cell target) {
-        if (isDead()) return false;
-
-        Unit unit = target.getUnit();
-
-        // столкновение с телом змеи
-        if (unit != null && _parts.contains(unit)) {
-            if (unit != getTail()) {
-                kill();
-                return false;
-            }
-        }
-
-        // реакция юнита
-        if (unit != null) {
-            unit.onSteppedBy(this);
-            if (isDead()) return false;
-        }
-
-        moveBody(target);
-        return true;
+    public void setDirection(Direction dir) {
+        if (dir == null) return;
+        requestedDirection = dir;
     }
 
-
-
-    public boolean move(Direction direction) {
-
-        if (direction == getHead().getDirection().opposite()) return false;
-
-        Cell headCell = getHead().getPos();
-        Cell target = headCell.getNeighbor(direction);
-
-        if (headCell.getWall(direction) != null) {
-            kill();
-            return false;
-        }
-
-        if (!moveTo(target) || isDead()) return false;
-
-        getHead().setDirection(direction);
-
-        return true;
+    public Direction getDirection() {
+        return movement.getDirection();
     }
 
-
     // -----------------------------
-    // Логика перемещения тела
+    // Доступ к телу
     // -----------------------------
-
-    private void moveBody(Cell newHeadCell) {
-
-        List<Cell> oldPositions = new ArrayList<>();
-        for (SnakePart part : _parts) {
-            oldPositions.add(part.getPos());
-        }
-
-        SnakePart head = getHead();
-        head.moveTo(newHeadCell);
-
-        for (int i = 1; i < _parts.size(); i++) {
-            SnakePart part = _parts.get(i);
-            part.moveTo(oldPositions.get(i - 1));
-            part.setDirection(_parts.get(i - 1).getDirection());
-        }
-
-        if (_growthQueue > 0) {
-            decreaseGrowthQueue();
-        } else {
-            shrink();
-        }
+    public SnakeBody getBody() {
+        return body;
     }
 
-
-    // -----------------------------
-    // Уменьшение (удаление хвоста)
-    // -----------------------------
-
-    public void shrink() {
-        SnakePart tail = getTail();
-        tail.getPos().extractUnit();
-        _parts.removeLast();
+    public List<SnakeSegment> getSegments() {
+        return body.all();
     }
 
-
-    // -----------------------------
-    // Жизнь
-    // -----------------------------
-
-    public void increaseLife() {
-        _life++;
+    public SnakeSegment getHead() {
+        return body.head();
     }
 
-    public void decreaseLife() {
-        _life--;
-    }
-
+    // -----------------------------
+    // Состояние
+    // -----------------------------
     public boolean isDead() {
-        return _life <= 0;
+        return hunger.isDead();
     }
 
     public void kill() {
-        _life = 0;
+        hunger.kill();
+        // Удаляем все расширения при смерти змеи
+        for (TemporaryExpansion exp : expansions) {
+            exp.dispose();
+        }
+        expansions.clear();
     }
 
-
     // -----------------------------
-    // Очередь роста
+    // Рост (старый механизм – немедленный)
     // -----------------------------
-
-    public int getGrowthQueue() {
-        return _growthQueue;
-    }
-
     public void increaseGrowthQueue() {
-        _growthQueue++;
+        hunger.addGrowth();
     }
 
-    public void decreaseGrowthQueue() {
-        _growthQueue--;
+    // -----------------------------
+    // Новый механизм роста через расширение
+    // -----------------------------
+    public boolean tryAddExpansion() {
+        int currentLength = body.size();
+        if (currentLength <= 0) return false;
+        Cell headPos = body.head().getPos();
+        Direction dir = movement.getDirection();
+        try {
+            TemporaryExpansion exp = new TemporaryExpansion(this, headPos, dir, currentLength);
+            expansions.add(exp);
+            return true;
+        } catch (IllegalStateException e) {
+            return false;
+        }
     }
 
+    private void updateExpansions() {
+        Iterator<TemporaryExpansion> it = expansions.iterator();
+        while (it.hasNext()) {
+            TemporaryExpansion exp = it.next();
+            boolean alive = exp.tick();
+            if (!alive) {
+                it.remove();
+                growFromExpansion();
+            }
+        }
+    }
+
+    private void growFromExpansion() {
+        if (body.isEmpty()) return;
+        SnakeSegment tail = body.tail();
+        Direction tailDirection = tail.getDirection();
+        if (tailDirection == null) return;
+        Cell tailCell = tail.getPos();
+        Cell newCell = tailCell.getNeighbor(tailDirection.opposite());
+        if (newCell != null && newCell.isEmpty()) {
+            SnakeSegment newSegment = new SnakeSegment(false, 1.0f, null);
+            newSegment.setDirection(tailDirection);
+            newCell.putUnit(newSegment);
+            newSegment.setPosition(newCell);
+            body.addTail(newSegment);
+        } else {
+            kill();
+        }
+    }
+
+    public boolean wasRodentEaten() {
+        return rodentEaten;
+    }
 
     // -----------------------------
-    // Эффекты
+    // Основной шаг движения
     // -----------------------------
+    public boolean move() {
+        // Применяем буферизированное направление, если оно допустимо
+        if (requestedDirection != null) {
+            Direction currentDir = movement.getDirection();
+            if (!currentDir.isOpposite(requestedDirection)) {
+                movement.setDirection(requestedDirection);
+            }
+            requestedDirection = null; // сбрасываем запрос
+        }
 
-    public boolean putEffect(RodentEffect effect) {
-        if (effect.getType() == RodentEffectEnum.NO_EFFECT) return false;
-        _effects.add(effect);
-        return true;
+        rodentEaten = false;
+
+        if (body.isEmpty()) {
+            hunger.kill();
+            return false;
+        }
+
+        Cell headCell = body.head().getPos();
+        SnakeMovement.MoveResult move = movement.computeMove(headCell, ignoreNextWall, ignoreNextStone);
+
+        boolean wallIgnored = (move.obstacle == SnakeMovement.Obstacle.WALL_IGNORED);
+        boolean stoneIgnored = (move.obstacle == SnakeMovement.Obstacle.STONE_IGNORED);
+        if (wallIgnored || stoneIgnored) {
+            ignoreNextWall = false;
+            ignoreNextStone = false;
+        }
+
+        switch (move.obstacle) {
+            case BOUNDARY:
+            case WALL:
+            case STONE:
+                hunger.kill();
+                return false;
+            default:
+                break;
+        }
+
+        Cell target = move.target;
+
+        // Запрещаем наступать на любой сегмент змеи (включая хвост)
+        if (target != null && target.getUnit() instanceof SnakeSegment) {
+            hunger.kill();
+            return false;
+        }
+
+        boolean grow = hunger.shouldGrow();
+
+        if (target != null && !target.isEmpty()) {
+            Unit unit = target.getUnit();
+            if (unit instanceof Rodent) {
+                rodentEaten = true;
+            }
+            if (wallIgnored || stoneIgnored) {
+                target.extractUnit();
+            } else {
+                unit.onSteppedBy(this);
+                if (hunger.isDead()) return false;
+            }
+        }
+
+        boolean success = body.shiftTo(target, grow, movement.getDirection());
+        if (!success) {
+            hunger.kill();
+            return false;
+        }
+
+        if (grow) {
+            hunger.consumeGrowth();
+        }
+
+        boolean needShrink = hunger.applyHunger(body.size());
+        if (needShrink) {
+            Cell tailCell = body.tail().getPos();
+            if (tailCell != null && tailCell.getUnit() == body.tail()) {
+                tailCell.extractUnit();
+            }
+            body.removeTail();
+        }
+
+        updateExpansions();
+        return !hunger.isDead();
     }
 }

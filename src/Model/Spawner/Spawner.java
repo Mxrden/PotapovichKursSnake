@@ -6,6 +6,10 @@ import Model.GameField.GameField;
 import Model.Labirint.Labirint;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
+import Model.Units.WallUnit;
+import Model.RodentFactory;
+import Model.Snake.Snake;
+import Model.Snake.SnakeSegment;
 
 import java.util.Random;
 
@@ -14,75 +18,153 @@ public class Spawner {
     private final GameField field;
     private final Labirint labirint;
     private final Random rnd = new Random();
+    private final RodentFactory rodentFactory;
 
-    // фиксированный набор направлений (Direction не enum!)
-    private static final Direction[] DIRS = {
-            Direction.north(),
-            Direction.east(),
-            Direction.south(),
-            Direction.west()
-    };
+    private Snake snake;
 
-    public Spawner(GameField field, Labirint labirint) {
+    public Spawner(GameField field, Labirint labirint, RodentFactory rodentFactory) {
+        if (field == null) throw new IllegalArgumentException("field must not be null");
+        if (labirint == null) throw new IllegalArgumentException("labirint must not be null");
+        if (rodentFactory == null) throw new IllegalArgumentException("rodentFactory must not be null");
+
         this.field = field;
         this.labirint = labirint;
+        this.rodentFactory = rodentFactory;
     }
 
-    // -----------------------------
+    // ---------------------------------------------------------
+    // Привязка змеи
+    // ---------------------------------------------------------
+    public void bindSnake(Snake snake) {
+        this.snake = snake;
+    }
+
+    // ---------------------------------------------------------
+    // Размещение змеи (голова + хвост)
+    // ---------------------------------------------------------
+    public void placeSnake(Snake snake, int minLength) {
+        bindSnake(snake);
+
+        Direction[] dirs = { Direction.north(), Direction.east(), Direction.south(), Direction.west() };
+
+        for (int attempt = 0; attempt < 2000; attempt++) {
+            Cell headCell = getRandomFreeCell();
+            if (headCell == null) throw new IllegalStateException("No free cell for snake head");
+
+            for (Direction tailDir : dirs) {
+                Cell current = headCell;
+                boolean ok = true;
+
+                for (int i = 1; i < minLength; i++) {
+                    current = current.getNeighbor(tailDir);
+                    if (current == null || !isCellFree(current)) {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (!ok) continue;
+
+                // Размещаем голову
+                SnakeSegment head = new SnakeSegment(true, 1.0f, null);
+                head.setDirection(tailDir.opposite()); // визуальное направление
+                head.setPosition(headCell);
+                headCell.putUnit(head);
+                snake.getBody().addHead(head);
+
+                // Размещаем тело
+                Cell prev = headCell;
+                for (int i = 1; i < minLength; i++) {
+                    Cell next = prev.getNeighbor(tailDir);
+                    SnakeSegment part = new SnakeSegment(false, 1.0f, null);
+                    part.setPosition(next);
+                    next.putUnit(part);
+                    snake.getBody().addTail(part);
+                    prev = next;
+                }
+
+                // !!! КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: синхронизируем направление движения
+                snake.setDirection(tailDir.opposite());
+
+                return;
+            }
+        }
+        throw new IllegalStateException("Failed to place snake with valid tail direction");
+    }
+
+    // ---------------------------------------------------------
     // Камни
-    // -----------------------------
+    // ---------------------------------------------------------
     public void spawnStones(int count) {
+        if (count <= 0) return;
+
         for (int i = 0; i < count; i++) {
             Cell cell = getRandomFreeCell();
+            if (cell == null) break;
             cell.putUnit(new Stone());
         }
     }
 
-    // -----------------------------
+    // ---------------------------------------------------------
     // Грызун
-    // -----------------------------
+    // ---------------------------------------------------------
     public SimpleRodent spawnRodent() {
         Cell cell = getRandomFreeCell();
-        SimpleRodent rodent = new SimpleRodent();
-        cell.putUnit(rodent);
-        return rodent;
+        if (cell == null) return null;
+        return (SimpleRodent) rodentFactory.createRodent(cell);
     }
 
-    // -----------------------------
+    // ---------------------------------------------------------
     // Поиск свободной клетки
-    // -----------------------------
-    private Cell getRandomFreeCell() {
-        while (true) {
+    // ---------------------------------------------------------
+    public Cell getRandomFreeCell() {
+        int attempts = 0;
+        final int maxAttempts = 2000;
+
+        while (attempts < maxAttempts) {
+            attempts++;
+
             int row = rnd.nextInt(field.getHeight());
             int col = rnd.nextInt(field.getWidth());
 
             Cell cell = field.getCell(row, col);
 
-            if (isCellFree(cell)) {
-                return cell;
+            if (isCellFree(cell)) return cell;
+        }
+
+        // fallback
+        for (int r = 0; r < field.getHeight(); r++) {
+            for (int c = 0; c < field.getWidth(); c++) {
+                Cell cell = field.getCell(r, c);
+                if (isCellFree(cell)) return cell;
             }
         }
+
+        return null;
     }
 
+    // ---------------------------------------------------------
+    // Проверка клетки
+    // ---------------------------------------------------------
     private boolean isCellFree(Cell cell) {
+        if (cell == null) return false;
 
-        // 1. Клетка должна быть внутри лабиринта
-        if (!labirint.containsCell(cell)) return false;
-
-        // 2. Нельзя ставить на вход/выход
+        // нельзя ставить на вход/выход лабиринта
         if (cell == labirint.getEntranceCell()) return false;
         if (cell == labirint.getExitCell()) return false;
 
-        // 3. Клетка должна быть пустой (нет змеи, камня, грызуна)
+        // клетка должна быть пустой
         if (!cell.isEmpty()) return false;
 
-        // 4. Клетка должна быть доступна (хотя бы одна сторона без стены)
-        for (Direction dir : DIRS) {
-            if (cell.getWall(dir) == null) {
-                return true;
+        // дополнительная явная проверка на стену
+        if (cell.getUnit() instanceof WallUnit) return false;
+
+        // нельзя ставить на змею
+        if (snake != null) {
+            for (SnakeSegment seg : snake.getSegments()) {
+                if (seg.getPos() == cell) return false;
             }
         }
 
-        return false;
+        return true;
     }
 }

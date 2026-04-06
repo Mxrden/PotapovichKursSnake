@@ -1,5 +1,4 @@
 package Model.GameField;
-import Model.Labirint.Wall;
 import Model.Units.Unit;
 
 import java.awt.geom.Point2D;
@@ -70,6 +69,9 @@ public class Cell {
 
     public Unit extractUnit() {
         Unit remove = _unit;
+        if (remove != null) {
+            remove.setPosition(null);
+        }
         _unit = null;
         return remove;
     }
@@ -79,29 +81,24 @@ public class Cell {
         if (!unit.canBelongTo(this)) return false;
 
         _unit = unit;
+        unit.setPosition(this);
         return true;
     }
 
     public boolean isEmpty() {
-        return getUnit()==null;
+        return getUnit() == null;
     }
 
     // -----------------------------
-    // Препятствия
+    // Направление к соседней клетке
     // -----------------------------
-
-    private final Map<Direction, Wall> _walls = new HashMap<>();
-
-    public void setEdgeObject(Direction dir, Wall obj) {
-        _walls.put(dir, obj);
+    public Direction getDirectionTo(Cell other) {
+        if (other == null) return null;
+        for (Map.Entry<Direction, Cell> entry : _neighbors.entrySet()) {
+            if (entry.getValue() == other) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
-
-    public Wall getWall(Direction dir) {
-        return _walls.get(dir);
-    }
-
-    public void removeEdgeObject(Direction dir) {
-        _walls.remove(dir);
-    }
-
 }

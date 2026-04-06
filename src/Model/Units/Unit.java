@@ -10,7 +10,7 @@ public abstract class Unit {
         return _pos;
     }
 
-    protected void setPosition(Cell cell) {
+    public void setPosition(Cell cell) {
         _pos = cell;
     }
 

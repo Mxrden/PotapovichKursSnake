@@ -17,7 +17,12 @@ public class SimpleRodent extends Rodent {
 
     @Override
     public void onSteppedBy(Snake snake) {
-        snake.increaseGrowthQueue();
+        boolean expansionCreated = snake.tryAddExpansion();
+        if (expansionCreated) {
+            this.onEaten();   // грызун исчезает, расширение создано
+        } else {
+            // Не удалось создать расширение – просто переспавниваем грызуна
+            this.onEaten();   // тоже исчезает, но без бонуса
+        }
     }
-
 }
