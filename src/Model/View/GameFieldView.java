@@ -39,12 +39,8 @@ public class GameFieldView extends JPanel {
         // -----------------------------
         Timer timer = new Timer(700, e -> {
             if (!_game.isOver()) {
-                _game.step();   // логика игры
-
-                repaint();      // 1-й repaint Ч может быть слишком рано
-
-                // 2-й repaint Ч гарантированно после спавна грызуна
-                SwingUtilities.invokeLater(this::repaint);
+                _game.step();
+                repaint();
             }
         });
         timer.start();

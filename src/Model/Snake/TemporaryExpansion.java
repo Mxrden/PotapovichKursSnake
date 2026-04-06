@@ -8,7 +8,7 @@ public class TemporaryExpansion {
     private final SnakeSegment right;
     private int lifetime;
 
-    public TemporaryExpansion(Snake snake, Cell headCell, Direction headDir, int lifetimeTicks) {
+    public TemporaryExpansion(Cell headCell, Direction headDir, int lifetimeTicks) {
         Cell leftCell = getSideCell(headCell, headDir, true);
         Cell rightCell = getSideCell(headCell, headDir, false);
         if (!isValidExpansionCell(leftCell) || !isValidExpansionCell(rightCell)) {

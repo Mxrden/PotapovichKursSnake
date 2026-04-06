@@ -99,7 +99,7 @@ public class Snake {
         Cell headPos = body.head().getPos();
         Direction dir = movement.getDirection();
         try {
-            TemporaryExpansion exp = new TemporaryExpansion(this, headPos, dir, currentLength);
+            TemporaryExpansion exp = new TemporaryExpansion(headPos, dir, currentLength);
             expansions.add(exp);
             return true;
         } catch (IllegalStateException e) {

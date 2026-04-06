@@ -31,7 +31,7 @@ class TemporaryExpansionTest {
 
     @Test
     void testExpansionCreationSuccess() {
-        TemporaryExpansion exp = new TemporaryExpansion(snake, headCell, dir, 5);
+        TemporaryExpansion exp = new TemporaryExpansion(headCell, dir, 5);
         assertNotNull(exp);
         Cell north = headCell.getNeighbor(Direction.north());
         Cell south = headCell.getNeighbor(Direction.south());
@@ -44,19 +44,19 @@ class TemporaryExpansionTest {
     void testExpansionCreationFailsWhenNorthBlocked() {
         Cell north = headCell.getNeighbor(Direction.north());
         north.putUnit(new WallUnit());
-        assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(snake, headCell, dir, 5));
+        assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(headCell, dir, 5));
     }
 
     @Test
     void testExpansionCreationFailsWhenSouthBlocked() {
         Cell south = headCell.getNeighbor(Direction.south());
         south.putUnit(new WallUnit());
-        assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(snake, headCell, dir, 5));
+        assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(headCell, dir, 5));
     }
 
     @Test
     void testTickAndDispose() {
-        TemporaryExpansion exp = new TemporaryExpansion(snake, headCell, dir, 2);
+        TemporaryExpansion exp = new TemporaryExpansion(headCell, dir, 2);
         Cell north = headCell.getNeighbor(Direction.north());
         Cell south = headCell.getNeighbor(Direction.south());
         assertTrue(exp.tick());
@@ -71,7 +71,7 @@ class TemporaryExpansionTest {
     void testVerticalDirectionExpansion() {
         dir = Direction.north();
         headCell = field.getCell(5, 5);
-        TemporaryExpansion exp = new TemporaryExpansion(snake, headCell, dir, 5);
+        TemporaryExpansion exp = new TemporaryExpansion(headCell, dir, 5);
         Cell west = headCell.getNeighbor(Direction.west());
         Cell east = headCell.getNeighbor(Direction.east());
         assertTrue(west.getUnit() instanceof SnakeSegment);
