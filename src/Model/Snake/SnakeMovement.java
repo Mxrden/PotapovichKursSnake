@@ -10,7 +10,6 @@ public class SnakeMovement {
 
     public void setDirection(Direction dir) {
         if (dir == null) return;
-        if (direction.isOpposite(dir)) return;
         direction = dir;
     }
 
@@ -18,13 +17,6 @@ public class SnakeMovement {
         return direction;
     }
 
-    /**
-     * Вычисляет результат перемещения головы.
-     * @param headCell клетка головы
-     * @param ignoreWall флаг игнорирования стены
-     * @param ignoreStone флаг игнорирования камня
-     * @return результат движения
-     */
     public MoveResult computeMove(Cell headCell, boolean ignoreWall, boolean ignoreStone) {
         Cell target = headCell.getNeighbor(direction);
         if (target == null) {

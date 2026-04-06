@@ -83,11 +83,6 @@ class SnakeMovementTest {
         assertEquals(targetCell, result.target);
     }
 
-    @Test
-    void testSetDirectionOpposite() {
-        movement.setDirection(Direction.west());
-        assertEquals(Direction.east(), movement.getDirection());
-    }
 
     @Test
     void testSetDirectionValid() {
@@ -95,9 +90,4 @@ class SnakeMovementTest {
         assertEquals(Direction.north(), movement.getDirection());
     }
 
-    @Test
-    void testSetDirectionOppositeIgnored() {
-        movement.setDirection(Direction.west());
-        assertEquals(Direction.east(), movement.getDirection());
-    }
 }

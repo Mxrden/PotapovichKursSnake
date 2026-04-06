@@ -64,10 +64,9 @@ public class Spawner {
                 }
                 if (!ok) continue;
 
-                // Проверка: клетка перед головой (направление движения) не должна быть границей
                 Cell forwardCell = headCell.getNeighbor(tailDir.opposite());
-                if (forwardCell == null) {
-                    continue;
+                if (forwardCell == null || !forwardCell.isEmpty()) {
+                    continue; // направление не подходит
                 }
 
                 SnakeSegment head = new SnakeSegment(true, 1.0f, null);
@@ -86,7 +85,7 @@ public class Spawner {
                     prev = next;
                 }
 
-                snake.setDirection(tailDir.opposite());
+                snake.setDirectionImmediate(tailDir.opposite());
                 return;
             }
         }

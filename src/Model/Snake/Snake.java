@@ -30,9 +30,6 @@ public class Snake {
                 shrinkInterval, hpLossInterval, hungerDamage);
     }
 
-    // -----------------------------
-    // Управление эффектами
-    // -----------------------------
     public void activateIgnoreWall() {
         ignoreNextWall = true;
     }
@@ -41,21 +38,19 @@ public class Snake {
         ignoreNextStone = true;
     }
 
-    // -----------------------------
-    // Направление – теперь только запоминаем запрос
-    // -----------------------------
     public void setDirection(Direction dir) {
         if (dir == null) return;
         requestedDirection = dir;
+    }
+
+    public void setDirectionImmediate(Direction dir) {
+        movement.setDirection(dir);
     }
 
     public Direction getDirection() {
         return movement.getDirection();
     }
 
-    // -----------------------------
-    // Доступ к телу
-    // -----------------------------
     public SnakeBody getBody() {
         return body;
     }
@@ -68,9 +63,6 @@ public class Snake {
         return body.head();
     }
 
-    // -----------------------------
-    // Состояние
-    // -----------------------------
     public boolean isDead() {
         return hunger.isDead();
     }
@@ -83,16 +75,10 @@ public class Snake {
         expansions.clear();
     }
 
-    // -----------------------------
-    // Рост (старый механизм – немедленный)
-    // -----------------------------
     public void increaseGrowthQueue() {
         hunger.addGrowth();
     }
 
-    // -----------------------------
-    // Новый механизм роста через расширение
-    // -----------------------------
     public boolean tryAddExpansion() {
         int currentLength = body.size();
         if (currentLength <= 0) return false;
@@ -141,9 +127,6 @@ public class Snake {
         return rodentEaten;
     }
 
-    // -----------------------------
-    // Основной шаг движения
-    // -----------------------------
     public boolean move() {
         if (requestedDirection != null) {
             Direction currentDir = movement.getDirection();
@@ -182,6 +165,11 @@ public class Snake {
 
         Cell target = move.target;
 
+        if (target != null && target.getUnit() instanceof SnakeSegment) {
+            hunger.kill();
+            return false;
+        }
+
         boolean grow = hunger.shouldGrow();
 
         if (target != null && !target.isEmpty()) {
@@ -218,9 +206,5 @@ public class Snake {
 
         updateExpansions();
         return !hunger.isDead();
-    }
-
-    public void setDirectionImmediate(Direction dir) {
-        movement.setDirection(dir);
     }
 }
