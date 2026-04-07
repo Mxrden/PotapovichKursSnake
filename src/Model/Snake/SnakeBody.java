@@ -19,10 +19,6 @@ public class SnakeBody {
     public void addTail(SnakeSegment seg) { segments.addLast(seg); }
     public void removeTail() { segments.removeLast(); }
 
-    /**
-     * Обновляет направление каждого сегмента (кроме головы),
-     * чтобы оно указывало на следующий сегмент по направлению к голове.
-     */
     public void updateDirections() {
         for (int i = 1; i < segments.size(); i++) {
             SnakeSegment prev = segments.get(i - 1);
@@ -33,32 +29,21 @@ public class SnakeBody {
     }
 
     /**
-     * Выполняет сдвиг тела: новая голова в targetCell,
-     * старая голова становится телом, при необходимости удаляется хвост.
+     * Создаёт новую голову, старая голова становится телом.
+     * Удаление хвоста больше не происходит здесь.
      * @param targetCell клетка для новой головы
-     * @param grow должна ли змея расти (не удалять хвост)
      * @param direction направление движения
      * @return true если успешно
      */
-    public boolean shiftTo(Cell targetCell, boolean grow, Direction direction) {
+    public boolean addNewHead(Cell targetCell, Direction direction) {
         head().setHead(false);
-
         SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
         newHead.setDirection(direction);
         if (!targetCell.putUnit(newHead)) {
             return false;
         }
         addHead(newHead);
-
         updateDirections();
-
-        if (!grow) {
-            Cell tailCell = tail().getPos();
-            if (tailCell != null && tailCell.getUnit() == tail()) {
-                tailCell.extractUnit();
-            }
-            removeTail();
-        }
         return true;
     }
 }

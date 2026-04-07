@@ -41,7 +41,8 @@ class SnakeMovementTest {
         when(targetCell.getUnit()).thenReturn(wall);
         SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
         assertEquals(SnakeMovement.Obstacle.WALL, result.obstacle);
-        assertNull(result.target);
+        assertNotNull(result.target);
+        assertEquals(targetCell, result.target);
     }
 
     @Test
@@ -61,7 +62,8 @@ class SnakeMovementTest {
         when(targetCell.getUnit()).thenReturn(stone);
         SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
         assertEquals(SnakeMovement.Obstacle.STONE, result.obstacle);
-        assertNull(result.target);
+        assertNotNull(result.target);          // теперь target не null
+        assertEquals(targetCell, result.target);
     }
 
     @Test

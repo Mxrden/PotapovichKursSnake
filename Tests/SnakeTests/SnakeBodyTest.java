@@ -52,14 +52,15 @@ class SnakeBodyTest {
     }
 
     @Test
-    void testShiftToWithoutGrowth() {
+    void testAddNewHeadWithoutGrowth() {
         Cell newHeadCell = cells[3];
-        boolean success = body.shiftTo(newHeadCell, false, Direction.east());
+        boolean success = body.addNewHead(newHeadCell, Direction.east());
         assertTrue(success);
-        assertEquals(3, body.size());
+        // ѕосле добавлени€ новой головы длина увеличилась на 1 (хвост ещЄ не удалЄн)
+        assertEquals(4, body.size());
         assertEquals(newHeadCell, body.head().getPos());
         assertEquals(cells[2], body.all().get(1).getPos());
-        assertEquals(cells[1], body.tail().getPos());
+        assertEquals(cells[0], body.tail().getPos()); // хвост осталс€ старый
         assertTrue(body.head().isHead());
         assertFalse(body.all().get(1).isHead());
         assertEquals(Direction.east(), body.head().getDirection());
@@ -68,22 +69,22 @@ class SnakeBodyTest {
     }
 
     @Test
-    void testShiftToWithGrowth() {
+    void testAddNewHeadWithGrowth() {
         Cell newHeadCell = cells[3];
         int oldSize = body.size();
-        boolean success = body.shiftTo(newHeadCell, true, Direction.east());
+        boolean success = body.addNewHead(newHeadCell, Direction.east());
         assertTrue(success);
-        assertEquals(oldSize + 1, body.size());
+        assertEquals(oldSize + 1, body.size()); // хвост не удал€лс€, длина +1
         assertEquals(newHeadCell, body.head().getPos());
         assertEquals(cells[2], body.all().get(1).getPos());
-        assertEquals(cells[0], body.tail().getPos());
+        assertEquals(cells[0], body.tail().getPos()); // хвост не тронут
     }
 
     @Test
-    void testShiftToFailsWhenTargetOccupied() {
+    void testAddNewHeadFailsWhenTargetOccupied() {
         Cell target = cells[3];
         target.putUnit(new Stone());
-        boolean success = body.shiftTo(target, false, Direction.east());
+        boolean success = body.addNewHead(target, Direction.east());
         assertFalse(success);
         assertEquals(3, body.size());
         assertEquals(cells[2], body.head().getPos());

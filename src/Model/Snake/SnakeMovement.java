@@ -29,7 +29,7 @@ public class SnakeMovement {
             if (ignoreWall) {
                 return new MoveResult(target, Obstacle.WALL_IGNORED);
             } else {
-                return new MoveResult(null, Obstacle.WALL);
+                return new MoveResult(target, Obstacle.WALL); // теперь target не null
             }
         }
 
@@ -37,7 +37,7 @@ public class SnakeMovement {
             if (ignoreStone) {
                 return new MoveResult(target, Obstacle.STONE_IGNORED);
             } else {
-                return new MoveResult(null, Obstacle.STONE);
+                return new MoveResult(target, Obstacle.STONE); // теперь target не null
             }
         }
 

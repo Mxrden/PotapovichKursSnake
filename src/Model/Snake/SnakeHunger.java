@@ -32,11 +32,6 @@ public class SnakeHunger {
     public boolean shouldGrow() { return growthQueue > 0; }
     public void consumeGrowth() { if (growthQueue > 0) growthQueue--; }
 
-    /**
-     * Применяет эффект голода.
-     * @param currentSize текущая длина змеи
-     * @return true, если нужно укоротить змею (удалить хвост), false иначе
-     */
     public boolean applyHunger(int currentSize) {
         ticksSinceShrink++;
         ticksSinceHpLoss++;
