@@ -52,13 +52,12 @@ public class Snake {
     public void increaseGrowthQueue() { hunger.addGrowth(); }
     public boolean wasRodentEaten() { return rodentEaten; }
 
-    public boolean tryAddExpansion() {
+    public boolean tryAddExpansion(Cell expansionCell) {
         int currentLength = body.size();
         if (currentLength <= 0) return false;
-        Cell headPos = body.head().getPos();
         Direction dir = movement.getDirection();
         try {
-            TemporaryExpansion exp = new TemporaryExpansion(headPos, dir, currentLength);
+            TemporaryExpansion exp = new TemporaryExpansion(expansionCell, dir, currentLength);
             expansions.add(exp);
             return true;
         } catch (IllegalStateException e) {
@@ -97,7 +96,6 @@ public class Snake {
     }
 
     public boolean move() {
-        // Применяем буфер направления
         if (requestedDirection != null) {
             Direction currentDir = movement.getDirection();
             if (!currentDir.isOpposite(requestedDirection)) {
@@ -123,7 +121,6 @@ public class Snake {
             ignoreNextStone = false;
         }
 
-        // Граница – единственный случай, когда target == null
         if (move.target == null) {
             hunger.kill();
             return false;
@@ -132,28 +129,25 @@ public class Snake {
         Cell target = move.target;
         boolean grow = hunger.shouldGrow();
 
-        // Обработка юнита в целевой клетке (включая стены, камни, тело)
         if (!target.isEmpty()) {
             Unit unit = target.getUnit();
             if (unit instanceof Rodent) {
                 rodentEaten = true;
-            }
-            if (wallIgnored || stoneIgnored) {
-                target.extractUnit(); // удаляем игнорируемое препятствие
+                unit.onSteppedBy(this);
+            } else if (wallIgnored || stoneIgnored) {
+                target.extractUnit();
             } else {
                 unit.onSteppedBy(this);
                 if (hunger.isDead()) return false;
             }
         }
 
-        // Создаём новую голову (старая становится телом)
         boolean success = body.addNewHead(target, movement.getDirection());
         if (!success) {
             hunger.kill();
             return false;
         }
 
-        // Удаляем хвост, если не растём
         if (!grow) {
             Cell tailCell = body.tail().getPos();
             if (tailCell != null && tailCell.getUnit() == body.tail()) {
@@ -164,7 +158,6 @@ public class Snake {
             hunger.consumeGrowth();
         }
 
-        // Применяем голод (дополнительное укорачивание или урон)
         boolean needShrink = hunger.applyHunger(body.size());
         if (needShrink) {
             Cell tailCell = body.tail().getPos();
