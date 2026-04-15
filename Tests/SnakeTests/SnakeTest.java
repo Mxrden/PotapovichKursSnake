@@ -100,7 +100,7 @@ class SnakeTest {
         Rodent rodent = new SimpleRodent();
         targetCell.putUnit(rodent);
 
-        assertTrue(snake.tryAddExpansion());
+        assertTrue(snake.tryAddExpansion(targetCell));
 
         Cell north = headCell.getNeighbor(Direction.north());
         Cell south = headCell.getNeighbor(Direction.south());
@@ -199,7 +199,7 @@ class SnakeTest {
         targetCell = field.getCell(5, 6);
         Rodent rodent = new SimpleRodent();
         targetCell.putUnit(rodent);
-        assertTrue(snake.tryAddExpansion());
+        assertTrue(snake.tryAddExpansion(targetCell));
 
         for (int i = 0; i < 3; i++) {
 
@@ -215,7 +215,7 @@ class SnakeTest {
         targetCell = field.getCell(5, 6);
         Rodent rodent = new SimpleRodent();
         targetCell.putUnit(rodent);
-        assertTrue(snake.tryAddExpansion());
+        assertTrue(snake.tryAddExpansion(targetCell));
         Cell north = headCell.getNeighbor(Direction.north());
         assertTrue(north.getUnit() instanceof SnakeSegment);
         snake.setDirection(Direction.north());
