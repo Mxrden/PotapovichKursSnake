@@ -65,8 +65,9 @@ public class Snake {
         int currentLength = body.size();
         if (currentLength <= 0) return false;
         Direction dir = movement.getDirection();
+        Cell headCell = body.head().getPos();
         try {
-            TemporaryExpansion exp = new TemporaryExpansion(expansionCell, dir, currentLength);
+            TemporaryExpansion exp = new TemporaryExpansion(headCell, dir, currentLength);
             expansions.add(exp);
             return true;
         } catch (IllegalStateException e) {

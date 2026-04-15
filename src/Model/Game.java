@@ -90,7 +90,16 @@ public class Game {
             notifySnakeMoved();
 
             if (snake.wasRodentEaten()) {
+                Rodent eatenRodent = rodent;
+                Cell rodentCell = (eatenRodent != null) ? eatenRodent.getPos() : null;
+                boolean expansionCreated = false;
+
+                if (rodentCell != null) {
+                    expansionCreated = snake.tryAddExpansion(rodentCell);
+                }
+
                 notifyRodentEaten();
+
                 rodent = spawner.spawnRodent();
             }
         }

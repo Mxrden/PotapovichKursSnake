@@ -29,17 +29,26 @@ public class SnakeMovement {
         }
 
         Unit.Obstacle obstacle = unit.getObstacle();
+
+        if (unit instanceof Model.Units.WallUnit) {
+            if (ignoreWall) {
+                return new MoveResult(target, Unit.Obstacle.WALL_IGNORED);
+            }
+            return new MoveResult(target, Unit.Obstacle.WALL);
+        }
+
+        if (unit instanceof Model.Units.Stone) {
+            if (ignoreStone) {
+                return new MoveResult(target, Unit.Obstacle.STONE_IGNORED);
+            }
+            return new MoveResult(target, Unit.Obstacle.STONE);
+        }
+
         if (obstacle == null) {
             return new MoveResult(target, Unit.Obstacle.NONE);
         }
 
-        //
-        if (ignoreWall && obstacle == Unit.Obstacle.WALL) {
-            return new MoveResult(target, Unit.Obstacle.WALL_IGNORED);
-        }
-        if (ignoreStone && obstacle == Unit.Obstacle.STONE) {
-            return new MoveResult(target, Unit.Obstacle.STONE_IGNORED);
-        }
+
 
         return new MoveResult(target, obstacle);
     }
