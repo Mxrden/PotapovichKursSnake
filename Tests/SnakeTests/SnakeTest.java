@@ -216,15 +216,16 @@ class SnakeTest {
         Rodent rodent = new SimpleRodent();
         targetCell.putUnit(rodent);
         assertTrue(snake.tryAddExpansion(targetCell));
-        Cell north = headCell.getNeighbor(Direction.north());
-        assertTrue(north.getUnit() instanceof SnakeSegment);
+        Cell northOfRodent = targetCell.getNeighbor(Direction.north());
+        Cell southOfRodent = targetCell.getNeighbor(Direction.south());
+        assertTrue(northOfRodent.getUnit() instanceof SnakeSegment);
+        assertTrue(southOfRodent.getUnit() instanceof SnakeSegment);
+
+        snake.move();
+
         snake.setDirection(Direction.north());
         snake.move();
-        snake.move();
-        snake.setDirection(Direction.west());
-        snake.move();
-        snake.setDirection(Direction.south());
-        snake.move();
+
         assertTrue(snake.isDead());
     }
 }
