@@ -2,13 +2,16 @@ package Model.Snake;
 
 import Model.GameField.Cell;
 import Model.GameField.Direction;
-import Model.Units.Rodent;
 import Model.Units.Unit;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Класс змеи - основной игровой объект.
+ * Реализует принцип единственной ответственности - управление состоянием и движением змеи.
+ */
 public class Snake {
 
     private final SnakeBody body = new SnakeBody();
@@ -44,6 +47,10 @@ public class Snake {
     public List<SnakeSegment> getSegments() { return body.all(); }
     public SnakeSegment getHead() { return body.head(); }
     public boolean isDead() { return hunger.isDead(); }
+
+    /**
+     * Убивает змею и очищает все временные расширения.
+     */
     public void kill() {
         hunger.kill();
         for (TemporaryExpansion exp : expansions) exp.dispose();
@@ -131,7 +138,9 @@ public class Snake {
 
         if (!target.isEmpty()) {
             Unit unit = target.getUnit();
-            if (unit instanceof Rodent) {
+            Unit.UnitType type = (unit != null) ? unit.getType() : null;
+
+            if (type == Unit.UnitType.RODENT) {
                 rodentEaten = true;
                 unit.onSteppedBy(this);
             } else if (wallIgnored || stoneIgnored) {

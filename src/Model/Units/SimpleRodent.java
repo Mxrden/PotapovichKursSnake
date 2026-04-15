@@ -12,21 +12,7 @@ public class SimpleRodent extends Rodent {
 
     @Override
     public boolean canBelongTo(Cell cell) {
-        return cell.isEmpty();
+        return cell != null && cell.isEmpty();
     }
 
-    @Override
-    public void onSteppedBy(Snake snake) {
-        boolean expansionCreated = snake.tryAddExpansion(this.getPos());
-        if (expansionCreated) {
-            this.onEaten();
-        } else {
-            this.onEaten();
-        }
-    }
-
-    @Override
-    public UnitType getType() {
-        return UnitType.RODENT;
-    }
 }

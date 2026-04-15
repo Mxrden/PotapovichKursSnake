@@ -3,13 +3,15 @@ package Model.View;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Snake.SnakeSegment;
-import Model.Units.Stone;
-import Model.Units.Rodent;
-import Model.Units.WallUnit;
-
+import Model.Units.Unit;
+import Model.Units.Unit.UnitType;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Виджет клетки игрового поля.
+ * Реализует паттерн Strategy для отрисовки через enum UnitType.
+ */
 public class CellWidget extends JComponent {
 
     private final Cell _cell;
@@ -32,19 +34,26 @@ public class CellWidget extends JComponent {
     }
 
     private void drawUnit(Graphics g) {
-        var unit = _cell.getUnit();
-        if (unit instanceof SnakeSegment seg) {
-            if (seg.isHead()) {
-                drawSnakeHead(g, seg);
-            } else {
-                drawSnakeBody(g, seg);
-            }
-        } else if (unit instanceof WallUnit) {
-            drawWall(g);
-        } else if (unit instanceof Stone) {
-            drawStone(g);
-        } else if (unit instanceof Rodent) {
-            drawRodent(g);
+        Unit unit = _cell.getUnit();
+        if (unit == null) return;
+
+        UnitType type = unit.getType();
+        switch (type) {
+            case SNAKE_HEAD:
+                drawSnakeHead(g, (SnakeSegment) unit);
+                break;
+            case SNAKE_BODY:
+                drawSnakeBody(g, (SnakeSegment) unit);
+                break;
+            case WALL:
+                drawWall(g);
+                break;
+            case STONE:
+                drawStone(g);
+                break;
+            case RODENT:
+                drawRodent(g);
+                break;
         }
     }
 

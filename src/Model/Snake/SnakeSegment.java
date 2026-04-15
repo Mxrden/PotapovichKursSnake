@@ -34,7 +34,6 @@ public class SnakeSegment extends Unit {
 
     @Override
     public UnitType getType() {
-        if (isHead()) return UnitType.SNAKE_HEAD;
-        else return UnitType.SNAKE_BODY;
+        return isHead ? UnitType.SNAKE_HEAD : UnitType.SNAKE_BODY;
     }
 }

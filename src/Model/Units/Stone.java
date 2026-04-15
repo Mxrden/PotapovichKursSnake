@@ -3,11 +3,15 @@ package Model.Units;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
 
+/**
+ * Камень - препятствие для змеи.
+ * Реализует принцип открытости/закрытости - новый тип юнита без изменения существующего кода.
+ */
 public class Stone extends Unit{
 
     @Override
     public boolean canBelongTo(Cell cell) {
-        return cell.isEmpty();
+        return cell != null && cell.isEmpty();
     }
 
     @Override
