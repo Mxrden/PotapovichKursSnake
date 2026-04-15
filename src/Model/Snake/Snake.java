@@ -21,7 +21,7 @@ public class Snake {
     private boolean ignoreNextWall = false;
     private boolean ignoreNextStone = false;
     private boolean rodentEaten = false;
-    private final List<TemporaryExpansion> expansions = new ArrayList<>();
+    private final java.util.List<TemporaryExpansion> expansions = new java.util.ArrayList<>();
     private Direction requestedDirection = null;
 
     public Snake(int minLength, int initialLife,
@@ -44,7 +44,9 @@ public class Snake {
 
     public Direction getDirection() { return movement.getDirection(); }
     public SnakeBody getBody() { return body; }
-    public List<SnakeSegment> getSegments() { return body.all(); }
+    public java.util.List<SnakeSegment> getSegments() {
+        return new java.util.ArrayList<>(body.all());
+    }
     public SnakeSegment getHead() { return body.head(); }
     public boolean isDead() { return hunger.isDead(); }
 
@@ -73,7 +75,7 @@ public class Snake {
     }
 
     private void updateExpansions() {
-        Iterator<TemporaryExpansion> it = expansions.iterator();
+        java.util.Iterator<TemporaryExpansion> it = expansions.iterator();
         while (it.hasNext()) {
             TemporaryExpansion exp = it.next();
             boolean alive = exp.tick();

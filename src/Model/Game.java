@@ -24,7 +24,10 @@ public class Game {
     private Rodent rodent;
     private boolean isOver = false;
 
-    private final List<GameListener> listeners = new ArrayList<>();
+
+    private final List<SnakeMovedListener> snakeMovedListeners = new ArrayList<>();
+    private final List<RodentEatenListener> rodentEatenListeners = new ArrayList<>();
+    private final List<GameOverListener> gameOverListeners = new ArrayList<>();
     private final Random rnd = new Random();
 
     public Game(int width, int height, int snakeMinLength) {
@@ -98,24 +101,39 @@ public class Game {
     // -----------------------------
     // Слушатели
     // -----------------------------
-    public void addListener(GameListener l) {
-        if (l != null && !listeners.contains(l)) listeners.add(l);
+
+    public void addSnakeMovedListener(SnakeMovedListener l) {
+        if (l != null && !snakeMovedListeners.contains(l)) {
+            snakeMovedListeners.add(l);
+        }
+    }
+
+    public void addRodentEatenListener(RodentEatenListener l) {
+        if (l != null && !rodentEatenListeners.contains(l)) {
+            rodentEatenListeners.add(l);
+        }
+    }
+
+    public void addGameOverListener(GameOverListener l) {
+        if (l != null && !gameOverListeners.contains(l)) {
+            gameOverListeners.add(l);
+        }
     }
 
     private void notifySnakeMoved() {
-        for (GameListener l : listeners) {
+        for (SnakeMovedListener l : snakeMovedListeners) {
             l.onSnakeMoved(snake, snake.getDirection());
         }
     }
 
     private void notifyRodentEaten() {
-        for (GameListener l : listeners) {
+        for (RodentEatenListener l : rodentEatenListeners) {
             l.onRodentEaten(snake);
         }
     }
 
     private void notifyGameOver() {
-        for (GameListener l : listeners) {
+        for (GameOverListener l : gameOverListeners) {
             l.onGameOver();
         }
     }

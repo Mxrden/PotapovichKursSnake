@@ -3,7 +3,7 @@ package Model;
 import Model.GameField.Direction;
 import Model.Snake.Snake;
 
-public interface GameListener {
+public interface SnakeMovedListener {
     /**
      * Вызывается после успешного шага змеи (после обновления позиций).
      * @param snake текущая змея
