@@ -23,4 +23,9 @@ public class Stone extends Unit{
     public UnitType getType() {
         return UnitType.STONE;
     }
+
+    @Override
+    public Obstacle getObstacle() {
+        return Obstacle.STONE;
+    }
 }

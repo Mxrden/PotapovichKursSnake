@@ -40,12 +40,7 @@ public abstract class Rodent extends Unit {
      */
     @Override
     public void onSteppedBy(Snake snake) {
-        boolean expansionCreated = snake.tryAddExpansion(this.getPos());
-        if (expansionCreated) {
-            this.onEaten();
-        } else {
-            this.onEaten();
-        }
+        this.onEaten();
     }
 
     @Override

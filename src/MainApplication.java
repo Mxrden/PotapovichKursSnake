@@ -1,4 +1,5 @@
 import Model.Game;
+import Model.SnakeController;
 import Model.View.GameFieldView;
 
 import javax.swing.*;
@@ -13,7 +14,8 @@ public class MainApplication {
                 3
         );
 
-        GameFieldView view = new GameFieldView(game);
+        SnakeController controller = new SnakeController(game);
+        GameFieldView view = new GameFieldView(game, controller);
 
         JFrame frame = new JFrame("Snake");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

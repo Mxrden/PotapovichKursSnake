@@ -33,6 +33,10 @@ public abstract class Unit {
      */
     public abstract UnitType getType();
 
+    public Obstacle getObstacle() {
+        return null;
+    }
+
     /**
      * Типы юнитов для отрисовки без использования instanceof.
      */
@@ -42,5 +46,14 @@ public abstract class Unit {
         WALL,
         STONE,
         RODENT
+    }
+
+    public enum Obstacle {
+        NONE,
+        BOUNDARY,
+        WALL,
+        STONE,
+        WALL_IGNORED,
+        STONE_IGNORED
     }
 }

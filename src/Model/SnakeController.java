@@ -2,7 +2,6 @@ package Model;
 
 import Model.GameField.Direction;
 import Model.Snake.Snake;
-import Model.View.GameFieldView;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -10,11 +9,9 @@ import java.awt.event.KeyListener;
 public class SnakeController implements KeyListener {
 
     private final Game _game;
-    private final GameFieldView _view;
 
-    public SnakeController(Game game, GameFieldView view) {
+    public SnakeController(Game game) {
         _game = game;
-        _view = view;
     }
 
     @Override

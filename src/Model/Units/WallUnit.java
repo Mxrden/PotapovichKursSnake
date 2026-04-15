@@ -18,4 +18,9 @@ public class WallUnit extends Unit {
     public UnitType getType() {
         return UnitType.WALL;
     }
+
+    @Override
+    public Obstacle getObstacle() {
+        return Obstacle.WALL;
+    }
 }

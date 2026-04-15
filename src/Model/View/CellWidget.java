@@ -39,21 +39,11 @@ public class CellWidget extends JComponent {
 
         UnitType type = unit.getType();
         switch (type) {
-            case SNAKE_HEAD:
-                drawSnakeHead(g, (SnakeSegment) unit);
-                break;
-            case SNAKE_BODY:
-                drawSnakeBody(g, (SnakeSegment) unit);
-                break;
-            case WALL:
-                drawWall(g);
-                break;
-            case STONE:
-                drawStone(g);
-                break;
-            case RODENT:
-                drawRodent(g);
-                break;
+            case SNAKE_HEAD -> drawSnakeHead(g, (SnakeSegment) unit);
+            case SNAKE_BODY -> drawSnakeBody(g, (SnakeSegment) unit);
+            case WALL -> drawWall(g);
+            case STONE -> drawStone(g);
+            case RODENT -> drawRodent(g);
         }
     }
 
@@ -93,27 +83,22 @@ public class CellWidget extends JComponent {
         int cy = SIZE / 2;
         int tip = 6;
         Polygon arrow = new Polygon();
-        switch (d.toString()) {
-            case "N" -> {
-                arrow.addPoint(cx, cy - 10);
-                arrow.addPoint(cx - tip, cy - 2);
-                arrow.addPoint(cx + tip, cy - 2);
-            }
-            case "S" -> {
-                arrow.addPoint(cx, cy + 10);
-                arrow.addPoint(cx - tip, cy + 2);
-                arrow.addPoint(cx + tip, cy + 2);
-            }
-            case "W" -> {
-                arrow.addPoint(cx - 10, cy);
-                arrow.addPoint(cx - 2, cy - tip);
-                arrow.addPoint(cx - 2, cy + tip);
-            }
-            case "E" -> {
-                arrow.addPoint(cx + 10, cy);
-                arrow.addPoint(cx + 2, cy - tip);
-                arrow.addPoint(cx + 2, cy + tip);
-            }
+        if (d.equals(Direction.north())) {
+            arrow.addPoint(cx, cy - 10);
+            arrow.addPoint(cx - tip, cy - 2);
+            arrow.addPoint(cx + tip, cy - 2);
+        } else if (d.equals(Direction.south())) {
+            arrow.addPoint(cx, cy + 10);
+            arrow.addPoint(cx - tip, cy + 2);
+            arrow.addPoint(cx + tip, cy + 2);
+        } else if (d.equals(Direction.west())) {
+            arrow.addPoint(cx - 10, cy);
+            arrow.addPoint(cx - 2, cy - tip);
+            arrow.addPoint(cx - 2, cy + tip);
+        } else if (d.equals(Direction.east())) {
+            arrow.addPoint(cx + 10, cy);
+            arrow.addPoint(cx + 2, cy - tip);
+            arrow.addPoint(cx + 2, cy + tip);
         }
         g.fillPolygon(arrow);
     }

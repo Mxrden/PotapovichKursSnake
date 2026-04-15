@@ -2,7 +2,7 @@ package Model.Snake;
 
 import Model.GameField.Cell;
 import Model.GameField.Direction;
-import Model.Units.*;
+import Model.Units.Unit;
 
 public class SnakeMovement {
 
@@ -20,38 +20,34 @@ public class SnakeMovement {
     public MoveResult computeMove(Cell headCell, boolean ignoreWall, boolean ignoreStone) {
         Cell target = headCell.getNeighbor(direction);
         if (target == null) {
-            return new MoveResult(null, Obstacle.BOUNDARY);
+            return new MoveResult(null, Unit.Obstacle.BOUNDARY);
         }
 
         Unit unit = target.getUnit();
-
-        if (unit instanceof WallUnit) {
-            if (ignoreWall) {
-                return new MoveResult(target, Obstacle.WALL_IGNORED);
-            } else {
-                return new MoveResult(target, Obstacle.WALL); // теперь target не null
-            }
+        if (unit == null) {
+            return new MoveResult(target, Unit.Obstacle.NONE);
         }
 
-        if (unit instanceof Stone) {
-            if (ignoreStone) {
-                return new MoveResult(target, Obstacle.STONE_IGNORED);
-            } else {
-                return new MoveResult(target, Obstacle.STONE); // теперь target не null
-            }
+        Unit.Obstacle obstacle = unit.getObstacle();
+        if (obstacle == null) {
+            return new MoveResult(target, Unit.Obstacle.NONE);
         }
 
-        return new MoveResult(target, Obstacle.NONE);
-    }
+        //
+        if (ignoreWall && obstacle == Unit.Obstacle.WALL) {
+            return new MoveResult(target, Unit.Obstacle.WALL_IGNORED);
+        }
+        if (ignoreStone && obstacle == Unit.Obstacle.STONE) {
+            return new MoveResult(target, Unit.Obstacle.STONE_IGNORED);
+        }
 
-    public enum Obstacle {
-        NONE, BOUNDARY, WALL, STONE, WALL_IGNORED, STONE_IGNORED
+        return new MoveResult(target, obstacle);
     }
 
     public static class MoveResult {
         public final Cell target;
-        public final Obstacle obstacle;
-        public MoveResult(Cell target, Obstacle obstacle) {
+        public final Unit.Obstacle obstacle;
+        public MoveResult(Cell target, Unit.Obstacle obstacle) {
             this.target = target;
             this.obstacle = obstacle;
         }

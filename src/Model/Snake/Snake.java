@@ -123,8 +123,8 @@ public class Snake {
         Cell headCell = body.head().getPos();
         SnakeMovement.MoveResult move = movement.computeMove(headCell, ignoreNextWall, ignoreNextStone);
 
-        boolean wallIgnored = (move.obstacle == SnakeMovement.Obstacle.WALL_IGNORED);
-        boolean stoneIgnored = (move.obstacle == SnakeMovement.Obstacle.STONE_IGNORED);
+        boolean wallIgnored = (move.obstacle == Unit.Obstacle.WALL_IGNORED);
+        boolean stoneIgnored = (move.obstacle == Unit.Obstacle.STONE_IGNORED);
         if (wallIgnored || stoneIgnored) {
             ignoreNextWall = false;
             ignoreNextStone = false;

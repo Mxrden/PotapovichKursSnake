@@ -4,6 +4,7 @@ import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.GameField.GameField;
 import Model.Labirint.Labirint;
+import Model.Units.Rodent;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
 import Model.FactoryRodents.RodentFactory;
@@ -89,10 +90,10 @@ public class Spawner {
         }
     }
 
-    public SimpleRodent spawnRodent() {
+    public Rodent spawnRodent() {
         Cell cell = getRandomFreeCell();
         if (cell == null) return null;
-        return (SimpleRodent) rodentFactory.createRodent(cell);
+        return rodentFactory.createRodent(cell);
     }
 
     public Cell getRandomFreeCell() {

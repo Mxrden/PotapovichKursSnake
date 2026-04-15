@@ -12,7 +12,7 @@ public class GameFieldView extends JPanel {
     private final Game _game;
     private final CellWidget[][] _widgets;
 
-    public GameFieldView(Game game) {
+    public GameFieldView(Game game, SnakeController controller) {
         _game = game;
         int w = game.getField().getWidth();
         int h = game.getField().getHeight();
@@ -29,8 +29,7 @@ public class GameFieldView extends JPanel {
         }
 
         setFocusable(true);
-        addKeyListener(new SnakeController(game, this));
-
+        addKeyListener(controller);
         Timer timer = new Timer(700, e -> {
             if (!_game.isOver()) {
                 _game.step();
