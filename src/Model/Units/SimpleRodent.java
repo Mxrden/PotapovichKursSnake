@@ -24,4 +24,9 @@ public class SimpleRodent extends Rodent {
             this.onEaten();
         }
     }
+
+    @Override
+    public UnitType getType() {
+        return UnitType.RODENT;
+    }
 }

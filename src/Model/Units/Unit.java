@@ -14,7 +14,33 @@ public abstract class Unit {
         _pos = cell;
     }
 
+    /**
+     * Проверяет, может ли юнит быть размещён в указанной клетке.
+     * @param cell клетка для проверки
+     * @return true если размещение возможно
+     */
     public abstract boolean canBelongTo(Cell cell);
 
+    /**
+     * Вызывается когда змея наступает на этот юнит.
+     * @param snake змея которая наступила
+     */
     public abstract void onSteppedBy(Snake snake);
+
+    /**
+     * Возвращает тип юнита для отрисовки.
+     * @return enum типа юнита
+     */
+    public abstract UnitType getType();
+
+    /**
+     * Типы юнитов для отрисовки без использования instanceof.
+     */
+    public enum UnitType {
+        SNAKE_HEAD,
+        SNAKE_BODY,
+        WALL,
+        STONE,
+        RODENT
+    }
 }

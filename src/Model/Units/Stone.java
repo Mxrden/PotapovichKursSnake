@@ -14,4 +14,9 @@ public class Stone extends Unit{
     public void onSteppedBy(Snake snake) {
         snake.kill();
     }
+
+    @Override
+    public UnitType getType() {
+        return UnitType.STONE;
+    }
 }

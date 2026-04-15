@@ -27,15 +27,6 @@ public class GridRegion implements Iterable<Cell> {
         _height = height;
     }
 
-    public GridRegion(Cell center, int deltaUp, int deltaDown, int deltaLeft, int deltaRight) {
-        int top = center.getRow() - deltaUp;
-        int left = center.getCol() - deltaLeft;
-
-        _leftTop = center.getNeighbor(Direction.north()).getNeighbor(Direction.west()); // заменим ниже
-        throw new UnsupportedOperationException("Нужно передать ссылку на поле для вычисления клетки");
-    }
-
-
     // -----------------------------
     // Границы
     // -----------------------------
