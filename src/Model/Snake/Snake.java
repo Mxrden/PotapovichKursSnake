@@ -23,7 +23,7 @@ public class Snake {
     private boolean rodentEaten = false;
     private final java.util.List<TemporaryExpansion> expansions = new java.util.ArrayList<>();
     private Direction requestedDirection = null;
-
+    private Cell rodentCellForExpansion = null;
     public Snake(int minLength, int initialLife,
                  int shrinkInterval, int hpLossInterval, int hungerDamage) {
         this.hunger = new SnakeHunger(minLength, initialLife,
@@ -61,13 +61,22 @@ public class Snake {
     public void increaseGrowthQueue() { hunger.addGrowth(); }
     public boolean wasRodentEaten() { return rodentEaten; }
 
+    public void setRodentCellForExpansion(Cell cell) {
+        this.rodentCellForExpansion = cell;
+    }
+
     public boolean tryAddExpansion(Cell expansionCell) {
         int currentLength = body.size();
         if (currentLength <= 0) return false;
         Direction dir = movement.getDirection();
         Cell headCell = body.head().getPos();
+
+        Cell actualCell = (expansionCell != null) ? expansionCell : rodentCellForExpansion;
+        if (actualCell == null) {
+            return false;
+        }
         try {
-            TemporaryExpansion exp = new TemporaryExpansion(headCell, dir, currentLength);
+            TemporaryExpansion exp = new TemporaryExpansion(actualCell, dir, currentLength);
             expansions.add(exp);
             return true;
         } catch (IllegalStateException e) {
@@ -145,7 +154,9 @@ public class Snake {
 
             if (type == Unit.UnitType.RODENT) {
                 rodentEaten = true;
+                Cell rodentCell = target;
                 unit.onSteppedBy(this);
+                rodentCellForExpansion = rodentCell;
             } else if (wallIgnored || stoneIgnored) {
                 target.extractUnit();
             } else {

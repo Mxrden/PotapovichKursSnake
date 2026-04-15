@@ -102,8 +102,8 @@ class SnakeTest {
 
         assertTrue(snake.tryAddExpansion(targetCell));
 
-        Cell north = headCell.getNeighbor(Direction.north());
-        Cell south = headCell.getNeighbor(Direction.south());
+        Cell north = targetCell.getNeighbor(Direction.north());
+        Cell south = targetCell.getNeighbor(Direction.south());
         assertTrue(north.getUnit() instanceof SnakeSegment);
         assertTrue(south.getUnit() instanceof SnakeSegment);
 
@@ -219,6 +219,11 @@ class SnakeTest {
         Cell north = headCell.getNeighbor(Direction.north());
         assertTrue(north.getUnit() instanceof SnakeSegment);
         snake.setDirection(Direction.north());
+        snake.move();
+        snake.move();
+        snake.setDirection(Direction.west());
+        snake.move();
+        snake.setDirection(Direction.south());
         snake.move();
         assertTrue(snake.isDead());
     }
