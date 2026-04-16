@@ -2,25 +2,25 @@ package Model.Effects;
 
 public abstract class RodentEffect {
 
-    protected final RodentEffectEnum type;
-    private int duration;
+    protected final RodentEffectEnum _type;
+    private int _duration;
 
     public RodentEffect(RodentEffectEnum type) {
-        this.type = type;
-        this.duration = 1;
+        _type = type;
+        _duration = 1;
     }
 
-    public RodentEffectEnum getType() {
-        return type;
+    public RodentEffectEnum get_type() {
+        return _type;
     }
 
-    public int getDuration() {
-        return duration;
+    public int get_duration() {
+        return _duration;
     }
 
     public void decreaseDuration() {
-        if (duration > 0) {
-            duration--;
+        if (_duration > 0) {
+            _duration--;
         }
     }
 }

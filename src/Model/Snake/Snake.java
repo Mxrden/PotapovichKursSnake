@@ -4,80 +4,76 @@ import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Units.Unit;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Класс змеи - основной игровой объект.
  * Реализует принцип единственной ответственности - управление состоянием и движением змеи.
  */
 public class Snake {
 
-    private final SnakeBody body = new SnakeBody();
-    private final SnakeMovement movement = new SnakeMovement();
-    private final SnakeHunger hunger;
+    private final SnakeBody _body = new SnakeBody();
+    private final SnakeMovement _movement = new SnakeMovement();
+    private final SnakeHunger _hunger;
 
-    private boolean ignoreNextWall = false;
-    private boolean ignoreNextStone = false;
-    private boolean rodentEaten = false;
-    private final java.util.List<TemporaryExpansion> expansions = new java.util.ArrayList<>();
-    private Direction requestedDirection = null;
-    private Cell rodentCellForExpansion = null;
+    private boolean _ignoreNextWall = false;
+    private boolean _ignoreNextStone = false;
+    private boolean _rodentEaten = false;
+    private final java.util.List<TemporaryExpansion> _expansions = new java.util.ArrayList<>();
+    private Direction _requestedDirection = null;
+    private Cell _rodentCellForExpansion = null;
     public Snake(int minLength, int initialLife,
                  int shrinkInterval, int hpLossInterval, int hungerDamage) {
-        this.hunger = new SnakeHunger(minLength, initialLife,
+        _hunger = new SnakeHunger(minLength, initialLife,
                 shrinkInterval, hpLossInterval, hungerDamage);
     }
 
-    public void activateIgnoreWall() { ignoreNextWall = true; }
-    public void activateIgnoreStone() { ignoreNextStone = true; }
+    public void activateIgnoreWall() { _ignoreNextWall = true; }
+    public void activateIgnoreStone() { _ignoreNextStone = true; }
 
     public void setDirection(Direction dir) {
         if (dir == null) return;
-        requestedDirection = dir;
+        _requestedDirection = dir;
     }
 
     public void setDirectionImmediate(Direction dir) {
-        movement.setDirection(dir);
+        _movement.set_direction(dir);
     }
 
-    public Direction getDirection() { return movement.getDirection(); }
-    public SnakeBody getBody() { return body; }
+    public Direction getDirection() { return _movement.get_direction(); }
+    public SnakeBody get_body() { return _body; }
     public java.util.List<SnakeSegment> getSegments() {
-        return new java.util.ArrayList<>(body.all());
+        return new java.util.ArrayList<>(_body.all());
     }
-    public SnakeSegment getHead() { return body.head(); }
-    public boolean isDead() { return hunger.isDead(); }
+    public SnakeSegment getHead() { return _body.head(); }
+    public boolean isDead() { return _hunger.isDead(); }
 
     /**
      * Убивает змею и очищает все временные расширения.
      */
     public void kill() {
-        hunger.kill();
-        for (TemporaryExpansion exp : expansions) exp.dispose();
-        expansions.clear();
+        _hunger.kill();
+        for (TemporaryExpansion exp : _expansions) exp.dispose();
+        _expansions.clear();
     }
-    public void increaseGrowthQueue() { hunger.addGrowth(); }
-    public boolean wasRodentEaten() { return rodentEaten; }
+    public void increaseGrowthQueue() { _hunger.addGrowth(); }
+    public boolean wasRodentEaten() { return _rodentEaten; }
 
-    public void setRodentCellForExpansion(Cell cell) {
-        this.rodentCellForExpansion = cell;
+    public void set_rodentCellForExpansion(Cell cell) {
+        _rodentCellForExpansion = cell;
     }
 
     public boolean tryAddExpansion(Cell expansionCell) {
-        int currentLength = body.size();
+        int currentLength = _body.size();
         if (currentLength <= 0) return false;
-        Direction dir = movement.getDirection();
-        Cell headCell = body.head().getPos();
+        Direction dir = _movement.get_direction();
+        Cell headCell = _body.head().getPos();
 
-        Cell actualCell = (expansionCell != null) ? expansionCell : rodentCellForExpansion;
+        Cell actualCell = (expansionCell != null) ? expansionCell : _rodentCellForExpansion;
         if (actualCell == null) {
             return false;
         }
         try {
             TemporaryExpansion exp = new TemporaryExpansion(actualCell, dir, currentLength);
-            expansions.add(exp);
+            _expansions.add(exp);
             return true;
         } catch (IllegalStateException e) {
             return false;
@@ -85,7 +81,7 @@ public class Snake {
     }
 
     private void updateExpansions() {
-        java.util.Iterator<TemporaryExpansion> it = expansions.iterator();
+        java.util.Iterator<TemporaryExpansion> it = _expansions.iterator();
         while (it.hasNext()) {
             TemporaryExpansion exp = it.next();
             boolean alive = exp.tick();
@@ -97,100 +93,100 @@ public class Snake {
     }
 
     private void growFromExpansion() {
-        if (body.isEmpty()) return;
-        SnakeSegment tail = body.tail();
-        Direction tailDirection = tail.getDirection();
+        if (_body.isEmpty()) return;
+        SnakeSegment tail = _body.tail();
+        Direction tailDirection = tail.get_direction();
         if (tailDirection == null) return;
         Cell tailCell = tail.getPos();
         Cell newCell = tailCell.getNeighbor(tailDirection.opposite());
         if (newCell != null && newCell.isEmpty()) {
             SnakeSegment newSegment = new SnakeSegment(false, 1.0f, null);
-            newSegment.setDirection(tailDirection);
+            newSegment.set_direction(tailDirection);
             newCell.putUnit(newSegment);
             newSegment.setPosition(newCell);
-            body.addTail(newSegment);
+            _body.addTail(newSegment);
         } else {
             kill();
         }
     }
 
     public boolean move() {
-        if (requestedDirection != null) {
-            Direction currentDir = movement.getDirection();
-            if (!currentDir.isOpposite(requestedDirection)) {
-                movement.setDirection(requestedDirection);
+        if (_requestedDirection != null) {
+            Direction currentDir = _movement.get_direction();
+            if (!currentDir.isOpposite(_requestedDirection)) {
+                _movement.set_direction(_requestedDirection);
             }
-            requestedDirection = null;
+            _requestedDirection = null;
         }
 
-        rodentEaten = false;
+        _rodentEaten = false;
 
-        if (body.isEmpty()) {
-            hunger.kill();
+        if (_body.isEmpty()) {
+            _hunger.kill();
             return false;
         }
 
-        Cell headCell = body.head().getPos();
-        SnakeMovement.MoveResult move = movement.computeMove(headCell, ignoreNextWall, ignoreNextStone);
+        Cell headCell = _body.head().getPos();
+        SnakeMovement.MoveResult move = _movement.computeMove(headCell, _ignoreNextWall, _ignoreNextStone);
 
         boolean wallIgnored = (move.obstacle == Unit.Obstacle.WALL_IGNORED);
         boolean stoneIgnored = (move.obstacle == Unit.Obstacle.STONE_IGNORED);
         if (wallIgnored || stoneIgnored) {
-            ignoreNextWall = false;
-            ignoreNextStone = false;
+            _ignoreNextWall = false;
+            _ignoreNextStone = false;
         }
 
         if (move.target == null) {
-            hunger.kill();
+            _hunger.kill();
             return false;
         }
 
         Cell target = move.target;
-        boolean grow = hunger.shouldGrow();
+        boolean grow = _hunger.shouldGrow();
 
         if (!target.isEmpty()) {
             Unit unit = target.getUnit();
             Unit.UnitType type = (unit != null) ? unit.getType() : null;
 
             if (type == Unit.UnitType.RODENT) {
-                rodentEaten = true;
+                _rodentEaten = true;
                 Cell rodentCell = target;
                 unit.onSteppedBy(this);
-                rodentCellForExpansion = rodentCell;
+                _rodentCellForExpansion = rodentCell;
             } else if (wallIgnored || stoneIgnored) {
                 target.extractUnit();
             } else {
                 unit.onSteppedBy(this);
-                if (hunger.isDead()) return false;
+                if (_hunger.isDead()) return false;
             }
         }
 
-        boolean success = body.addNewHead(target, movement.getDirection());
+        boolean success = _body.addNewHead(target, _movement.get_direction());
         if (!success) {
-            hunger.kill();
+            _hunger.kill();
             return false;
         }
 
         if (!grow) {
-            Cell tailCell = body.tail().getPos();
-            if (tailCell != null && tailCell.getUnit() == body.tail()) {
+            Cell tailCell = _body.tail().getPos();
+            if (tailCell != null && tailCell.getUnit() == _body.tail()) {
                 tailCell.extractUnit();
             }
-            body.removeTail();
+            _body.removeTail();
         } else {
-            hunger.consumeGrowth();
+            _hunger.consumeGrowth();
         }
 
-        boolean needShrink = hunger.applyHunger(body.size());
+        boolean needShrink = _hunger.applyHunger(_body.size());
         if (needShrink) {
-            Cell tailCell = body.tail().getPos();
-            if (tailCell != null && tailCell.getUnit() == body.tail()) {
+            Cell tailCell = _body.tail().getPos();
+            if (tailCell != null && tailCell.getUnit() == _body.tail()) {
                 tailCell.extractUnit();
             }
-            body.removeTail();
+            _body.removeTail();
         }
 
         updateExpansions();
-        return !hunger.isDead();
+        return !_hunger.isDead();
     }
 }

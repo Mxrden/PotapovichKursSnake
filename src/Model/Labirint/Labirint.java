@@ -7,14 +7,14 @@ import Model.Units.WallUnit;
 
 public class Labirint {
 
-    private final GridRegion region;
+    private final GridRegion _region;
 
     public Labirint(GridRegion region) {
-        this.region = region;
+        _region = region;
     }
 
-    public GridRegion getRegion() {
-        return region;
+    public GridRegion get_region() {
+        return _region;
     }
 
     // ------------------------------------------------------------
@@ -37,7 +37,7 @@ public class Labirint {
     }
 
     private void clearWalls() {
-        for (Cell cell : region) {
+        for (Cell cell : _region) {
             if (cell.getUnit() instanceof WallUnit) {
                 cell.extractUnit();
             }
@@ -50,13 +50,13 @@ public class Labirint {
     public void generateSimple() {
         clearWalls();
 
-        GameField field = region.getField();
-        int top = region.getTop();
-        int left = region.getLeft();
-        int right = region.getRight();
-        int bottom = region.getBottom();
-        int width = region.getWidth();
-        int height = region.getHeight();
+        GameField field = _region.getField();
+        int top = _region.getTop();
+        int left = _region.getLeft();
+        int right = _region.getRight();
+        int bottom = _region.getBottom();
+        int width = _region.getWidth();
+        int height = _region.getHeight();
 
         for (int c = left; c <= right; c++) {
             putWall(field.getCell(top, c));
@@ -97,16 +97,16 @@ public class Labirint {
     // ¬ход и выход (клетки без стен)
     // ------------------------------------------------------------
     public Cell getEntranceCell() {
-        return region.getField().getCell(
-                region.getTop(),
-                region.getLeft() + region.getWidth() / 2
+        return _region.getField().getCell(
+                _region.getTop(),
+                _region.getLeft() + _region.getWidth() / 2
         );
     }
 
     public Cell getExitCell() {
-        return region.getField().getCell(
-                region.getBottom(),
-                region.getLeft() + region.getWidth() / 2
+        return _region.getField().getCell(
+                _region.getBottom(),
+                _region.getLeft() + _region.getWidth() / 2
         );
     }
 }

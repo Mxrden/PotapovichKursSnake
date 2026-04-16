@@ -25,13 +25,13 @@ class GameIntegrationTest {
     @BeforeEach
     void setUp() {
         game = new Game(15, 15, 3);
-        snake = game.getSnake();
-        field = game.getField();
+        snake = game.get_snake();
+        field = game.get_field();
     }
 
     @Test
     void testSnakeCanEatRodentAndGrow() {
-        Rodent rodent = game.getRodent();
+        Rodent rodent = game.get_rodent();
         assertNotNull(rodent);
         Cell rodentCell = rodent.getPos();
         Cell headCell = snake.getHead().getPos();
@@ -40,7 +40,7 @@ class GameIntegrationTest {
         boolean ate = false;
         for (int i = 0; i < maxSteps && !snake.isDead(); i++) {
             game.step();
-            if (game.getRodent() != rodent) {
+            if (game.get_rodent() != rodent) {
                 ate = true;
                 break;
             }
@@ -61,14 +61,14 @@ class GameIntegrationTest {
         Cell bodyCell = field.getCell(5, 4);
         Cell tailCell = field.getCell(5, 3);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
-        head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        head.set_direction(Direction.east());
+        snake.get_body().addHead(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bodyCell);
-        body.setDirection(Direction.east());
-        snake.getBody().addTail(body);
+        body.set_direction(Direction.east());
+        snake.get_body().addTail(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
-        tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        tail.set_direction(Direction.east());
+        snake.get_body().addTail(tail);
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
@@ -90,14 +90,14 @@ class GameIntegrationTest {
         Cell bodyCell = field.getCell(5, 4);
         Cell tailCell = field.getCell(5, 3);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
-        head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        head.set_direction(Direction.east());
+        snake.get_body().addHead(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bodyCell);
-        body.setDirection(Direction.east());
-        snake.getBody().addTail(body);
+        body.set_direction(Direction.east());
+        snake.get_body().addTail(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
-        tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        tail.set_direction(Direction.east());
+        snake.get_body().addTail(tail);
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
@@ -118,11 +118,11 @@ class GameIntegrationTest {
         Cell headCell = field.getCell(5, 5);
         Cell tailCell = field.getCell(5, 6);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
-        head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        head.set_direction(Direction.east());
+        snake.get_body().addHead(head);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
-        tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        tail.set_direction(Direction.east());
+        snake.get_body().addTail(tail);
         headCell.putUnit(head);
         tailCell.putUnit(tail);
         snake.setDirectionImmediate(Direction.east());

@@ -90,10 +90,10 @@ public class GridRegion implements Iterable<Cell> {
 
     public GridRegion intersect(GridRegion other, GameField field) {
 
-        int left = Math.max(this.getLeft(), other.getLeft());
-        int right = Math.min(this.getRight(), other.getRight());
-        int top = Math.max(this.getTop(), other.getTop());
-        int bottom = Math.min(this.getBottom(), other.getBottom());
+        int left = Math.max(getLeft(), other.getLeft());
+        int right = Math.min(getRight(), other.getRight());
+        int top = Math.max(getTop(), other.getTop());
+        int bottom = Math.min(getBottom(), other.getBottom());
 
         if (left > right || top > bottom) {
             return new GridRegion(field.getCell(0, 0), 0, 0);
@@ -111,10 +111,10 @@ public class GridRegion implements Iterable<Cell> {
 
     public GridRegion union(GridRegion other, GameField field) {
 
-        int left = Math.min(this.getLeft(), other.getLeft());
-        int right = Math.max(this.getRight(), other.getRight());
-        int top = Math.min(this.getTop(), other.getTop());
-        int bottom = Math.max(this.getBottom(), other.getBottom());
+        int left = Math.min(getLeft(), other.getLeft());
+        int right = Math.max(getRight(), other.getRight());
+        int top = Math.min(getTop(), other.getTop());
+        int bottom = Math.max(getBottom(), other.getBottom());
 
         return new GridRegion(field.getCell(top, left),
                 right - left + 1,

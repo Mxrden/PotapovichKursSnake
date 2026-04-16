@@ -6,19 +6,19 @@ import Model.Units.Unit;
 
 public class SnakeMovement {
 
-    private Direction direction = Direction.east();
+    private Direction _direction = Direction.east();
 
-    public void setDirection(Direction dir) {
+    public void set_direction(Direction dir) {
         if (dir == null) return;
-        direction = dir;
+        _direction = dir;
     }
 
-    public Direction getDirection() {
-        return direction;
+    public Direction get_direction() {
+        return _direction;
     }
 
     public MoveResult computeMove(Cell headCell, boolean ignoreWall, boolean ignoreStone) {
-        Cell target = headCell.getNeighbor(direction);
+        Cell target = headCell.getNeighbor(_direction);
         if (target == null) {
             return new MoveResult(null, Unit.Obstacle.BOUNDARY);
         }

@@ -16,19 +16,19 @@ import java.util.Random;
 
 public class Game {
 
-    private final GameField field;
-    private final Labirint labirint;
-    private final Snake snake;
-    private final Spawner spawner;
+    private final GameField _field;
+    private final Labirint _labirint;
+    private final Snake _snake;
+    private final Spawner _spawner;
 
-    private Rodent rodent;
-    private boolean isOver = false;
+    private Rodent _rodent;
+    private boolean _isOver = false;
 
 
-    private final List<SnakeMovedListener> snakeMovedListeners = new ArrayList<>();
-    private final List<RodentEatenListener> rodentEatenListeners = new ArrayList<>();
-    private final List<GameOverListener> gameOverListeners = new ArrayList<>();
-    private final Random rnd = new Random();
+    private final List<SnakeMovedListener> _snakeMovedListeners = new ArrayList<>();
+    private final List<RodentEatenListener> _rodentEatenListeners = new ArrayList<>();
+    private final List<GameOverListener> _gameOverListeners = new ArrayList<>();
+    private final Random _rnd = new Random();
 
     public Game(int width, int height, int snakeMinLength) {
         this(width, height, snakeMinLength, new DefaultRodentFactory());
@@ -36,7 +36,7 @@ public class Game {
 
     public Game(int width, int height, int snakeMinLength, RodentFactory rodentFactory) {
 
-        field = new GameField(height, width);
+        _field = new GameField(height, width);
 
         // -----------------------------
         // —À”◊¿…ÕŒ≈ –¿«Ã≈Ÿ≈Õ»≈ À¿¡»–»Õ“¿
@@ -44,21 +44,21 @@ public class Game {
         int labW = width / 2;
         int labH = height / 2;
 
-        int labLeft = rnd.nextInt(width - labW);
-        int labTop  = rnd.nextInt(height - labH);
+        int labLeft = _rnd.nextInt(width - labW);
+        int labTop  = _rnd.nextInt(height - labH);
 
-        Cell labStart = field.getCell(labTop, labLeft);
+        Cell labStart = _field.getCell(labTop, labLeft);
         GridRegion region = new GridRegion(labStart, labW, labH);
 
-        labirint = new Labirint(region);
-        labirint.generateSimple();
+        _labirint = new Labirint(region);
+        _labirint.generateSimple();
 
         // -----------------------------
         // —œ¿¬Õ≈– » «Ã≈ﬂ
         // -----------------------------
-        spawner = new Spawner(field, labirint, rodentFactory);
+        _spawner = new Spawner(_field, _labirint, rodentFactory);
 
-        snake = new Snake(
+        _snake = new Snake(
                 snakeMinLength,
                 8,
                 30,
@@ -66,22 +66,22 @@ public class Game {
                 2
         );
 
-        spawner.placeSnake(snake, snakeMinLength);
+        _spawner.placeSnake(_snake, snakeMinLength);
 
-        rodent = spawner.spawnRodent();
-        spawner.spawnStones(3);
+        _rodent = _spawner.spawnRodent();
+        _spawner.spawnStones(3);
     }
 
     // -----------------------------
     // ÿ‡„ Ë„˚
     // -----------------------------
     public boolean step() {
-        if (isOver) return false;
+        if (_isOver) return false;
 
-        boolean moved = snake.move();
+        boolean moved = _snake.move();
 
-        if (snake.isDead()) {
-            isOver = true;
+        if (_snake.isDead()) {
+            _isOver = true;
             notifyGameOver();
             return false;
         }
@@ -89,10 +89,10 @@ public class Game {
         if (moved) {
             notifySnakeMoved();
 
-            if (snake.wasRodentEaten()) {
-                boolean expansionCreated = snake.tryAddExpansion(null);
+            if (_snake.wasRodentEaten()) {
+                boolean expansionCreated = _snake.tryAddExpansion(null);
 
-                rodent = spawner.spawnRodent();
+                _rodent = _spawner.spawnRodent();
 
                 notifyRodentEaten();
             }
@@ -106,37 +106,37 @@ public class Game {
     // -----------------------------
 
     public void addSnakeMovedListener(SnakeMovedListener l) {
-        if (l != null && !snakeMovedListeners.contains(l)) {
-            snakeMovedListeners.add(l);
+        if (l != null && !_snakeMovedListeners.contains(l)) {
+            _snakeMovedListeners.add(l);
         }
     }
 
     public void addRodentEatenListener(RodentEatenListener l) {
-        if (l != null && !rodentEatenListeners.contains(l)) {
-            rodentEatenListeners.add(l);
+        if (l != null && !_rodentEatenListeners.contains(l)) {
+            _rodentEatenListeners.add(l);
         }
     }
 
     public void addGameOverListener(GameOverListener l) {
-        if (l != null && !gameOverListeners.contains(l)) {
-            gameOverListeners.add(l);
+        if (l != null && !_gameOverListeners.contains(l)) {
+            _gameOverListeners.add(l);
         }
     }
 
     private void notifySnakeMoved() {
-        for (SnakeMovedListener l : snakeMovedListeners) {
-            l.onSnakeMoved(snake, snake.getDirection());
+        for (SnakeMovedListener l : _snakeMovedListeners) {
+            l.onSnakeMoved(_snake, _snake.getDirection());
         }
     }
 
     private void notifyRodentEaten() {
-        for (RodentEatenListener l : rodentEatenListeners) {
-            l.onRodentEaten(snake);
+        for (RodentEatenListener l : _rodentEatenListeners) {
+            l.onRodentEaten(_snake);
         }
     }
 
     private void notifyGameOver() {
-        for (GameOverListener l : gameOverListeners) {
+        for (GameOverListener l : _gameOverListeners) {
             l.onGameOver();
         }
     }
@@ -144,9 +144,9 @@ public class Game {
     // -----------------------------
     // √ÂÚÚÂ˚
     // -----------------------------
-    public boolean isOver() { return isOver; }
-    public GameField getField() { return field; }
-    public Labirint getLabirint() { return labirint; }
-    public Snake getSnake() { return snake; }
-    public Rodent getRodent() { return rodent; }
+    public boolean is_isOver() { return _isOver; }
+    public GameField get_field() { return _field; }
+    public Labirint get_labirint() { return _labirint; }
+    public Snake get_snake() { return _snake; }
+    public Rodent get_rodent() { return _rodent; }
 }

@@ -1,13 +1,13 @@
 package Model.Timer;
 
 public class MillisecondTimer {
-    private java.util.Timer executor;
+    private java.util.Timer _executor;
 
     public void start(long periodMs, Runnable task) {
         stop();
 
-        executor = new java.util.Timer(true);
-        executor.scheduleAtFixedRate(new java.util.TimerTask() {
+        _executor = new java.util.Timer(true);
+        _executor.scheduleAtFixedRate(new java.util.TimerTask() {
             @Override
             public void run(){
                 try {
@@ -21,9 +21,9 @@ public class MillisecondTimer {
 
 
     public void stop() {
-        if (executor!=null) {
-            executor.cancel();
-            executor=null;
+        if (_executor!=null) {
+            _executor.cancel();
+            _executor=null;
         }
     }
 }

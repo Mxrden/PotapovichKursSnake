@@ -2,50 +2,49 @@ package Model.Snake;
 
 public class SnakeHunger {
 
-    private int life;
-    private final int minLength;
-    private int growthQueue = 0;
-    private final int shrinkInterval;
-    private final int hpLossInterval;
-    private final int hungerDamage;
-    private int ticksSinceShrink = 0;
-    private int ticksSinceHpLoss = 0;
+    private int _life;
+    private final int _minLength;
+    private int _growthQueue = 0;
+    private final int _shrinkInterval;
+    private final int _hpLossInterval;
+    private final int _hungerDamage;
+    private int _ticksSinceShrink = 0;
+    private int _ticksSinceHpLoss = 0;
 
-    public SnakeHunger(int minLength, int initialLife,
-                       int shrinkInterval, int hpLossInterval, int hungerDamage) {
-        this.minLength = Math.max(1, minLength);
-        this.life = Math.max(1, initialLife);
-        this.shrinkInterval = Math.max(1, shrinkInterval);
-        this.hpLossInterval = Math.max(1, hpLossInterval);
-        this.hungerDamage = Math.max(1, hungerDamage);
+    public SnakeHunger(int minLength, int initialLife, int shrinkInterval, int hpLossInterval, int hungerDamage) {
+        _minLength = Math.max(1, minLength);
+        _life = Math.max(1, initialLife);
+        _shrinkInterval = Math.max(1, shrinkInterval);
+        _hpLossInterval = Math.max(1, hpLossInterval);
+        _hungerDamage = Math.max(1, hungerDamage);
     }
 
-    public boolean isDead() { return life <= 0; }
-    public void kill() { life = 0; }
+    public boolean isDead() { return _life <= 0; }
+    public void kill() { _life = 0; }
 
     public void addGrowth() {
-        growthQueue++;
-        ticksSinceShrink = 0;
-        ticksSinceHpLoss = 0;
+        _growthQueue++;
+        _ticksSinceShrink = 0;
+        _ticksSinceHpLoss = 0;
     }
 
-    public boolean shouldGrow() { return growthQueue > 0; }
-    public void consumeGrowth() { if (growthQueue > 0) growthQueue--; }
+    public boolean shouldGrow() { return _growthQueue > 0; }
+    public void consumeGrowth() { if (_growthQueue > 0) _growthQueue--; }
 
     public boolean applyHunger(int currentSize) {
-        ticksSinceShrink++;
-        ticksSinceHpLoss++;
+        _ticksSinceShrink++;
+        _ticksSinceHpLoss++;
 
-        if (currentSize > minLength) {
-            if (ticksSinceShrink >= shrinkInterval) {
-                ticksSinceShrink = 0;
+        if (currentSize > _minLength) {
+            if (_ticksSinceShrink >= _shrinkInterval) {
+                _ticksSinceShrink = 0;
                 return true;
             }
         } else {
-            if (ticksSinceHpLoss >= hpLossInterval) {
-                ticksSinceHpLoss = 0;
-                life -= hungerDamage;
-                if (life <= 0) kill();
+            if (_ticksSinceHpLoss >= _hpLossInterval) {
+                _ticksSinceHpLoss = 0;
+                _life -= _hungerDamage;
+                if (_life <= 0) kill();
             }
         }
         return false;

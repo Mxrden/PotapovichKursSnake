@@ -14,14 +14,14 @@ public class GameFieldView extends JPanel {
 
     public GameFieldView(Game game, SnakeController controller) {
         _game = game;
-        int w = game.getField().getWidth();
-        int h = game.getField().getHeight();
+        int w = game.get_field().getWidth();
+        int h = game.get_field().getHeight();
         setLayout(new GridLayout(h, w));
         _widgets = new CellWidget[h][w];
 
         for (int row = 0; row < h; row++) {
             for (int col = 0; col < w; col++) {
-                Cell cell = game.getField().getCell(row, col);
+                Cell cell = game.get_field().getCell(row, col);
                 CellWidget widget = new CellWidget(cell);
                 _widgets[row][col] = widget;
                 add(widget);
@@ -31,7 +31,7 @@ public class GameFieldView extends JPanel {
         setFocusable(true);
         addKeyListener(controller);
         Timer timer = new Timer(700, e -> {
-            if (!_game.isOver()) {
+            if (!_game.is_isOver()) {
                 _game.step();
                 repaint(); // только один вызов
             }

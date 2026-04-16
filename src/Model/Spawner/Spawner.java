@@ -5,7 +5,6 @@ import Model.GameField.Direction;
 import Model.GameField.GameField;
 import Model.Labirint.Labirint;
 import Model.Units.Rodent;
-import Model.Units.SimpleRodent;
 import Model.Units.Stone;
 import Model.FactoryRodents.RodentFactory;
 import Model.Snake.Snake;
@@ -15,22 +14,22 @@ import java.util.Random;
 
 public class Spawner {
 
-    private final GameField field;
-    private final Labirint labirint;
-    private final Random rnd = new Random();
-    private final RodentFactory rodentFactory;
-    private Snake snake;
+    private final GameField _field;
+    private final Labirint _labirint;
+    private final Random _rnd = new Random();
+    private final RodentFactory _rodentFactory;
+    private Snake _snake;
 
     public Spawner(GameField field, Labirint labirint, RodentFactory rodentFactory) {
         if (field == null) throw new IllegalArgumentException("field must not be null");
         if (labirint == null) throw new IllegalArgumentException("labirint must not be null");
         if (rodentFactory == null) throw new IllegalArgumentException("rodentFactory must not be null");
-        this.field = field;
-        this.labirint = labirint;
-        this.rodentFactory = rodentFactory;
+        _field = field;
+        _labirint = labirint;
+        _rodentFactory = rodentFactory;
     }
 
-    public void bindSnake(Snake snake) { this.snake = snake; }
+    public void bindSnake(Snake snake) { _snake = snake; }
 
     public void placeSnake(Snake snake, int minLength) {
         bindSnake(snake);
@@ -58,10 +57,10 @@ public class Spawner {
 
                 // Размещаем голову
                 SnakeSegment head = new SnakeSegment(true, 1.0f, null);
-                head.setDirection(tailDir.opposite());
+                head.set_direction(tailDir.opposite());
                 head.setPosition(headCell);
                 headCell.putUnit(head);
-                snake.getBody().addHead(head);
+                snake.get_body().addHead(head);
 
                 // Размещаем тело
                 Cell prev = headCell;
@@ -70,7 +69,7 @@ public class Spawner {
                     SnakeSegment part = new SnakeSegment(false, 1.0f, null);
                     part.setPosition(next);
                     next.putUnit(part);
-                    snake.getBody().addTail(part);
+                    snake.get_body().addTail(part);
                     prev = next;
                 }
 
@@ -93,7 +92,7 @@ public class Spawner {
     public Rodent spawnRodent() {
         Cell cell = getRandomFreeCell();
         if (cell == null) return null;
-        return rodentFactory.createRodent(cell);
+        return _rodentFactory.createRodent(cell);
     }
 
     public Cell getRandomFreeCell() {
@@ -101,14 +100,14 @@ public class Spawner {
         final int maxAttempts = 2000;
         while (attempts < maxAttempts) {
             attempts++;
-            int row = rnd.nextInt(field.getHeight());
-            int col = rnd.nextInt(field.getWidth());
-            Cell cell = field.getCell(row, col);
+            int row = _rnd.nextInt(_field.getHeight());
+            int col = _rnd.nextInt(_field.getWidth());
+            Cell cell = _field.getCell(row, col);
             if (isCellFree(cell)) return cell;
         }
-        for (int r = 0; r < field.getHeight(); r++) {
-            for (int c = 0; c < field.getWidth(); c++) {
-                Cell cell = field.getCell(r, c);
+        for (int r = 0; r < _field.getHeight(); r++) {
+            for (int c = 0; c < _field.getWidth(); c++) {
+                Cell cell = _field.getCell(r, c);
                 if (isCellFree(cell)) return cell;
             }
         }
@@ -122,17 +121,17 @@ public class Spawner {
             cell = getRandomFreeCell();
         }
         if (cell != null) {
-            rodentFactory.createRodent(cell);
+            _rodentFactory.createRodent(cell);
         }
     }
 
     private boolean isCellFree(Cell cell) {
         if (cell == null) return false;
-        if (cell == labirint.getEntranceCell()) return false;
-        if (cell == labirint.getExitCell()) return false;
+        if (cell == _labirint.getEntranceCell()) return false;
+        if (cell == _labirint.getExitCell()) return false;
         if (!cell.isEmpty()) return false;
-        if (snake != null) {
-            for (SnakeSegment seg : snake.getSegments()) {
+        if (_snake != null) {
+            for (SnakeSegment seg : _snake.getSegments()) {
                 if (seg.getPos() == cell) return false;
             }
         }

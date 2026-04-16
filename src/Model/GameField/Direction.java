@@ -28,15 +28,15 @@ public class Direction {
     // ------------------ Новые направления ---------------------
 
     public Direction clockwise() {
-        return new Direction(this._hours + 3);
+        return new Direction(_hours + 3);
     }
 
     public Direction anticlockwise() {
-        return new Direction(this._hours - 3);
+        return new Direction(_hours - 3);
     }
 
     public Direction opposite() {
-        return new Direction(this._hours + 6);
+        return new Direction(_hours + 6);
     }
 
     public Direction onRight() {
@@ -83,7 +83,7 @@ public class Direction {
     }
 
     public boolean isOpposite(Direction other) {
-        return this.opposite().equals(other);
+        return opposite().equals(other);
     }
 
 }

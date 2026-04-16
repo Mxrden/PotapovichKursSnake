@@ -7,24 +7,24 @@ import java.util.List;
 
 public class SnakeBody {
 
-    private final LinkedList<SnakeSegment> segments = new LinkedList<>();
+    private final LinkedList<SnakeSegment> _segments = new LinkedList<>();
 
-    public SnakeSegment head() { return segments.getFirst(); }
-    public SnakeSegment tail() { return segments.getLast(); }
-    public List<SnakeSegment> all() { return segments; }
-    public int size() { return segments.size(); }
-    public boolean isEmpty() { return segments.isEmpty(); }
+    public SnakeSegment head() { return _segments.getFirst(); }
+    public SnakeSegment tail() { return _segments.getLast(); }
+    public List<SnakeSegment> all() { return _segments; }
+    public int size() { return _segments.size(); }
+    public boolean isEmpty() { return _segments.isEmpty(); }
 
-    public void addHead(SnakeSegment seg) { segments.addFirst(seg); }
-    public void addTail(SnakeSegment seg) { segments.addLast(seg); }
-    public void removeTail() { segments.removeLast(); }
+    public void addHead(SnakeSegment seg) { _segments.addFirst(seg); }
+    public void addTail(SnakeSegment seg) { _segments.addLast(seg); }
+    public void removeTail() { _segments.removeLast(); }
 
     public void updateDirections() {
-        for (int i = 1; i < segments.size(); i++) {
-            SnakeSegment prev = segments.get(i - 1);
-            SnakeSegment curr = segments.get(i);
+        for (int i = 1; i < _segments.size(); i++) {
+            SnakeSegment prev = _segments.get(i - 1);
+            SnakeSegment curr = _segments.get(i);
             Direction dir = curr.getPos().getDirectionTo(prev.getPos());
-            if (dir != null) curr.setDirection(dir);
+            if (dir != null) curr.set_direction(dir);
         }
     }
 
@@ -36,9 +36,9 @@ public class SnakeBody {
      * @return true если успешно
      */
     public boolean addNewHead(Cell targetCell, Direction direction) {
-        head().setHead(false);
+        head().set_isHead(false);
         SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
-        newHead.setDirection(direction);
+        newHead.set_direction(direction);
         if (!targetCell.putUnit(newHead)) {
             return false;
         }

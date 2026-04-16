@@ -9,22 +9,22 @@ import Model.Units.Unit;
  * Реализует принцип единственной ответственности - хранение состояния сегмента.
  */
 public class SnakeSegment extends Unit {
-    private boolean isHead;
-    private float thickness;
-    private Direction direction;
+    private boolean _isHead;
+    private float _thickness;
+    private Direction _direction;
 
     public SnakeSegment(boolean isHead, float thickness, Cell position) {
-        this.isHead = isHead;
-        this.thickness = thickness;
+        _isHead = isHead;
+        _thickness = thickness;
         if (position != null) setPosition(position);
     }
 
-    public boolean isHead() { return isHead; }
-    public void setHead(boolean head) { isHead = head; }
-    public float getThickness() { return thickness; }
-    public void setThickness(float thickness) { this.thickness = thickness; }
-    public Direction getDirection() { return direction; }
-    public void setDirection(Direction dir) { direction = dir; }
+    public boolean is_isHead() { return _isHead; }
+    public void set_isHead(boolean isHead) {_isHead = isHead; }
+    public float get_thickness() { return _thickness; }
+    public void set_thickness(float thickness) {_thickness = thickness; }
+    public Direction get_direction() { return _direction; }
+    public void set_direction(Direction dir) { _direction = dir; }
 
     @Override
     public boolean canBelongTo(Cell cell) { return cell.isEmpty() && cell != null; }
@@ -34,7 +34,7 @@ public class SnakeSegment extends Unit {
 
     @Override
     public UnitType getType() {
-        return isHead ? UnitType.SNAKE_HEAD : UnitType.SNAKE_BODY;
+        return _isHead ? UnitType.SNAKE_HEAD : UnitType.SNAKE_BODY;
     }
 
     @Override
