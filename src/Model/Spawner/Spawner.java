@@ -60,7 +60,7 @@ public class Spawner {
                 head.set_direction(tailDir.opposite());
                 head.setPosition(headCell);
                 headCell.putUnit(head);
-                snake.get_body().addHead(head);
+                snake.getBody().addHead(head);
 
                 // Размещаем тело
                 Cell prev = headCell;
@@ -69,7 +69,7 @@ public class Spawner {
                     SnakeSegment part = new SnakeSegment(false, 1.0f, null);
                     part.setPosition(next);
                     next.putUnit(part);
-                    snake.get_body().addTail(part);
+                    snake.getBody().addTail(part);
                     prev = next;
                 }
 

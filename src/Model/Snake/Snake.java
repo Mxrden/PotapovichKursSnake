@@ -39,7 +39,7 @@ public class Snake {
     }
 
     public Direction getDirection() { return _movement.get_direction(); }
-    public SnakeBody get_body() { return _body; }
+    public SnakeBody getBody() { return _body; }
     public java.util.List<SnakeSegment> getSegments() {
         return new java.util.ArrayList<>(_body.all());
     }
