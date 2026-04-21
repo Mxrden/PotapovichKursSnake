@@ -57,7 +57,7 @@ public class Snake {
     public void increaseGrowthQueue() { _hunger.addGrowth(); }
     public boolean wasRodentEaten() { return _rodentEaten; }
 
-    public void set_rodentCellForExpansion(Cell cell) {
+    public void setRodentCellForExpansion(Cell cell) {
         _rodentCellForExpansion = cell;
     }
 
