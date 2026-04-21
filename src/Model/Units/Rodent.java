@@ -23,7 +23,7 @@ public abstract class Rodent extends Unit {
         return _effect;
     }
 
-    public void onEaten() {
+    private void onEaten() {
         _isActive = false;
 
         Cell cell = getPos();
