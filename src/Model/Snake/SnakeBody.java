@@ -24,7 +24,7 @@ public class SnakeBody {
             SnakeSegment prev = _segments.get(i - 1);
             SnakeSegment curr = _segments.get(i);
             Direction dir = curr.getPos().getDirectionTo(prev.getPos());
-            if (dir != null) curr.set_direction(dir);
+            if (dir != null) curr.setDirection(dir);
         }
     }
 
@@ -36,9 +36,9 @@ public class SnakeBody {
      * @return true если успешно
      */
     public boolean addNewHead(Cell targetCell, Direction direction) {
-        head().set_isHead(false);
+        head().setHead(false);
         SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
-        newHead.set_direction(direction);
+        newHead.setDirection(direction);
         if (!targetCell.putUnit(newHead)) {
             return false;
         }

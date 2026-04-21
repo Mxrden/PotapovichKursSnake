@@ -10,11 +10,11 @@ public abstract class RodentEffect {
         _duration = 1;
     }
 
-    public RodentEffectEnum get_type() {
+    public RodentEffectEnum getType() {
         return _type;
     }
 
-    public int get_duration() {
+    public int getDuration() {
         return _duration;
     }
 

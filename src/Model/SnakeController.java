@@ -16,9 +16,9 @@ public class SnakeController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (_game.is_isOver()) return;
+        if (_game.isOver()) return;
 
-        Snake snake = _game.get_snake();
+        Snake snake = _game.getSnake();
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP -> snake.setDirection(Direction.north());

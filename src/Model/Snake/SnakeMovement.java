@@ -8,12 +8,12 @@ public class SnakeMovement {
 
     private Direction _direction = Direction.east();
 
-    public void set_direction(Direction dir) {
+    public void setDirection(Direction dir) {
         if (dir == null) return;
         _direction = dir;
     }
 
-    public Direction get_direction() {
+    public Direction getDirection() {
         return _direction;
     }
 

@@ -19,8 +19,8 @@ public class TemporaryExpansion {
         _lifetime = lifetimeTicks;
         _left = new SnakeSegment(false, 1.5f, null);
         _right = new SnakeSegment(false, 1.5f, null);
-        _left.set_direction(headDir);
-        _right.set_direction(headDir);
+        _left.setDirection(headDir);
+        _right.setDirection(headDir);
 
         leftCell.putUnit(_left);
         rightCell.putUnit(_right);

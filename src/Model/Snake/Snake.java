@@ -35,10 +35,10 @@ public class Snake {
     }
 
     public void setDirectionImmediate(Direction dir) {
-        _movement.set_direction(dir);
+        _movement.setDirection(dir);
     }
 
-    public Direction getDirection() { return _movement.get_direction(); }
+    public Direction getDirection() { return _movement.getDirection(); }
     public SnakeBody getBody() { return _body; }
     public java.util.List<SnakeSegment> getSegments() {
         return new java.util.ArrayList<>(_body.all());
@@ -64,7 +64,7 @@ public class Snake {
     public boolean tryAddExpansion(Cell expansionCell) {
         int currentLength = _body.size();
         if (currentLength <= 0) return false;
-        Direction dir = _movement.get_direction();
+        Direction dir = _movement.getDirection();
         Cell headCell = _body.head().getPos();
 
         Cell actualCell = (expansionCell != null) ? expansionCell : _rodentCellForExpansion;
@@ -95,13 +95,13 @@ public class Snake {
     private void growFromExpansion() {
         if (_body.isEmpty()) return;
         SnakeSegment tail = _body.tail();
-        Direction tailDirection = tail.get_direction();
+        Direction tailDirection = tail.getDirection();
         if (tailDirection == null) return;
         Cell tailCell = tail.getPos();
         Cell newCell = tailCell.getNeighbor(tailDirection.opposite());
         if (newCell != null && newCell.isEmpty()) {
             SnakeSegment newSegment = new SnakeSegment(false, 1.0f, null);
-            newSegment.set_direction(tailDirection);
+            newSegment.setDirection(tailDirection);
             newCell.putUnit(newSegment);
             newSegment.setPosition(newCell);
             _body.addTail(newSegment);
@@ -112,9 +112,9 @@ public class Snake {
 
     public boolean move() {
         if (_requestedDirection != null) {
-            Direction currentDir = _movement.get_direction();
+            Direction currentDir = _movement.getDirection();
             if (!currentDir.isOpposite(_requestedDirection)) {
-                _movement.set_direction(_requestedDirection);
+                _movement.setDirection(_requestedDirection);
             }
             _requestedDirection = null;
         }
@@ -161,7 +161,7 @@ public class Snake {
             }
         }
 
-        boolean success = _body.addNewHead(target, _movement.get_direction());
+        boolean success = _body.addNewHead(target, _movement.getDirection());
         if (!success) {
             _hunger.kill();
             return false;

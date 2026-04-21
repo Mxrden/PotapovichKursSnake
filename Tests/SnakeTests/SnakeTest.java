@@ -31,13 +31,13 @@ class SnakeTest {
         bodyCell = field.getCell(5, 4);
         tailCell = field.getCell(5, 3);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
-        head.set_direction(Direction.east());
+        head.setDirection(Direction.east());
         snake.getBody().addHead(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bodyCell);
-        body.set_direction(Direction.east());
+        body.setDirection(Direction.east());
         snake.getBody().addTail(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
-        tail.set_direction(Direction.east());
+        tail.setDirection(Direction.east());
         snake.getBody().addTail(tail);
         headCell.putUnit(head);
         bodyCell.putUnit(body);
@@ -59,7 +59,7 @@ class SnakeTest {
 
         assertEquals(5, snake.getSegments().get(1).getPos().getRow());
         assertEquals(5, snake.getSegments().get(1).getPos().getCol());
-        assertFalse(((SnakeSegment) headCell.getUnit()).is_isHead());
+        assertFalse(((SnakeSegment) headCell.getUnit()).isHead());
 
         assertEquals(5, snake.getSegments().get(2).getPos().getRow());
         assertEquals(4, snake.getSegments().get(2).getPos().getCol());
@@ -90,7 +90,7 @@ class SnakeTest {
         snake.setDirection(Direction.west());
         Cell extra = field.getCell(5, 6);
         SnakeSegment extraSeg = new SnakeSegment(false, 1.0f, extra);
-        extraSeg.set_direction(Direction.east());
+        extraSeg.setDirection(Direction.east());
         snake.getBody().addHead(extraSeg);
     }
 
@@ -110,7 +110,7 @@ class SnakeTest {
         snake.move();
         assertTrue(snake.wasRodentEaten());
         assertTrue(targetCell.getUnit() instanceof SnakeSegment);
-        assertTrue(((SnakeSegment) targetCell.getUnit()).is_isHead());
+        assertTrue(((SnakeSegment) targetCell.getUnit()).isHead());
     }
 
     @Test
@@ -134,13 +134,13 @@ class SnakeTest {
         Cell tCell = bigField.getCell(center, center - 2);
 
         SnakeSegment head = new SnakeSegment(true, 1.0f, hCell);
-        head.set_direction(Direction.east());
+        head.setDirection(Direction.east());
         bigSnake.getBody().addHead(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bCell);
-        body.set_direction(Direction.east());
+        body.setDirection(Direction.east());
         bigSnake.getBody().addTail(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tCell);
-        tail.set_direction(Direction.east());
+        tail.setDirection(Direction.east());
         bigSnake.getBody().addTail(tail);
         hCell.putUnit(head);
         bCell.putUnit(body);
@@ -182,10 +182,10 @@ class SnakeTest {
         Cell headCell = field.getCell(5, 5);
         Cell tailCell = field.getCell(5, 6);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
-        head.set_direction(Direction.east());
+        head.setDirection(Direction.east());
         snake.getBody().addHead(head);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
-        tail.set_direction(Direction.east());
+        tail.setDirection(Direction.east());
         snake.getBody().addTail(tail);
         headCell.putUnit(head);
         tailCell.putUnit(tail);

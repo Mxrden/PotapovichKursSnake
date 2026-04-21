@@ -144,9 +144,9 @@ public class Game {
     // -----------------------------
     // Геттеры
     // -----------------------------
-    public boolean is_isOver() { return _isOver; }
-    public GameField get_field() { return _field; }
-    public Labirint get_labirint() { return _labirint; }
-    public Snake get_snake() { return _snake; }
-    public Rodent get_rodent() { return _rodent; }
+    public boolean isOver() { return _isOver; }
+    public GameField getField() { return _field; }
+    public Labirint getLabirint() { return _labirint; }
+    public Snake getSnake() { return _snake; }
+    public Rodent getRodent() { return _rodent; }
 }

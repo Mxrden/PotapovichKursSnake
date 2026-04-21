@@ -19,12 +19,12 @@ public class SnakeSegment extends Unit {
         if (position != null) setPosition(position);
     }
 
-    public boolean is_isHead() { return _isHead; }
-    public void set_isHead(boolean isHead) {_isHead = isHead; }
-    public float get_thickness() { return _thickness; }
-    public void set_thickness(float thickness) {_thickness = thickness; }
-    public Direction get_direction() { return _direction; }
-    public void set_direction(Direction dir) { _direction = dir; }
+    public boolean isHead() { return _isHead; }
+    public void setHead(boolean isHead) {_isHead = isHead; }
+    public float getThickness() { return _thickness; }
+    public void setThickness(float thickness) {_thickness = thickness; }
+    public Direction getDirection() { return _direction; }
+    public void setDirection(Direction dir) { _direction = dir; }
 
     @Override
     public boolean canBelongTo(Cell cell) { return cell.isEmpty() && cell != null; }

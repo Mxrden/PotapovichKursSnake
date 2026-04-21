@@ -57,7 +57,7 @@ public class Spawner {
 
                 // Размещаем голову
                 SnakeSegment head = new SnakeSegment(true, 1.0f, null);
-                head.set_direction(tailDir.opposite());
+                head.setDirection(tailDir.opposite());
                 head.setPosition(headCell);
                 headCell.putUnit(head);
                 snake.getBody().addHead(head);

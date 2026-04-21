@@ -26,13 +26,13 @@ class SnakeBodyTest {
         }
 
         SnakeSegment head = new SnakeSegment(true, 1.0f, cells[2]);
-        head.set_direction(Direction.east());
+        head.setDirection(Direction.east());
         body.addHead(head);
         SnakeSegment body1 = new SnakeSegment(false, 1.0f, cells[1]);
-        body1.set_direction(Direction.east());
+        body1.setDirection(Direction.east());
         body.addTail(body1);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, cells[0]);
-        tail.set_direction(Direction.east());
+        tail.setDirection(Direction.east());
         body.addTail(tail);
     }
 
@@ -46,9 +46,9 @@ class SnakeBodyTest {
     @Test
     void testUpdateDirections() {
         body.updateDirections();
-        assertEquals(Direction.east(), body.head().get_direction());
-        assertEquals(Direction.east(), body.all().get(1).get_direction());
-        assertEquals(Direction.east(), body.tail().get_direction());
+        assertEquals(Direction.east(), body.head().getDirection());
+        assertEquals(Direction.east(), body.all().get(1).getDirection());
+        assertEquals(Direction.east(), body.tail().getDirection());
     }
 
     @Test
@@ -61,11 +61,11 @@ class SnakeBodyTest {
         assertEquals(newHeadCell, body.head().getPos());
         assertEquals(cells[2], body.all().get(1).getPos());
         assertEquals(cells[0], body.tail().getPos()); // хвост остался старый
-        assertTrue(body.head().is_isHead());
-        assertFalse(body.all().get(1).is_isHead());
-        assertEquals(Direction.east(), body.head().get_direction());
-        assertEquals(Direction.east(), body.all().get(1).get_direction());
-        assertEquals(Direction.east(), body.tail().get_direction());
+        assertTrue(body.head().isHead());
+        assertFalse(body.all().get(1).isHead());
+        assertEquals(Direction.east(), body.head().getDirection());
+        assertEquals(Direction.east(), body.all().get(1).getDirection());
+        assertEquals(Direction.east(), body.tail().getDirection());
     }
 
     @Test

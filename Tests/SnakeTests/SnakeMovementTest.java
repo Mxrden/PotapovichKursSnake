@@ -23,7 +23,7 @@ class SnakeMovementTest {
     @BeforeEach
     void setUp() {
         movement = new SnakeMovement();
-        movement.set_direction(Direction.east());
+        movement.setDirection(Direction.east());
     }
 
     @Test
@@ -88,8 +88,8 @@ class SnakeMovementTest {
 
     @Test
     void testSetDirectionValid() {
-        movement.set_direction(Direction.north());
-        assertEquals(Direction.north(), movement.get_direction());
+        movement.setDirection(Direction.north());
+        assertEquals(Direction.north(), movement.getDirection());
     }
 
 }

@@ -37,7 +37,7 @@ class TemporaryExpansionTest {
         Cell south = headCell.getNeighbor(Direction.south());
         assertTrue(north.getUnit() instanceof SnakeSegment);
         assertTrue(south.getUnit() instanceof SnakeSegment);
-        assertEquals(1.5f, ((SnakeSegment) north.getUnit()).get_thickness());
+        assertEquals(1.5f, ((SnakeSegment) north.getUnit()).getThickness());
     }
 
     @Test

@@ -14,15 +14,15 @@ class SnakeIntegrationTest {
     @BeforeEach
     void setUp() {
         game = new Game(20, 20, 3);
-        snake = game.get_snake();
+        snake = game.getSnake();
     }
 
     @Test
     void testSnakeMovesAndEats() {
-        assertNotNull(game.get_rodent());
+        assertNotNull(game.getRodent());
         for (int i = 0; i < 100; i++) {
             boolean moved = game.step();
-            if (game.is_isOver()) break;
+            if (game.isOver()) break;
             assertTrue(moved);
         }
     }
