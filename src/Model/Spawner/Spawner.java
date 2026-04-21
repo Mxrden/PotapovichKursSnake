@@ -114,17 +114,6 @@ public class Spawner {
         return null;
     }
 
-    public void respawnRodentAtSamePlace(Rodent oldRodent) {
-        if (oldRodent == null) return;
-        Cell cell = oldRodent.getPos();
-        if (cell == null || !cell.isEmpty()) {
-            cell = getRandomFreeCell();
-        }
-        if (cell != null) {
-            _rodentFactory.createRodent(cell);
-        }
-    }
-
     private boolean isCellFree(Cell cell) {
         if (cell == null) return false;
         if (cell == _labirint.getEntranceCell()) return false;
