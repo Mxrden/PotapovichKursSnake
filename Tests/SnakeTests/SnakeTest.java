@@ -8,7 +8,7 @@ import Model.Snake.SnakeSegment;
 import Model.Units.Rodent;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
-import Model.Units.WallUnit;
+import Model.Units.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,7 +72,7 @@ class SnakeTest {
     @Test
     void testMoveIntoWallDies() {
         targetCell = field.getCell(5, 6);
-        targetCell.putUnit(new WallUnit());
+        targetCell.putUnit(new Wall());
         snake.move();
         assertTrue(snake.isDead());
     }

@@ -3,7 +3,7 @@ package Model.Units;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
 
-public class WallUnit extends Unit {
+public class Wall extends Unit {
     @Override
     public boolean canBelongTo(Cell cell) {
         return cell != null && cell.isEmpty();

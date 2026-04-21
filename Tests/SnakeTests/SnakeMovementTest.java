@@ -37,7 +37,7 @@ class SnakeMovementTest {
     @Test
     void testComputeMoveWall() {
         when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        WallUnit wall = mock(WallUnit.class);
+        Wall wall = mock(Wall.class);
         when(targetCell.getUnit()).thenReturn(wall);
         SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
         assertEquals(Unit.Obstacle.WALL, result.obstacle);
@@ -48,7 +48,7 @@ class SnakeMovementTest {
     @Test
     void testComputeMoveWallIgnored() {
         when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        WallUnit wall = mock(WallUnit.class);
+        Wall wall = mock(Wall.class);
         when(targetCell.getUnit()).thenReturn(wall);
         SnakeMovement.MoveResult result = movement.computeMove(headCell, true, false);
         assertEquals(Unit.Obstacle.WALL_IGNORED, result.obstacle);

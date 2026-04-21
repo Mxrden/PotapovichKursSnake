@@ -3,6 +3,7 @@ package Model.Snake;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Units.Unit;
+import Model.Units.Wall;
 
 public class SnakeMovement {
 
@@ -30,7 +31,7 @@ public class SnakeMovement {
 
         Unit.Obstacle obstacle = unit.getObstacle();
 
-        if (unit instanceof Model.Units.WallUnit) {
+        if (unit instanceof Wall) {
             if (ignoreWall) {
                 return new MoveResult(target, Unit.Obstacle.WALL_IGNORED);
             }

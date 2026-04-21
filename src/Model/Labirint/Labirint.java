@@ -3,7 +3,7 @@ package Model.Labirint;
 import Model.GameField.Cell;
 import Model.GameField.GameField;
 import Model.GameField.GridRegion;
-import Model.Units.WallUnit;
+import Model.Units.Wall;
 
 public class Labirint {
 
@@ -22,12 +22,12 @@ public class Labirint {
     // ------------------------------------------------------------
     private void putWall(Cell cell) {
         if (cell != null && cell.isEmpty() && !isEntranceOrExit(cell)) {
-            cell.putUnit(new WallUnit());
+            cell.putUnit(new Wall());
         }
     }
 
     private void removeWall(Cell cell) {
-        if (cell != null && cell.getUnit() instanceof WallUnit) {
+        if (cell != null && cell.getUnit() instanceof Wall) {
             cell.extractUnit();
         }
     }
@@ -38,7 +38,7 @@ public class Labirint {
 
     private void clearWalls() {
         for (Cell cell : _region) {
-            if (cell.getUnit() instanceof WallUnit) {
+            if (cell.getUnit() instanceof Wall) {
                 cell.extractUnit();
             }
         }

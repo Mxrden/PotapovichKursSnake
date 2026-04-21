@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import Model.GameField.GameField;
-import Model.Units.WallUnit;
+import Model.Units.Wall;
 import Model.Units.Stone;
 
 /**
@@ -52,7 +52,7 @@ class GameIntegrationTest {
     void testSnakeDiesWhenHittingWall() {
         GameField field = new GameField(10, 10);
         for (Cell cell : field) {
-            if (cell.getUnit() instanceof WallUnit) {
+            if (cell.getUnit() instanceof Wall) {
                 cell.extractUnit();
             }
         }
@@ -74,7 +74,7 @@ class GameIntegrationTest {
         tailCell.putUnit(tail);
         snake.setDirectionImmediate(Direction.east());
         Cell target = field.getCell(5, 6);
-        target.putUnit(new WallUnit());
+        target.putUnit(new Wall());
         snake.move();
         assertTrue(snake.isDead());
     }
@@ -83,7 +83,7 @@ class GameIntegrationTest {
     void testSnakeDiesWhenHittingStone() {
         GameField field = new GameField(10, 10);
         for (Cell cell : field) {
-            if (cell.getUnit() instanceof WallUnit) cell.extractUnit();
+            if (cell.getUnit() instanceof Wall) cell.extractUnit();
         }
         Snake snake = new Snake(3, 10, 30, 4, 2);
         Cell headCell = field.getCell(5, 5);
@@ -112,7 +112,7 @@ class GameIntegrationTest {
     void testSnakeDiesWhenHittingOwnBody() {
         GameField field = new GameField(10, 10);
         for (Cell cell : field) {
-            if (cell.getUnit() instanceof WallUnit) cell.extractUnit();
+            if (cell.getUnit() instanceof Wall) cell.extractUnit();
         }
         Snake snake = new Snake(2, 10, 30, 4, 2);
         Cell headCell = field.getCell(5, 5);

@@ -6,7 +6,7 @@ import Model.GameField.GameField;
 import Model.Snake.Snake;
 import Model.Snake.SnakeSegment;
 import Model.Snake.TemporaryExpansion;
-import Model.Units.WallUnit;
+import Model.Units.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,14 +43,14 @@ class TemporaryExpansionTest {
     @Test
     void testExpansionCreationFailsWhenNorthBlocked() {
         Cell north = headCell.getNeighbor(Direction.north());
-        north.putUnit(new WallUnit());
+        north.putUnit(new Wall());
         assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(headCell, dir, 5));
     }
 
     @Test
     void testExpansionCreationFailsWhenSouthBlocked() {
         Cell south = headCell.getNeighbor(Direction.south());
-        south.putUnit(new WallUnit());
+        south.putUnit(new Wall());
         assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(headCell, dir, 5));
     }
 

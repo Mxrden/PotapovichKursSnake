@@ -4,7 +4,7 @@ import Model.GameField.Cell;
 import Model.GameField.GameField;
 import Model.GameField.GridRegion;
 import Model.Labirint.Labirint;
-import Model.Units.WallUnit;
+import Model.Units.Wall;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,8 +21,8 @@ class LabirintTest {
         Cell entrance = lab.getEntranceCell();
         Cell exit = lab.getExitCell();
 
-        assertFalse(entrance.getUnit() instanceof WallUnit, "Entrance should not be a wall");
-        assertFalse(exit.getUnit() instanceof WallUnit, "Exit should not be a wall");
+        assertFalse(entrance.getUnit() instanceof Wall, "Entrance should not be a wall");
+        assertFalse(exit.getUnit() instanceof Wall, "Exit should not be a wall");
     }
 
     @Test
@@ -35,7 +35,7 @@ class LabirintTest {
 
         boolean hasWalls = false;
         for (Cell cell : region) {
-            if (cell.getUnit() instanceof WallUnit) {
+            if (cell.getUnit() instanceof Wall) {
                 hasWalls = true;
                 break;
             }
