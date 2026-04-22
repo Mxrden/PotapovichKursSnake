@@ -1,6 +1,6 @@
 import Model.Game;
 import Model.SnakeController;
-import Model.View.GameFieldView;
+import Model.View.SnakeView;
 
 import javax.swing.*;
 
@@ -15,7 +15,7 @@ public class MainApplication {
         );
 
         SnakeController controller = new SnakeController(game);
-        GameFieldView view = new GameFieldView(game, controller);
+        SnakeView view = new SnakeView(game, controller);
 
         JFrame frame = new JFrame("Snake");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,6 +25,6 @@ public class MainApplication {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        view.requestFocusInWindow();
+        view.requestGameFocus();
     }
 }

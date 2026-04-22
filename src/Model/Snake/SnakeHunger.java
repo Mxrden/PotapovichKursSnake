@@ -19,6 +19,7 @@ public class SnakeHunger {
     }
 
     public boolean isDead() { return _life <= 0; }
+    public int getLife() { return _life; }
     public void kill() { _life = 0; }
 
     public void resetHunger() {

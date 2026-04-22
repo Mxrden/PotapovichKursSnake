@@ -16,13 +16,19 @@ import java.util.Random;
 
 public class Game {
 
-    private final GameField _field;
-    private final Labirint _labirint;
-    private final Snake _snake;
-    private final Spawner _spawner;
+    private final int _width;
+    private final int _height;
+    private final int _snakeMinLength;
+    private final RodentFactory _rodentFactory;
+
+    private GameField _field;
+    private Labirint _labirint;
+    private Snake _snake;
+    private Spawner _spawner;
 
     private Rodent _rodent;
     private boolean _isOver = false;
+    private int _score = 0;
 
     private final List<SnakeMovedListener> _snakeMovedListeners = new ArrayList<>();
     private final List<RodentEatenListener> _rodentEatenListeners = new ArrayList<>();
@@ -34,13 +40,22 @@ public class Game {
     }
 
     public Game(int width, int height, int snakeMinLength, RodentFactory rodentFactory) {
-        _field = new GameField(height, width);
+        _width = width;
+        _height = height;
+        _snakeMinLength = snakeMinLength;
+        _rodentFactory = rodentFactory;
 
-        int labW = width / 2;
-        int labH = height / 2;
+        initializeGameState();
+    }
 
-        int labLeft = _rnd.nextInt(width - labW);
-        int labTop = _rnd.nextInt(height - labH);
+    private void initializeGameState() {
+        _field = new GameField(_height, _width);
+
+        int labW = _width / 2;
+        int labH = _height / 2;
+
+        int labLeft = _rnd.nextInt(_width - labW);
+        int labTop = _rnd.nextInt(_height - labH);
 
         Cell labStart = _field.getCell(labTop, labLeft);
         GridRegion region = new GridRegion(labStart, labW, labH);
@@ -48,20 +63,22 @@ public class Game {
         _labirint = new Labirint(region);
         _labirint.generateSimple();
 
-        _spawner = new Spawner(_field, _labirint, rodentFactory);
+        _spawner = new Spawner(_field, _labirint, _rodentFactory);
 
         _snake = new Snake(
-                snakeMinLength,
-                generateInitialSnakeLife(width, height),
+                _snakeMinLength,
+                generateInitialSnakeLife(_width, _height),
                 30,
-                4,
-                2
+                8,
+                1
         );
 
-        _spawner.placeSnake(_snake, snakeMinLength);
+        _spawner.placeSnake(_snake, _snakeMinLength);
 
         _rodent = _spawner.spawnRodent();
         _spawner.spawnStones(3);
+        _isOver = false;
+        _score = 0;
     }
 
     private int generateInitialSnakeLife(int width, int height) {
@@ -75,6 +92,10 @@ public class Game {
         }
 
         return lowerBound + _rnd.nextInt(upperBound - lowerBound + 1);
+    }
+
+    public void restart() {
+        initializeGameState();
     }
 
     public boolean step() {
@@ -94,6 +115,7 @@ public class Game {
             if (_snake.wasRodentEaten()) {
                 _snake.tryAddExpansion(null);
                 _rodent = _spawner.spawnRodent();
+                _score++;
                 notifyRodentEaten();
             }
         }
@@ -107,16 +129,28 @@ public class Game {
         }
     }
 
+    public void removeSnakeMovedListener(SnakeMovedListener l) {
+        _snakeMovedListeners.remove(l);
+    }
+
     public void addRodentEatenListener(RodentEatenListener l) {
         if (l != null && !_rodentEatenListeners.contains(l)) {
             _rodentEatenListeners.add(l);
         }
     }
 
+    public void removeRodentEatenListener(RodentEatenListener l) {
+        _rodentEatenListeners.remove(l);
+    }
+
     public void addGameOverListener(GameOverListener l) {
         if (l != null && !_gameOverListeners.contains(l)) {
             _gameOverListeners.add(l);
         }
+    }
+
+    public void removeGameOverListener(GameOverListener l) {
+        _gameOverListeners.remove(l);
     }
 
     private void notifySnakeMoved() {
@@ -138,6 +172,7 @@ public class Game {
     }
 
     public boolean isOver() { return _isOver; }
+    public int getScore() { return _score; }
     public GameField getField() { return _field; }
     public Labirint getLabirint() { return _labirint; }
     public Snake getSnake() { return _snake; }

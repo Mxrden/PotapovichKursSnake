@@ -54,6 +54,7 @@ public class Snake {
     public Direction getDirection() { return _movement.getDirection(); }
     public boolean isBodyEmpty() { return _body.isEmpty(); }
     public int getBodySize() { return _body.size(); }
+    public int getLife() { return _hunger.getLife(); }
     public java.util.List<SnakeSegment> getSegments() {
         return new java.util.ArrayList<>(_body.all());
     }
@@ -160,14 +161,8 @@ public class Snake {
     public boolean tryAddExpansion(Cell expansionCell) {
         int currentLength = _body.size();
         if (currentLength <= 0) return false;
-        Direction dir = _movement.getDirection();
-
-        Cell actualCell = (expansionCell != null) ? expansionCell : _rodentCellForExpansion;
-        if (actualCell == null) {
-            return false;
-        }
         try {
-            TemporaryExpansion exp = new TemporaryExpansion(actualCell, dir, currentLength);
+            TemporaryExpansion exp = new TemporaryExpansion(this, currentLength);
             _expansions.add(exp);
             return true;
         } catch (IllegalStateException e) {

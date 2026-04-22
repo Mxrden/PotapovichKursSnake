@@ -144,15 +144,19 @@ class SnakeTest {
 
         assertTrue(snake.tryAddExpansion(targetCell));
 
-        Cell north = targetCell.getNeighbor(Direction.north());
-        Cell south = targetCell.getNeighbor(Direction.south());
+        Cell north = headCell.getNeighbor(Direction.north());
+        Cell south = headCell.getNeighbor(Direction.south());
         assertTrue(north.getUnit() instanceof SnakeSegment);
         assertTrue(south.getUnit() instanceof SnakeSegment);
 
         snake.move();
         assertTrue(snake.wasRodentEaten());
-        assertTrue(targetCell.getUnit() instanceof SnakeSegment);
-        assertTrue(((SnakeSegment) targetCell.getUnit()).isHead());
+
+        Cell middleCell = snake.getSegments().get(1).getPos();
+        Cell middleNorth = middleCell.getNeighbor(Direction.north());
+        Cell middleSouth = middleCell.getNeighbor(Direction.south());
+        assertTrue(middleNorth.getUnit() instanceof SnakeSegment);
+        assertTrue(middleSouth.getUnit() instanceof SnakeSegment);
     }
 
     @Test
@@ -255,21 +259,28 @@ class SnakeTest {
     }
 
     @Test
-    void testDieWhenHittingExpansionSegment() {
+    void testExpansionMovesWithSnake() {
         targetCell = field.getCell(5, 6);
         Rodent rodent = new SimpleRodent();
         targetCell.putUnit(rodent);
         assertTrue(snake.tryAddExpansion(targetCell));
-        Cell northOfRodent = targetCell.getNeighbor(Direction.north());
-        Cell southOfRodent = targetCell.getNeighbor(Direction.south());
-        assertTrue(northOfRodent.getUnit() instanceof SnakeSegment);
-        assertTrue(southOfRodent.getUnit() instanceof SnakeSegment);
+
+        Cell northOfHead = headCell.getNeighbor(Direction.north());
+        Cell southOfHead = headCell.getNeighbor(Direction.south());
+        assertTrue(northOfHead.getUnit() instanceof SnakeSegment);
+        assertTrue(southOfHead.getUnit() instanceof SnakeSegment);
 
         snake.move();
+
+        Cell middleCell = snake.getSegments().get(1).getPos();
+        Cell middleNorth = middleCell.getNeighbor(Direction.north());
+        Cell middleSouth = middleCell.getNeighbor(Direction.south());
+        assertTrue(middleNorth.getUnit() instanceof SnakeSegment);
+        assertTrue(middleSouth.getUnit() instanceof SnakeSegment);
 
         snake.setDirection(Direction.north());
         snake.move();
 
-        assertTrue(snake.isDead());
+        assertFalse(snake.isDead());
     }
 }
