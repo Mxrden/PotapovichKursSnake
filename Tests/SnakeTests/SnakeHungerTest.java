@@ -1,6 +1,7 @@
 package SnakeTests;
 
 import Model.Snake.SnakeHunger;
+import Model.Snake.SnakeGrowthQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SnakeHungerTest {
 
     private SnakeHunger hunger;
+    private SnakeGrowthQueue growthQueue;
     private static final int MIN_LEN = 3;
     private static final int INIT_LIFE = 10;
     private static final int SHRINK_INTERVAL = 5;
@@ -17,31 +19,32 @@ class SnakeHungerTest {
     @BeforeEach
     void setUp() {
         hunger = new SnakeHunger(MIN_LEN, INIT_LIFE, SHRINK_INTERVAL, HP_LOSS_INTERVAL, HUNGER_DAMAGE);
+        growthQueue = new SnakeGrowthQueue();
     }
 
     @Test
     void testInitialState() {
         assertFalse(hunger.isDead());
-        assertFalse(hunger.shouldGrow());
+        assertTrue(growthQueue.isEmpty());
     }
 
     @Test
     void testAddAndConsumeGrowth() {
-        hunger.addGrowth();
-        assertTrue(hunger.shouldGrow());
-        hunger.consumeGrowth();
-        assertFalse(hunger.shouldGrow());
+        growthQueue.addGrowth();
+        assertTrue(growthQueue.shouldGrow());
+        growthQueue.consumeGrowth();
+        assertFalse(growthQueue.shouldGrow());
     }
 
     @Test
     void testMultipleGrowths() {
-        hunger.addGrowth();
-        hunger.addGrowth();
-        assertTrue(hunger.shouldGrow());
-        hunger.consumeGrowth();
-        assertTrue(hunger.shouldGrow());
-        hunger.consumeGrowth();
-        assertFalse(hunger.shouldGrow());
+        growthQueue.addGrowth();
+        growthQueue.addGrowth();
+        assertTrue(growthQueue.shouldGrow());
+        growthQueue.consumeGrowth();
+        assertTrue(growthQueue.shouldGrow());
+        growthQueue.consumeGrowth();
+        assertFalse(growthQueue.shouldGrow());
     }
 
     @Test
@@ -79,7 +82,7 @@ class SnakeHungerTest {
     void testGrowthResetsTicks() {
         hunger.applyHunger(5);
         hunger.applyHunger(5);
-        hunger.addGrowth();
+        hunger.resetHunger();
         boolean needShrink = hunger.applyHunger(5);
         assertFalse(needShrink);
     }
@@ -90,8 +93,8 @@ class SnakeHungerTest {
         hunger.applyHunger(5);
         hunger.resetHunger();
 
-        assertFalse(hunger.shouldGrow());
         assertFalse(hunger.applyHunger(5));
+        assertTrue(growthQueue.isEmpty());
     }
 
     @Test

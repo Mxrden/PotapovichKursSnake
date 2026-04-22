@@ -3,19 +3,20 @@ package GameTests;
 import Model.Game;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
+import Model.GameField.GameField;
 import Model.Snake.Snake;
 import Model.Snake.SnakeSegment;
 import Model.Units.Rodent;
+import Model.Units.Stone;
+import Model.Units.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import Model.GameField.GameField;
-import Model.Units.Wall;
-import Model.Units.Stone;
 
-/**
- * Интеграционный тест игры без случайностей: фиксированное поле, ручное управление змеей.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 class GameIntegrationTest {
 
     private Game game;
@@ -60,19 +61,20 @@ class GameIntegrationTest {
         Cell headCell = field.getCell(5, 5);
         Cell bodyCell = field.getCell(5, 4);
         Cell tailCell = field.getCell(5, 3);
+        List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        segments.add(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bodyCell);
         body.setDirection(Direction.east());
-        snake.getBody().addTail(body);
+        segments.add(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
         tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        segments.add(tail);
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
-        snake.setDirectionImmediate(Direction.east());
+        snake.initializeBody(segments, Direction.east());
         Cell target = field.getCell(5, 6);
         target.putUnit(new Wall());
         snake.move();
@@ -89,19 +91,20 @@ class GameIntegrationTest {
         Cell headCell = field.getCell(5, 5);
         Cell bodyCell = field.getCell(5, 4);
         Cell tailCell = field.getCell(5, 3);
+        List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        segments.add(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bodyCell);
         body.setDirection(Direction.east());
-        snake.getBody().addTail(body);
+        segments.add(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
         tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        segments.add(tail);
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
-        snake.setDirectionImmediate(Direction.east());
+        snake.initializeBody(segments, Direction.east());
         Cell target = field.getCell(5, 6);
         target.putUnit(new Stone());
         snake.move();
@@ -117,15 +120,16 @@ class GameIntegrationTest {
         Snake snake = new Snake(2, 10, 30, 4, 2);
         Cell headCell = field.getCell(5, 5);
         Cell tailCell = field.getCell(5, 6);
+        List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        segments.add(head);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
         tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        segments.add(tail);
         headCell.putUnit(head);
         tailCell.putUnit(tail);
-        snake.setDirectionImmediate(Direction.east());
+        snake.initializeBody(segments, Direction.east());
         snake.move();
         assertTrue(snake.isDead(), "Snake should die when hitting own body");
     }

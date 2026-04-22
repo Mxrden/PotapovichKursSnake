@@ -4,7 +4,6 @@ public class SnakeHunger {
 
     private int _life;
     private final int _minLength;
-    private int _growthQueue = 0;
     private final int _shrinkInterval;
     private final int _hpLossInterval;
     private final int _hungerDamage;
@@ -30,14 +29,6 @@ public class SnakeHunger {
     public void onRodentEaten() {
         resetHunger();
     }
-
-    public void addGrowth() {
-        _growthQueue++;
-        resetHunger();
-    }
-
-    public boolean shouldGrow() { return _growthQueue > 0; }
-    public void consumeGrowth() { if (_growthQueue > 0) _growthQueue--; }
 
     public boolean applyHunger(int currentSize) {
         _ticksSinceShrink++;

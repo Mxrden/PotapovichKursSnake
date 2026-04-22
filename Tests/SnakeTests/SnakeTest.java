@@ -9,6 +9,8 @@ import Model.Units.Rodent;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
 import Model.Units.Wall;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,19 +32,20 @@ class SnakeTest {
         headCell = field.getCell(5, 5);
         bodyCell = field.getCell(5, 4);
         tailCell = field.getCell(5, 3);
+        List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
+        segments.add(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bodyCell);
         body.setDirection(Direction.east());
-        snake.getBody().addTail(body);
+        segments.add(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
         tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        segments.add(tail);
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
-        snake.setDirection(Direction.east());
+        snake.initializeBody(segments, Direction.east());
     }
 
     @Test
@@ -66,7 +69,7 @@ class SnakeTest {
 
         assertNull(tailCell.getUnit());
 
-        assertEquals(3, snake.getBody().size());
+        assertEquals(3, snake.getBodySize());
     }
 
     @Test
@@ -115,11 +118,22 @@ class SnakeTest {
 
     @Test
     void testMoveIntoOwnBodyDies() {
-        snake.setDirection(Direction.west());
-        Cell extra = field.getCell(5, 6);
-        SnakeSegment extraSeg = new SnakeSegment(false, 1.0f, extra);
-        extraSeg.setDirection(Direction.east());
-        snake.getBody().addHead(extraSeg);
+        GameField ownField = new GameField(20, 20);
+        Snake ownSnake = new Snake(2, 10, 30, 4, 2);
+        Cell ownHeadCell = ownField.getCell(5, 5);
+        Cell ownTailCell = ownField.getCell(5, 6);
+        SnakeSegment head = new SnakeSegment(true, 1.0f, ownHeadCell);
+        head.setDirection(Direction.east());
+        SnakeSegment tail = new SnakeSegment(false, 1.0f, ownTailCell);
+        tail.setDirection(Direction.east());
+        List<SnakeSegment> segments = new ArrayList<>();
+        segments.add(head);
+        segments.add(tail);
+        ownHeadCell.putUnit(head);
+        ownTailCell.putUnit(tail);
+        ownSnake.initializeBody(segments, Direction.east());
+        ownSnake.move();
+        assertTrue(ownSnake.isDead());
     }
 
     @Test
@@ -144,10 +158,10 @@ class SnakeTest {
     @Test
     void testGrowthQueueOldMechanism() {
         snake.increaseGrowthQueue();
-        assertTrue(snake.getBody().size() == 3);
+        assertEquals(3, snake.getBodySize());
         targetCell = field.getCell(5, 6);
         snake.move();
-        assertEquals(4, snake.getBody().size());
+        assertEquals(4, snake.getBodySize());
         assertEquals(targetCell, snake.getHead().getPos());
         assertEquals(tailCell, snake.getSegments().get(3).getPos());
     }
@@ -161,32 +175,33 @@ class SnakeTest {
         Cell bCell = bigField.getCell(center, center - 1);
         Cell tCell = bigField.getCell(center, center - 2);
 
+        List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, hCell);
         head.setDirection(Direction.east());
-        bigSnake.getBody().addHead(head);
+        segments.add(head);
         SnakeSegment body = new SnakeSegment(false, 1.0f, bCell);
         body.setDirection(Direction.east());
-        bigSnake.getBody().addTail(body);
+        segments.add(body);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tCell);
         tail.setDirection(Direction.east());
-        bigSnake.getBody().addTail(tail);
+        segments.add(tail);
         hCell.putUnit(head);
         bCell.putUnit(body);
         tCell.putUnit(tail);
-        bigSnake.setDirection(Direction.east());
+        bigSnake.initializeBody(segments, Direction.east());
 
         for (int i = 0; i < 2; i++) {
             bigSnake.increaseGrowthQueue();
             bigSnake.move();
         }
-        assertEquals(5, bigSnake.getBody().size());
+        assertEquals(5, bigSnake.getBodySize());
 
         for (int i = 0; i < 60; i++) {
             if (bigSnake.isDead()) break;
             bigSnake.move();
         }
         assertFalse(bigSnake.isDead(), "Snake died before shrinking");
-        assertTrue(bigSnake.getBody().size() <= 3);
+        assertTrue(bigSnake.getBodySize() <= 3);
     }
 
     @Test
@@ -211,13 +226,14 @@ class SnakeTest {
         Cell tailCell = field.getCell(5, 6);
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
-        snake.getBody().addHead(head);
         SnakeSegment tail = new SnakeSegment(false, 1.0f, tailCell);
         tail.setDirection(Direction.east());
-        snake.getBody().addTail(tail);
+        List<SnakeSegment> segments = new ArrayList<>();
+        segments.add(head);
+        segments.add(tail);
         headCell.putUnit(head);
         tailCell.putUnit(tail);
-        snake.setDirection(Direction.east());
+        snake.initializeBody(segments, Direction.east());
         snake.move();
         assertTrue(snake.isDead());
     }
@@ -235,7 +251,7 @@ class SnakeTest {
             if (ahead.getUnit() != null) ahead.extractUnit();
             snake.move();
         }
-        assertEquals(4, snake.getBody().size());
+        assertEquals(4, snake.getBodySize());
     }
 
     @Test
