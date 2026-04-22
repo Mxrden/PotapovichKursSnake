@@ -151,6 +151,7 @@ public class Snake {
             Unit unit = target.getUnit();
             if (unit.canSnakeEnter(this)) {
                 if (unit.grantsExpansion()) {
+                    _hunger.resetHunger();
                     _rodentEaten = true;
                     _rodentCellForExpansion = target;
                 }

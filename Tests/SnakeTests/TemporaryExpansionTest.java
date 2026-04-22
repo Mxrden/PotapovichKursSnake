@@ -55,6 +55,16 @@ class TemporaryExpansionTest {
     }
 
     @Test
+    void testExpansionCreationFailsWhenSnakeBodyBlocksSpawnCell() {
+        Cell north = headCell.getNeighbor(Direction.north());
+        SnakeSegment body = new SnakeSegment(false, 1.0f, null);
+        body.setDirection(Direction.east());
+        assertTrue(north.putUnit(body));
+
+        assertThrows(IllegalStateException.class, () -> new TemporaryExpansion(headCell, dir, 5));
+    }
+
+    @Test
     void testTickAndDispose() {
         TemporaryExpansion exp = new TemporaryExpansion(headCell, dir, 2);
         Cell north = headCell.getNeighbor(Direction.north());

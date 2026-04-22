@@ -22,10 +22,14 @@ public class SnakeHunger {
     public boolean isDead() { return _life <= 0; }
     public void kill() { _life = 0; }
 
-    public void addGrowth() {
-        _growthQueue++;
+    public void resetHunger() {
         _ticksSinceShrink = 0;
         _ticksSinceHpLoss = 0;
+    }
+
+    public void addGrowth() {
+        _growthQueue++;
+        resetHunger();
     }
 
     public boolean shouldGrow() { return _growthQueue > 0; }

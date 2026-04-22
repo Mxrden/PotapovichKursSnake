@@ -85,6 +85,16 @@ class SnakeHungerTest {
     }
 
     @Test
+    void testResetHungerDoesNotQueueGrowth() {
+        hunger.applyHunger(5);
+        hunger.applyHunger(5);
+        hunger.resetHunger();
+
+        assertFalse(hunger.shouldGrow());
+        assertFalse(hunger.applyHunger(5));
+    }
+
+    @Test
     void testShrinkMultipleTimes() {
         for (int i = 0; i < 4; i++) {
             assertFalse(hunger.applyHunger(5));
