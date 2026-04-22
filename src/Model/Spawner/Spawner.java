@@ -1,15 +1,17 @@
 package Model.Spawner;
 
+import Model.FactoryRodents.RodentFactory;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.GameField.GameField;
 import Model.Labirint.Labirint;
-import Model.Units.Rodent;
-import Model.Units.Stone;
-import Model.FactoryRodents.RodentFactory;
 import Model.Snake.Snake;
 import Model.Snake.SnakeSegment;
+import Model.Units.Rodent;
+import Model.Units.Stone;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Spawner {
@@ -51,29 +53,28 @@ public class Spawner {
                 }
                 if (!ok) continue;
 
-                // Проверка клетки перед головой
                 Cell forwardCell = headCell.getNeighbor(tailDir.opposite());
                 if (forwardCell == null || !forwardCell.isEmpty()) continue;
 
-                // Размещаем голову
+                List<SnakeSegment> segments = new ArrayList<>();
+
                 SnakeSegment head = new SnakeSegment(true, 1.0f, null);
                 head.setDirection(tailDir.opposite());
                 head.setPosition(headCell);
                 headCell.putUnit(head);
-                snake.getBody().addHead(head);
+                segments.add(head);
 
-                // Размещаем тело
                 Cell prev = headCell;
                 for (int i = 1; i < minLength; i++) {
                     Cell next = prev.getNeighbor(tailDir);
                     SnakeSegment part = new SnakeSegment(false, 1.0f, null);
                     part.setPosition(next);
                     next.putUnit(part);
-                    snake.getBody().addTail(part);
+                    segments.add(part);
                     prev = next;
                 }
 
-                snake.setDirectionImmediate(tailDir.opposite());
+                snake.initializeBody(segments, tailDir.opposite());
                 return;
             }
         }

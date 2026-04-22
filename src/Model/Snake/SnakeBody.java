@@ -21,6 +21,8 @@ public class SnakeBody {
 
     public void removeTail() { _segments.removeLast(); }
 
+    public void clear() { _segments.clear(); }
+
     public void removeTailFromField() {
         if (_segments.isEmpty()) {
             return;
