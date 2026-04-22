@@ -4,10 +4,6 @@ import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Units.Unit;
 
-/**
- * Класс змеи - основной игровой объект.
- * Реализует принцип единственной ответственности - управление состоянием и движением змеи.
- */
 public class Snake {
 
     private final SnakeBody _body = new SnakeBody();
@@ -20,7 +16,7 @@ public class Snake {
     private boolean _rodentEaten = false;
     private final java.util.List<TemporaryExpansion> _expansions = new java.util.ArrayList<>();
     private Direction _requestedDirection = null;
-    private Cell _rodentCellForExpansion = null;
+    // поле _rodentCellForExpansion УДАЛЕНО
 
     public Snake(int minLength, int initialLife,
                  int shrinkInterval, int hpLossInterval, int hungerDamage) {
@@ -35,22 +31,16 @@ public class Snake {
         _ignoreNextWall = false;
         return true;
     }
-
     public boolean tryIgnoreStone() {
         if (!_ignoreNextStone) return false;
         _ignoreNextStone = false;
         return true;
     }
-
     public void setDirection(Direction dir) {
         if (dir == null) return;
         _requestedDirection = dir;
     }
-
-    public void setDirectionImmediate(Direction dir) {
-        _movement.setDirection(dir);
-    }
-
+    public void setDirectionImmediate(Direction dir) { _movement.setDirection(dir); }
     public Direction getDirection() { return _movement.getDirection(); }
     public boolean isBodyEmpty() { return _body.isEmpty(); }
     public int getBodySize() { return _body.size(); }
@@ -61,9 +51,6 @@ public class Snake {
     public SnakeSegment getHead() { return _body.head(); }
     public boolean isDead() { return _hunger.isDead(); }
 
-    /**
-     * Убивает змею и очищает все временные расширения.
-     */
     public void kill() {
         _hunger.kill();
         for (TemporaryExpansion exp : _expansions) exp.dispose();
@@ -82,16 +69,12 @@ public class Snake {
         if (direction == null) {
             throw new IllegalArgumentException("direction must not be null");
         }
-
         _body.loadSegments(segments);
         setDirectionImmediate(direction);
     }
 
     private void applyRequestedDirection() {
-        if (_requestedDirection == null) {
-            return;
-        }
-
+        if (_requestedDirection == null) return;
         Direction currentDir = _movement.getDirection();
         if (!currentDir.isOpposite(_requestedDirection)) {
             _movement.setDirection(_requestedDirection);
@@ -99,35 +82,26 @@ public class Snake {
         _requestedDirection = null;
     }
 
-    private Cell getHeadCell() {
-        return _body.headCell();
-    }
+    private Cell getHeadCell() { return _body.headCell(); }
 
     private Cell getTargetCell() {
         Cell headCell = getHeadCell();
-        if (headCell == null) {
-            return null;
-        }
-        return _movement.computeTarget(headCell);
+        return headCell == null ? null : _movement.computeTarget(headCell);
     }
 
-    private boolean handleTargetCell(Cell target) {
-        if (target.isEmpty()) {
-            return true;
-        }
-
+    // Метод handleTargetCell был переименован в resolveTargetCell
+    private boolean resolveTargetCell(Cell target) {
+        if (target.isEmpty()) return true;
         Unit unit = target.getUnit();
         if (!unit.canSnakeEnter(this)) {
             unit.onSnakeBlocked(this);
             return false;
         }
-
         if (unit.grantsExpansion()) {
             _hunger.onRodentEaten();
             _rodentEaten = true;
-            _rodentCellForExpansion = target;
+            // Строка _rodentCellForExpansion = target; УДАЛЕНА
         }
-
         unit.onSnakeEntered(this);
         return !_hunger.isDead();
     }
@@ -136,9 +110,7 @@ public class Snake {
         return _body.addNewHead(target, _movement.getDirection());
     }
 
-    private void removeTailSegment() {
-        _body.removeTailFromField();
-    }
+    private void removeTailSegment() { _body.removeTailFromField(); }
 
     private void applyHungerEffects() {
         if (_hunger.applyHunger(_body.size())) {
@@ -146,19 +118,12 @@ public class Snake {
         }
     }
 
-    private boolean shouldGrow() {
-        return _growthQueue.shouldGrow();
-    }
+    private boolean shouldGrow() { return _growthQueue.shouldGrow(); }
+    private void consumeGrowth() { _growthQueue.consumeGrowth(); }
 
-    private void consumeGrowth() {
-        _growthQueue.consumeGrowth();
-    }
+    // Метод setRodentCellForExpansion УДАЛЕН
 
-    public void setRodentCellForExpansion(Cell cell) {
-        _rodentCellForExpansion = cell;
-    }
-
-    public boolean tryAddExpansion(Cell expansionCell) {
+    public boolean tryAddExpansion(Cell expansionCell) {   // параметр остался
         int currentLength = _body.size();
         if (currentLength <= 0) return false;
         try {
@@ -196,23 +161,15 @@ public class Snake {
 
     public boolean move() {
         prepareMove();
-
         Cell target = getTargetCell();
-        if (!isValidTarget(target)) {
-            return false;
-        }
-
-        if (!handleTargetCell(target)) {
-            return false;
-        }
-
-        if (!advanceHead(target)) {
+        if (!canAdvanceTo(target)) return false;
+        if (!resolveTargetCell(target)) return false;
+        if (!addNewHead(target)) {
             _hunger.kill();
             return false;
         }
-
-        applyBodyAfterMove();
-        return finishMove();
+        completeMove();
+        return !isDead();
     }
 
     private void prepareMove() {
@@ -220,7 +177,7 @@ public class Snake {
         _rodentEaten = false;
     }
 
-    private boolean isValidTarget(Cell target) {
+    private boolean canAdvanceTo(Cell target) {   // переименовано
         if (_body.isEmpty()) {
             _hunger.kill();
             return false;
@@ -232,11 +189,7 @@ public class Snake {
         return true;
     }
 
-    private boolean advanceHead(Cell target) {
-        return _body.addNewHead(target, _movement.getDirection());
-    }
-
-    private void applyBodyAfterMove() {
+    private void completeMove() {   // переименовано
         if (shouldGrow()) {
             consumeGrowth();
         } else {
@@ -244,9 +197,5 @@ public class Snake {
         }
         applyHungerEffects();
         updateExpansions();
-    }
-
-    private boolean finishMove() {
-        return !_hunger.isDead();
     }
 }

@@ -44,27 +44,38 @@ public class Game {
         _height = height;
         _snakeMinLength = snakeMinLength;
         _rodentFactory = rodentFactory;
-
         initializeGameState();
     }
 
     private void initializeGameState() {
-        _field = new GameField(_height, _width);
+        createField();
+        createLabirint();
+        createSpawner();
+        createSnake();
+        placeInitialEntities();
+        resetRuntimeState();
+    }
 
+    private void createField() {
+        _field = new GameField(_height, _width);
+    }
+
+    private void createLabirint() {
         int labW = _width / 2;
         int labH = _height / 2;
-
         int labLeft = _rnd.nextInt(_width - labW);
         int labTop = _rnd.nextInt(_height - labH);
-
         Cell labStart = _field.getCell(labTop, labLeft);
         GridRegion region = new GridRegion(labStart, labW, labH);
-
         _labirint = new Labirint(region);
         _labirint.generateSimple();
+    }
 
+    private void createSpawner() {
         _spawner = new Spawner(_field, _labirint, _rodentFactory);
+    }
 
+    private void createSnake() {
         _snake = new Snake(
                 _snakeMinLength,
                 generateInitialSnakeLife(_width, _height),
@@ -72,11 +83,15 @@ public class Game {
                 8,
                 1
         );
+    }
 
+    private void placeInitialEntities() {
         _spawner.placeSnake(_snake, _snakeMinLength);
-
         _rodent = _spawner.spawnRodent();
         _spawner.spawnStones(3);
+    }
+
+    private void resetRuntimeState() {
         _isOver = false;
         _score = 0;
     }
@@ -84,13 +99,9 @@ public class Game {
     private int generateInitialSnakeLife(int width, int height) {
         double minLife = width + (height / 2.0);
         double maxLife = width + (height / 1.5);
-
         int lowerBound = (int) Math.ceil(minLife);
         int upperBound = (int) Math.floor(maxLife);
-        if (upperBound < lowerBound) {
-            upperBound = lowerBound;
-        }
-
+        if (upperBound < lowerBound) upperBound = lowerBound;
         return lowerBound + _rnd.nextInt(upperBound - lowerBound + 1);
     }
 
@@ -111,66 +122,38 @@ public class Game {
 
         if (moved) {
             notifySnakeMoved();
-
             if (_snake.wasRodentEaten()) {
-                _snake.tryAddExpansion(null);
+                _snake.tryAddExpansion(null);   // параметр остался
                 _rodent = _spawner.spawnRodent();
                 _score++;
                 notifyRodentEaten();
             }
         }
-
         return moved;
     }
 
+    // ... остальные методы (листенеры, геттеры) без изменений ...
     public void addSnakeMovedListener(SnakeMovedListener l) {
-        if (l != null && !_snakeMovedListeners.contains(l)) {
-            _snakeMovedListeners.add(l);
-        }
+        if (l != null && !_snakeMovedListeners.contains(l)) _snakeMovedListeners.add(l);
     }
-
-    public void removeSnakeMovedListener(SnakeMovedListener l) {
-        _snakeMovedListeners.remove(l);
-    }
-
+    public void removeSnakeMovedListener(SnakeMovedListener l) { _snakeMovedListeners.remove(l); }
     public void addRodentEatenListener(RodentEatenListener l) {
-        if (l != null && !_rodentEatenListeners.contains(l)) {
-            _rodentEatenListeners.add(l);
-        }
+        if (l != null && !_rodentEatenListeners.contains(l)) _rodentEatenListeners.add(l);
     }
-
-    public void removeRodentEatenListener(RodentEatenListener l) {
-        _rodentEatenListeners.remove(l);
-    }
-
+    public void removeRodentEatenListener(RodentEatenListener l) { _rodentEatenListeners.remove(l); }
     public void addGameOverListener(GameOverListener l) {
-        if (l != null && !_gameOverListeners.contains(l)) {
-            _gameOverListeners.add(l);
-        }
+        if (l != null && !_gameOverListeners.contains(l)) _gameOverListeners.add(l);
     }
-
-    public void removeGameOverListener(GameOverListener l) {
-        _gameOverListeners.remove(l);
-    }
-
+    public void removeGameOverListener(GameOverListener l) { _gameOverListeners.remove(l); }
     private void notifySnakeMoved() {
-        for (SnakeMovedListener l : _snakeMovedListeners) {
-            l.onSnakeMoved(_snake, _snake.getDirection());
-        }
+        for (SnakeMovedListener l : _snakeMovedListeners) l.onSnakeMoved(_snake, _snake.getDirection());
     }
-
     private void notifyRodentEaten() {
-        for (RodentEatenListener l : _rodentEatenListeners) {
-            l.onRodentEaten(_snake);
-        }
+        for (RodentEatenListener l : _rodentEatenListeners) l.onRodentEaten(_snake);
     }
-
     private void notifyGameOver() {
-        for (GameOverListener l : _gameOverListeners) {
-            l.onGameOver();
-        }
+        for (GameOverListener l : _gameOverListeners) l.onGameOver();
     }
-
     public boolean isOver() { return _isOver; }
     public int getScore() { return _score; }
     public GameField getField() { return _field; }
