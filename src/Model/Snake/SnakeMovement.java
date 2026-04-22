@@ -2,9 +2,6 @@ package Model.Snake;
 
 import Model.GameField.Cell;
 import Model.GameField.Direction;
-import Model.Units.Unit;
-import Model.Units.Wall;
-
 public class SnakeMovement {
 
     private Direction _direction = Direction.east();
@@ -18,48 +15,7 @@ public class SnakeMovement {
         return _direction;
     }
 
-    public MoveResult computeMove(Cell headCell, boolean ignoreWall, boolean ignoreStone) {
-        Cell target = headCell.getNeighbor(_direction);
-        if (target == null) {
-            return new MoveResult(null, Unit.Obstacle.BOUNDARY);
-        }
-
-        Unit unit = target.getUnit();
-        if (unit == null) {
-            return new MoveResult(target, Unit.Obstacle.NONE);
-        }
-
-        Unit.Obstacle obstacle = unit.getObstacle();
-
-        if (unit instanceof Wall) {
-            if (ignoreWall) {
-                return new MoveResult(target, Unit.Obstacle.WALL_IGNORED);
-            }
-            return new MoveResult(target, Unit.Obstacle.WALL);
-        }
-
-        if (unit instanceof Model.Units.Stone) {
-            if (ignoreStone) {
-                return new MoveResult(target, Unit.Obstacle.STONE_IGNORED);
-            }
-            return new MoveResult(target, Unit.Obstacle.STONE);
-        }
-
-        if (obstacle == null) {
-            return new MoveResult(target, Unit.Obstacle.NONE);
-        }
-
-
-
-        return new MoveResult(target, obstacle);
-    }
-
-    public static class MoveResult {
-        public final Cell target;
-        public final Unit.Obstacle obstacle;
-        public MoveResult(Cell target, Unit.Obstacle obstacle) {
-            this.target = target;
-            this.obstacle = obstacle;
-        }
+    public Cell computeTarget(Cell headCell) {
+        return headCell.getNeighbor(_direction);
     }
 }

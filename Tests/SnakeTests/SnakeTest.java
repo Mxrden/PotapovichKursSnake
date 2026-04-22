@@ -86,6 +86,34 @@ class SnakeTest {
     }
 
     @Test
+    void testMoveIntoWallWithIgnorePassesThrough() {
+        targetCell = field.getCell(5, 6);
+        targetCell.putUnit(new Wall());
+        snake.activateIgnoreWall();
+
+        boolean moved = snake.move();
+
+        assertTrue(moved);
+        assertFalse(snake.isDead());
+        assertTrue(targetCell.getUnit() instanceof SnakeSegment);
+        assertEquals(targetCell, snake.getHead().getPos());
+    }
+
+    @Test
+    void testMoveIntoStoneWithIgnorePassesThrough() {
+        targetCell = field.getCell(5, 6);
+        targetCell.putUnit(new Stone());
+        snake.activateIgnoreStone();
+
+        boolean moved = snake.move();
+
+        assertTrue(moved);
+        assertFalse(snake.isDead());
+        assertTrue(targetCell.getUnit() instanceof SnakeSegment);
+        assertEquals(targetCell, snake.getHead().getPos());
+    }
+
+    @Test
     void testMoveIntoOwnBodyDies() {
         snake.setDirection(Direction.west());
         Cell extra = field.getCell(5, 6);

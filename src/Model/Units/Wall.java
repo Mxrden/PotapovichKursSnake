@@ -15,12 +15,15 @@ public class Wall extends Unit {
     }
 
     @Override
-    public UnitType getType() {
-        return UnitType.WALL;
+    public boolean canSnakeEnter(Snake snake) {
+        return snake.tryIgnoreWall();
     }
 
     @Override
-    public Obstacle getObstacle() {
-        return Obstacle.WALL;
+    public void onSnakeEntered(Snake snake) {
+        Cell cell = getPos();
+        if (cell != null && cell.getUnit() == this) {
+            cell.extractUnit();
+        }
     }
 }

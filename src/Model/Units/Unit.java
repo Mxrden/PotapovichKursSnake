@@ -15,45 +15,31 @@ public abstract class Unit {
     }
 
     /**
-     * Проверяет, может ли юнит быть размещён в указанной клетке.
-     * @param cell клетка для проверки
-     * @return true если размещение возможно
+     * РџСЂРѕРІРµСЂСЏРµС‚, РјРѕР¶РµС‚ Р»Рё СЋРЅРёС‚ Р±С‹С‚СЊ СЂР°Р·РјРµС‰С‘РЅ РІ СѓРєР°Р·Р°РЅРЅРѕР№ РєР»РµС‚РєРµ.
+     * @param cell РєР»РµС‚РєР° РґР»СЏ РїСЂРѕРІРµСЂРєРё
+     * @return true РµСЃР»Рё СЂР°Р·РјРµС‰РµРЅРёРµ РІРѕР·РјРѕР¶РЅРѕ
      */
     public abstract boolean canBelongTo(Cell cell);
 
     /**
-     * Вызывается когда змея наступает на этот юнит.
-     * @param snake змея которая наступила
+     * Р’С‹Р·С‹РІР°РµС‚СЃСЏ РєРѕРіРґР° Р·РјРµСЏ РЅР°СЃС‚СѓРїР°РµС‚ РЅР° СЌС‚РѕС‚ СЋРЅРёС‚.
+     * @param snake Р·РјРµСЏ РєРѕС‚РѕСЂР°СЏ РЅР°СЃС‚СѓРїРёР»Р°
      */
     public abstract void onSteppedBy(Snake snake);
 
-    /**
-     * Возвращает тип юнита для отрисовки.
-     * @return enum типа юнита
-     */
-    public abstract UnitType getType();
-
-    public Obstacle getObstacle() {
-        return null;
+    public boolean canSnakeEnter(Snake snake) {
+        return false;
     }
 
-    /**
-     * Типы юнитов для отрисовки без использования instanceof.
-     */
-    public enum UnitType {
-        SNAKE_HEAD,
-        SNAKE_BODY,
-        WALL,
-        STONE,
-        RODENT
+    public void onSnakeEntered(Snake snake) {
     }
 
-    public enum Obstacle {
-        NONE,
-        BOUNDARY,
-        WALL,
-        STONE,
-        WALL_IGNORED,
-        STONE_IGNORED
+    public void onSnakeBlocked(Snake snake) {
+        onSteppedBy(snake);
     }
+
+    public boolean grantsExpansion() {
+        return false;
+    }
+
 }

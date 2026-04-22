@@ -3,7 +3,6 @@ package SnakeTests;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Snake.SnakeMovement;
-import Model.Units.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,60 +28,15 @@ class SnakeMovementTest {
     @Test
     void testComputeMoveBoundary() {
         when(headCell.getNeighbor(Direction.east())).thenReturn(null);
-        SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
-        assertEquals(Unit.Obstacle.BOUNDARY, result.obstacle);
-        assertNull(result.target);
+        Cell result = movement.computeTarget(headCell);
+        assertNull(result);
     }
 
     @Test
-    void testComputeMoveWall() {
+    void testComputeMoveReturnsTargetCell() {
         when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        Wall wall = mock(Wall.class);
-        when(targetCell.getUnit()).thenReturn(wall);
-        SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
-        assertEquals(Unit.Obstacle.WALL, result.obstacle);
-        assertNotNull(result.target);
-        assertEquals(targetCell, result.target);
-    }
-
-    @Test
-    void testComputeMoveWallIgnored() {
-        when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        Wall wall = mock(Wall.class);
-        when(targetCell.getUnit()).thenReturn(wall);
-        SnakeMovement.MoveResult result = movement.computeMove(headCell, true, false);
-        assertEquals(Unit.Obstacle.WALL_IGNORED, result.obstacle);
-        assertEquals(targetCell, result.target);
-    }
-
-    @Test
-    void testComputeMoveStone() {
-        when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        Stone stone = mock(Stone.class);
-        when(targetCell.getUnit()).thenReturn(stone);
-        SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
-        assertEquals(Unit.Obstacle.STONE, result.obstacle);
-        assertNotNull(result.target);
-        assertEquals(targetCell, result.target);
-    }
-
-    @Test
-    void testComputeMoveStoneIgnored() {
-        when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        Stone stone = mock(Stone.class);
-        when(targetCell.getUnit()).thenReturn(stone);
-        SnakeMovement.MoveResult result = movement.computeMove(headCell, false, true);
-        assertEquals(Unit.Obstacle.STONE_IGNORED, result.obstacle);
-        assertEquals(targetCell, result.target);
-    }
-
-    @Test
-    void testComputeMoveEmpty() {
-        when(headCell.getNeighbor(Direction.east())).thenReturn(targetCell);
-        when(targetCell.getUnit()).thenReturn(null);
-        SnakeMovement.MoveResult result = movement.computeMove(headCell, false, false);
-        assertEquals(Unit.Obstacle.NONE, result.obstacle);
-        assertEquals(targetCell, result.target);
+        Cell result = movement.computeTarget(headCell);
+        assertEquals(targetCell, result);
     }
 
 

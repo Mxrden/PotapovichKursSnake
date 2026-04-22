@@ -3,14 +3,16 @@ package Model.View;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Snake.SnakeSegment;
+import Model.Units.Rodent;
+import Model.Units.Stone;
 import Model.Units.Unit;
-import Model.Units.Unit.UnitType;
+import Model.Units.Wall;
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Âèäæåò êëåòêè èãðîâîãî ïîëÿ.
- * Ðåàëèçóåò ïàòòåðí Strategy äëÿ îòðèñîâêè ÷åðåç enum UnitType.
+ * Ð’Ð¸Ð´Ð¶ÐµÑ‚ ÐºÐ»ÐµÑ‚ÐºÐ¸ Ð¸Ð³Ñ€Ð¾Ð²Ð¾Ð³Ð¾ Ð¿Ð¾Ð»Ñ.
+ * ÐžÐ¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÑ‚ ÑÐ¿Ð¾ÑÐ¾Ð± Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ¸ Ð¿Ð¾ Ñ€ÐµÐ°Ð»ÑŒÐ½Ð¾Ð¼Ñƒ Ñ‚Ð¸Ð¿Ñƒ Ð¾Ð±ÑŠÐµÐºÑ‚Ð°.
  */
 public class CellWidget extends JComponent {
 
@@ -37,13 +39,19 @@ public class CellWidget extends JComponent {
         Unit unit = _cell.getUnit();
         if (unit == null) return;
 
-        UnitType type = unit.getType();
-        switch (type) {
-            case SNAKE_HEAD -> drawSnakeHead(g, (SnakeSegment) unit);
-            case SNAKE_BODY -> drawSnakeBody(g, (SnakeSegment) unit);
-            case WALL -> drawWall(g);
-            case STONE -> drawStone(g);
-            case RODENT -> drawRodent(g);
+        if (unit instanceof SnakeSegment) {
+            SnakeSegment segment = (SnakeSegment) unit;
+            if (segment.isHead()) {
+                drawSnakeHead(g, segment);
+            } else {
+                drawSnakeBody(g, segment);
+            }
+        } else if (unit instanceof Wall) {
+            drawWall(g);
+        } else if (unit instanceof Stone) {
+            drawStone(g);
+        } else if (unit instanceof Rodent) {
+            drawRodent(g);
         }
     }
 
