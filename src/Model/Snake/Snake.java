@@ -69,6 +69,20 @@ public class Snake {
     public void increaseGrowthQueue() { _hunger.addGrowth(); }
     public boolean wasRodentEaten() { return _rodentEaten; }
 
+    public void addHeadSegment(SnakeSegment segment) {
+        if (segment == null) {
+            return;
+        }
+        _body.addHead(segment);
+    }
+
+    public void addTailSegment(SnakeSegment segment) {
+        if (segment == null) {
+            return;
+        }
+        _body.addTail(segment);
+    }
+
     public void initializeBody(java.util.List<SnakeSegment> segments, Direction direction) {
         if (segments == null || segments.isEmpty()) {
             throw new IllegalArgumentException("segments must not be empty");
@@ -78,9 +92,9 @@ public class Snake {
         }
 
         _body.clear();
-        _body.addHead(segments.get(0));
+        addHeadSegment(segments.get(0));
         for (int i = 1; i < segments.size(); i++) {
-            _body.addTail(segments.get(i));
+            addTailSegment(segments.get(i));
         }
         setDirectionImmediate(direction);
     }
