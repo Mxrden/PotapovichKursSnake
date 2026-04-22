@@ -52,7 +52,7 @@ public class Game {
 
         _snake = new Snake(
                 snakeMinLength,
-                8,
+                generateInitialSnakeLife(width, height),
                 30,
                 4,
                 2
@@ -62,6 +62,19 @@ public class Game {
 
         _rodent = _spawner.spawnRodent();
         _spawner.spawnStones(3);
+    }
+
+    private int generateInitialSnakeLife(int width, int height) {
+        double minLife = width + (height / 2.0);
+        double maxLife = width + (height / 1.5);
+
+        int lowerBound = (int) Math.ceil(minLife);
+        int upperBound = (int) Math.floor(maxLife);
+        if (upperBound < lowerBound) {
+            upperBound = lowerBound;
+        }
+
+        return lowerBound + _rnd.nextInt(upperBound - lowerBound + 1);
     }
 
     public boolean step() {
