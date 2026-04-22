@@ -3,6 +3,7 @@ package Model.View;
 import Model.Game;
 import Model.GameField.Cell;
 import Model.SnakeController;
+import Model.Timer.TickTimer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ public class GameFieldView extends JPanel {
 
     private final Game _game;
     private final CellWidget[][] _widgets;
+    private final TickTimer _tickTimer = new TickTimer();
 
     public GameFieldView(Game game, SnakeController controller) {
         _game = game;
@@ -30,13 +32,19 @@ public class GameFieldView extends JPanel {
 
         setFocusable(true);
         addKeyListener(controller);
-        Timer timer = new Timer(700, e -> {
+        _game.addGameOverListener(() -> _tickTimer.stop());
+        _tickTimer.start(700, () -> {
             if (!_game.isOver()) {
                 _game.step();
-                repaint(); // только один вызов
+                repaint();
             }
         });
-        timer.start();
+    }
+
+    @Override
+    public void removeNotify() {
+        _tickTimer.stop();
+        super.removeNotify();
     }
 
     @Override
