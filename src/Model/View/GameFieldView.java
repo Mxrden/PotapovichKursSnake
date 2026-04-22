@@ -32,11 +32,15 @@ public class GameFieldView extends JPanel {
 
         setFocusable(true);
         addKeyListener(controller);
-        _game.addGameOverListener(() -> _tickTimer.stop());
+        _game.addSnakeMovedListener((snake, direction) -> repaint());
+        _game.addRodentEatenListener(snake -> repaint());
+        _game.addGameOverListener(() -> {
+            _tickTimer.stop();
+            repaint();
+        });
         _tickTimer.start(700, () -> {
             if (!_game.isOver()) {
                 _game.step();
-                repaint();
             }
         });
     }

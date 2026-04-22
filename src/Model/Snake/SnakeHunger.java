@@ -27,6 +27,10 @@ public class SnakeHunger {
         _ticksSinceHpLoss = 0;
     }
 
+    public void onRodentEaten() {
+        resetHunger();
+    }
+
     public void addGrowth() {
         _growthQueue++;
         resetHunger();

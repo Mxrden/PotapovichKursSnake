@@ -24,7 +24,6 @@ public class Game {
     private Rodent _rodent;
     private boolean _isOver = false;
 
-
     private final List<SnakeMovedListener> _snakeMovedListeners = new ArrayList<>();
     private final List<RodentEatenListener> _rodentEatenListeners = new ArrayList<>();
     private final List<GameOverListener> _gameOverListeners = new ArrayList<>();
@@ -35,17 +34,13 @@ public class Game {
     }
 
     public Game(int width, int height, int snakeMinLength, RodentFactory rodentFactory) {
-
         _field = new GameField(height, width);
 
-        // -----------------------------
-        // —À”◊¿…ÕŒ≈ –¿«Ã≈Ÿ≈Õ»≈ À¿¡»–»Õ“¿
-        // -----------------------------
         int labW = width / 2;
         int labH = height / 2;
 
         int labLeft = _rnd.nextInt(width - labW);
-        int labTop  = _rnd.nextInt(height - labH);
+        int labTop = _rnd.nextInt(height - labH);
 
         Cell labStart = _field.getCell(labTop, labLeft);
         GridRegion region = new GridRegion(labStart, labW, labH);
@@ -53,9 +48,6 @@ public class Game {
         _labirint = new Labirint(region);
         _labirint.generateSimple();
 
-        // -----------------------------
-        // —œ¿¬Õ≈– » «Ã≈ﬂ
-        // -----------------------------
         _spawner = new Spawner(_field, _labirint, rodentFactory);
 
         _snake = new Snake(
@@ -72,9 +64,6 @@ public class Game {
         _spawner.spawnStones(3);
     }
 
-    // -----------------------------
-    // ÿ‡„ Ë„˚
-    // -----------------------------
     public boolean step() {
         if (_isOver) return false;
 
@@ -90,20 +79,14 @@ public class Game {
             notifySnakeMoved();
 
             if (_snake.wasRodentEaten()) {
-                boolean expansionCreated = _snake.tryAddExpansion(null);
-
+                _snake.tryAddExpansion(null);
                 _rodent = _spawner.spawnRodent();
-
                 notifyRodentEaten();
             }
         }
 
         return moved;
     }
-
-    // -----------------------------
-    // —ÎÛ¯‡ÚÂÎË
-    // -----------------------------
 
     public void addSnakeMovedListener(SnakeMovedListener l) {
         if (l != null && !_snakeMovedListeners.contains(l)) {
@@ -141,9 +124,6 @@ public class Game {
         }
     }
 
-    // -----------------------------
-    // √ÂÚÚÂ˚
-    // -----------------------------
     public boolean isOver() { return _isOver; }
     public GameField getField() { return _field; }
     public Labirint getLabirint() { return _labirint; }

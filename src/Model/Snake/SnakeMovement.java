@@ -16,6 +16,9 @@ public class SnakeMovement {
     }
 
     public Cell computeTarget(Cell headCell) {
+        if (headCell == null) {
+            return null;
+        }
         return headCell.getNeighbor(_direction);
     }
 }

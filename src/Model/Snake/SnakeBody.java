@@ -2,6 +2,7 @@ package Model.Snake;
 
 import Model.GameField.Cell;
 import Model.GameField.Direction;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +18,21 @@ public class SnakeBody {
 
     public void addHead(SnakeSegment seg) { _segments.addFirst(seg); }
     public void addTail(SnakeSegment seg) { _segments.addLast(seg); }
+
     public void removeTail() { _segments.removeLast(); }
+
+    public void removeTailFromField() {
+        if (_segments.isEmpty()) {
+            return;
+        }
+
+        SnakeSegment tail = tail();
+        Cell tailCell = tail.getPos();
+        if (tailCell != null && tailCell.getUnit() == tail) {
+            tailCell.extractUnit();
+        }
+        removeTail();
+    }
 
     public void updateDirections() {
         for (int i = 1; i < _segments.size(); i++) {
@@ -29,11 +44,11 @@ public class SnakeBody {
     }
 
     /**
-     * Ñîçäà¸ò íîâóþ ãîëîâó, ñòàðàÿ ãîëîâà ñòàíîâèòñÿ òåëîì.
-     * Óäàëåíèå õâîñòà áîëüøå íå ïðîèñõîäèò çäåñü.
-     * @param targetCell êëåòêà äëÿ íîâîé ãîëîâû
-     * @param direction íàïðàâëåíèå äâèæåíèÿ
-     * @return true åñëè óñïåøíî
+     * Ð”Ð¾Ð±Ð°Ð²Ð»ÑÐµÑ‚ Ð½Ð¾Ð²ÑƒÑŽ Ð³Ð¾Ð»Ð¾Ð²Ñƒ Ð·Ð¼ÐµÐ¸ Ð² ÑƒÐºÐ°Ð·Ð°Ð½Ð½ÑƒÑŽ ÐºÐ»ÐµÑ‚ÐºÑƒ.
+     * Ð¡Ñ‚Ð°Ñ€Ð°Ñ Ð³Ð¾Ð»Ð¾Ð²Ð° Ð¿ÐµÑ€ÐµÑÑ‚Ð°ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð³Ð¾Ð»Ð¾Ð²Ð¾Ð¹, Ð½Ð¾Ð²Ð°Ñ Ð·Ð°Ð½Ð¸Ð¼Ð°ÐµÑ‚ Ñ†ÐµÐ»ÐµÐ²ÑƒÑŽ ÐºÐ»ÐµÑ‚ÐºÑƒ.
+     * @param targetCell ÐºÐ»ÐµÑ‚ÐºÐ° Ð´Ð»Ñ Ð½Ð¾Ð²Ð¾Ð¹ Ð³Ð¾Ð»Ð¾Ð²Ñ‹
+     * @param direction Ð½Ð°Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ñ
+     * @return true ÐµÑÐ»Ð¸ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ
      */
     public boolean addNewHead(Cell targetCell, Direction direction) {
         head().setHead(false);

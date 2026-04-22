@@ -3,22 +3,13 @@ package Model;
 import Model.GameField.Direction;
 import Model.Snake.Snake;
 
+@FunctionalInterface
 public interface SnakeMovedListener {
     /**
-     * Вызывается после успешного шага змеи (после обновления позиций).
-     * @param snake текущая змея
-     * @param direction направление, в котором сделан шаг
+     * Р’С‹Р·С‹РІР°РµС‚СЃСЏ РїРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕРіРѕ РїРµСЂРµРјРµС‰РµРЅРёСЏ Р·РјРµРё.
+     *
+     * @param snake СЌРєР·РµРјРїР»СЏСЂ Р·РјРµРё
+     * @param direction РЅР°РїСЂР°РІР»РµРЅРёРµ РїРѕСЃР»РµРґРЅРµРіРѕ С…РѕРґР°
      */
     void onSnakeMoved(Snake snake, Direction direction);
-
-    /**
-     * Вызывается когда грызун съеден (до респавна).
-     * @param snake змея, которая съела грызуна
-     */
-    void onRodentEaten(Snake snake);
-
-    /**
-     * Вызывается когда игра закончена.
-     */
-    void onGameOver();
 }

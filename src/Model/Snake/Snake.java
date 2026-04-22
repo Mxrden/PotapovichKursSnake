@@ -69,6 +69,65 @@ public class Snake {
     public void increaseGrowthQueue() { _hunger.addGrowth(); }
     public boolean wasRodentEaten() { return _rodentEaten; }
 
+    private void applyRequestedDirection() {
+        if (_requestedDirection == null) {
+            return;
+        }
+
+        Direction currentDir = _movement.getDirection();
+        if (!currentDir.isOpposite(_requestedDirection)) {
+            _movement.setDirection(_requestedDirection);
+        }
+        _requestedDirection = null;
+    }
+
+    private Cell getHeadCell() {
+        return _body.head().getPos();
+    }
+
+    private Cell getTargetCell() {
+        Cell headCell = getHeadCell();
+        if (headCell == null) {
+            return null;
+        }
+        return _movement.computeTarget(headCell);
+    }
+
+    private boolean handleTargetCell(Cell target) {
+        if (target.isEmpty()) {
+            return true;
+        }
+
+        Unit unit = target.getUnit();
+        if (!unit.canSnakeEnter(this)) {
+            unit.onSnakeBlocked(this);
+            return false;
+        }
+
+        if (unit.grantsExpansion()) {
+            _hunger.onRodentEaten();
+            _rodentEaten = true;
+            _rodentCellForExpansion = target;
+        }
+
+        unit.onSnakeEntered(this);
+        return !_hunger.isDead();
+    }
+
+    private boolean addNewHead(Cell target) {
+        return _body.addNewHead(target, _movement.getDirection());
+    }
+
+    private void removeTailSegment() {
+        _body.removeTailFromField();
+    }
+
+    private void applyHungerEffects() {
+        if (_hunger.applyHunger(_body.size())) {
+            removeTailSegment();
+        }
+    }
+
     public void setRodentCellForExpansion(Cell cell) {
         _rodentCellForExpansion = cell;
     }
@@ -122,14 +181,7 @@ public class Snake {
     }
 
     public boolean move() {
-        if (_requestedDirection != null) {
-            Direction currentDir = _movement.getDirection();
-            if (!currentDir.isOpposite(_requestedDirection)) {
-                _movement.setDirection(_requestedDirection);
-            }
-            _requestedDirection = null;
-        }
-
+        applyRequestedDirection();
         _rodentEaten = false;
 
         if (_body.isEmpty()) {
@@ -137,9 +189,7 @@ public class Snake {
             return false;
         }
 
-        Cell headCell = _body.head().getPos();
-        Cell target = _movement.computeTarget(headCell);
-
+        Cell target = getTargetCell();
         if (target == null) {
             _hunger.kill();
             return false;
@@ -147,51 +197,21 @@ public class Snake {
 
         boolean grow = _hunger.shouldGrow();
 
-        if (!target.isEmpty()) {
-            Unit unit = target.getUnit();
-            if (unit.canSnakeEnter(this)) {
-                if (unit.grantsExpansion()) {
-                    _hunger.resetHunger();
-                    _rodentEaten = true;
-                    _rodentCellForExpansion = target;
-                }
-                unit.onSnakeEntered(this);
-            } else {
-                unit.onSnakeBlocked(this);
-                if (_hunger.isDead()) return false;
-                return false;
-            }
-
-            if (_hunger.isDead()) {
-                return false;
-            }
+        if (!handleTargetCell(target)) {
+            return false;
         }
 
-        boolean success = _body.addNewHead(target, _movement.getDirection());
-        if (!success) {
+        if (!addNewHead(target)) {
             _hunger.kill();
             return false;
         }
 
-        if (!grow) {
-            Cell tailCell = _body.tail().getPos();
-            if (tailCell != null && tailCell.getUnit() == _body.tail()) {
-                tailCell.extractUnit();
-            }
-            _body.removeTail();
-        } else {
+        if (grow) {
             _hunger.consumeGrowth();
+        } else {
+            removeTailSegment();
         }
-
-        boolean needShrink = _hunger.applyHunger(_body.size());
-        if (needShrink) {
-            Cell tailCell = _body.tail().getPos();
-            if (tailCell != null && tailCell.getUnit() == _body.tail()) {
-                tailCell.extractUnit();
-            }
-            _body.removeTail();
-        }
-
+        applyHungerEffects();
         updateExpansions();
         return !_hunger.isDead();
     }
