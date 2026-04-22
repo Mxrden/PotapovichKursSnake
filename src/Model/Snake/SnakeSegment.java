@@ -27,7 +27,7 @@ public class SnakeSegment extends Unit {
     public void setDirection(Direction dir) { _direction = dir; }
 
     @Override
-    public boolean canBelongTo(Cell cell) { return cell.isEmpty() && cell != null; }
+    public boolean canBelongTo(Cell cell) { return cell != null && cell.isEmpty(); }
 
     @Override
     public void onSteppedBy(Snake snake) { snake.kill(); }
