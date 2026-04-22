@@ -21,6 +21,9 @@ public class SnakeView extends JPanel {
     private final JButton _newGameButton = new JButton("\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430");
     private final JPanel _boardLayer = new JPanel();
     private GameFieldView _boardView;
+    private final Model.SnakeMovedListener _snakeMovedListener;
+    private final Model.RodentEatenListener _rodentEatenListener;
+    private final Model.GameOverListener _gameOverListener;
 
     public SnakeView(Game game, SnakeController controller) {
         _game = game;
@@ -35,15 +38,28 @@ public class SnakeView extends JPanel {
         updateHud();
 
         _newGameButton.addActionListener(e -> restartGame());
-        _game.addSnakeMovedListener((snake, direction) -> updateHud());
-        _game.addRodentEatenListener(snake -> updateHud());
-        _game.addGameOverListener(this::onGameOver);
+        _snakeMovedListener = (snake, direction) -> updateHud();
+        _rodentEatenListener = snake -> updateHud();
+        _gameOverListener = this::onGameOver;
+        _game.addSnakeMovedListener(_snakeMovedListener);
+        _game.addRodentEatenListener(_rodentEatenListener);
+        _game.addGameOverListener(_gameOverListener);
+
     }
 
     public void requestGameFocus() {
         if (_boardView != null) {
             _boardView.requestFocusInWindow();
         }
+    }
+
+    public void dispose() {
+        if (_boardView != null) {
+            _boardView.dispose();
+        }
+        _game.removeSnakeMovedListener(_snakeMovedListener);
+        _game.removeRodentEatenListener(_rodentEatenListener);
+        _game.removeGameOverListener(_gameOverListener);
     }
 
     private JComponent buildTopBar() {
