@@ -10,8 +10,8 @@ public class SnakeBody {
 
     private final LinkedList<SnakeSegment> _segments = new LinkedList<>();
 
-    public SnakeSegment head() { return _segments.getFirst(); }
-    public SnakeSegment tail() { return _segments.getLast(); }
+    public SnakeSegment head() { return _segments.peekFirst(); }
+    public SnakeSegment tail() { return _segments.peekLast(); }
     public List<SnakeSegment> all() { return _segments; }
     public int size() { return _segments.size(); }
     public boolean isEmpty() { return _segments.isEmpty(); }
@@ -53,7 +53,12 @@ public class SnakeBody {
      * @return true если добавление удалось
      */
     public boolean addNewHead(Cell targetCell, Direction direction) {
-        head().setHead(false);
+        SnakeSegment currentHead = head();
+        if (currentHead == null) {
+            return false;
+        }
+
+        currentHead.setHead(false);
         SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
         newHead.setDirection(direction);
         if (!targetCell.putUnit(newHead)) {

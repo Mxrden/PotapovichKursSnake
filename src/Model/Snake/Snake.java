@@ -98,7 +98,8 @@ public class Snake {
     }
 
     private Cell getHeadCell() {
-        return _body.head().getPos();
+        SnakeSegment head = _body.head();
+        return head != null ? head.getPos() : null;
     }
 
     private Cell getTargetCell() {
@@ -179,8 +180,8 @@ public class Snake {
     }
 
     private void growFromExpansion() {
-        if (_body.isEmpty()) return;
         SnakeSegment tail = _body.tail();
+        if (tail == null) return;
         Direction tailDirection = tail.getDirection();
         if (tailDirection == null) return;
         Cell tailCell = tail.getPos();
