@@ -5,10 +5,6 @@ import Model.Snake.SnakeSegment;
 
 import java.awt.*;
 
-/**
- *    .
- *      .
- */
 public class SnakeViewRenderer {
 
     private static final int CELL_SIZE = 32;

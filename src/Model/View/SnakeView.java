@@ -1,7 +1,6 @@
 package Model.View;
 
-import Model.Game;
-import Model.SnakeController;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,9 +20,9 @@ public class SnakeView extends JPanel {
     private final JButton _newGameButton = new JButton("\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430");
     private final JPanel _boardLayer = new JPanel();
     private GameFieldView _boardView;
-    private final Model.SnakeMovedListener _snakeMovedListener;
-    private final Model.RodentEatenListener _rodentEatenListener;
-    private final Model.GameOverListener _gameOverListener;
+    private final SnakeMovedListener _snakeMovedListener;
+    private final RodentEatenListener _rodentEatenListener;
+    private final GameOverListener _gameOverListener;
 
     public SnakeView(Game game, SnakeController controller) {
         _game = game;

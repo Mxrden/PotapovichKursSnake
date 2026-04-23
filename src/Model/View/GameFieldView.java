@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class GameFieldView extends JPanel {
 
-    private final Model.GameField.GameField _field;
+    private final GameField _field;
     private final CellWidget[][] _widgets;
     private final TickTimer _tickTimer = new TickTimer();
     private final Runnable _onTick;
