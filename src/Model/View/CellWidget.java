@@ -23,12 +23,13 @@ public class CellWidget extends JComponent {
     private static final int SIZE = 32;
     private static final Color BACKGROUND = new Color(30, 36, 50);
     private static final Map<Class<?>, BiConsumer<Graphics, Unit>> RENDERERS = new HashMap<>();
+    private static final SnakeViewRenderer SNAKE_RENDERER = new SnakeViewRenderer();
 
     static {
         RENDERERS.put(Wall.class, (g, unit) -> drawWall(g));
         RENDERERS.put(Stone.class, (g, unit) -> drawStone(g));
         RENDERERS.put(Rodent.class, (g, unit) -> drawRodent(g));
-        RENDERERS.put(SnakeSegment.class, CellWidget::drawSnakeSegment);
+        RENDERERS.put(SnakeSegment.class, (g, unit) -> SNAKE_RENDERER.drawSnakeSegment(g, (SnakeSegment) unit));
     }
 
     public CellWidget(Cell cell) {
@@ -82,51 +83,4 @@ public class CellWidget extends JComponent {
         g.fillOval(8, 8, SIZE - 16, SIZE - 16);
     }
 
-    private static void drawSnakeSegment(Graphics g, Unit unit) {
-        SnakeSegment seg = (SnakeSegment) unit;
-        if (seg.isHead()) {
-            drawSnakeHead(g, seg);
-        } else {
-            drawSnakeBody(g, seg);
-        }
-    }
-
-    private static void drawSnakeBody(Graphics g, SnakeSegment seg) {
-        if (seg.getThickness() > 1.0f) {
-            g.setColor(new Color(255, 140, 0));
-        } else {
-            g.setColor(Color.YELLOW);
-        }
-        g.fillRect(4, 4, SIZE - 8, SIZE - 8);
-    }
-
-    private static void drawSnakeHead(Graphics g, SnakeSegment seg) {
-        g.setColor(Color.GREEN);
-        g.fillRect(4, 4, SIZE - 8, SIZE - 8);
-        Direction d = seg.getDirection();
-        if (d == null) return;
-        g.setColor(Color.WHITE);
-        int cx = SIZE / 2;
-        int cy = SIZE / 2;
-        int tip = 6;
-        Polygon arrow = new Polygon();
-        if (d.equals(Direction.north())) {
-            arrow.addPoint(cx, cy - 10);
-            arrow.addPoint(cx - tip, cy - 2);
-            arrow.addPoint(cx + tip, cy - 2);
-        } else if (d.equals(Direction.south())) {
-            arrow.addPoint(cx, cy + 10);
-            arrow.addPoint(cx - tip, cy + 2);
-            arrow.addPoint(cx + tip, cy + 2);
-        } else if (d.equals(Direction.west())) {
-            arrow.addPoint(cx - 10, cy);
-            arrow.addPoint(cx - 2, cy - tip);
-            arrow.addPoint(cx - 2, cy + tip);
-        } else if (d.equals(Direction.east())) {
-            arrow.addPoint(cx + 10, cy);
-            arrow.addPoint(cx + 2, cy - tip);
-            arrow.addPoint(cx + 2, cy + tip);
-        }
-        g.fillPolygon(arrow);
-    }
 }

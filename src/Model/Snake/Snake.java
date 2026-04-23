@@ -173,7 +173,7 @@ public class Snake {
         _rodentEaten = false;
     }
 
-    private boolean canAdvanceTo(Cell target) {   // переименовано
+    private boolean canAdvanceTo(Cell target) {
         if (_body.isEmpty()) {
             _hunger.kill();
             return false;
@@ -185,7 +185,7 @@ public class Snake {
         return true;
     }
 
-    private void completeMove() {   // переименовано
+    private void completeMove() {
         if (shouldGrow()) {
             consumeGrowth();
         } else {
