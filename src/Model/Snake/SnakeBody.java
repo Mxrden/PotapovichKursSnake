@@ -10,6 +10,26 @@ public class SnakeBody {
 
     private final LinkedList<SnakeSegment> _segments = new LinkedList<>();
 
+    /**
+     * Конструктор для инициализации тела змеи сегментами.
+     * @param initialSegments начальные сегменты змеи (может быть null или пустым)
+     */
+    public SnakeBody(List<SnakeSegment> initialSegments) {
+        if (initialSegments != null) {
+            for (SnakeSegment segment : initialSegments) {
+                if (segment != null) {
+                    _segments.add(segment);
+                }
+            }
+        }
+    }
+
+    /**
+     * Пустой конструктор для тестов и постепенного построения тела.
+     */
+    public SnakeBody() {
+    }
+
     public SnakeSegment head() { return _segments.peekFirst(); }
     public SnakeSegment tail() { return _segments.peekLast(); }
     public List<SnakeSegment> all() { return new java.util.ArrayList<>(_segments); }
@@ -22,18 +42,6 @@ public class SnakeBody {
     public void removeTail() { _segments.removeLast(); }
 
     public void clear() { _segments.clear(); }
-
-     void loadSegments(List<SnakeSegment> segments) {
-        clear();
-        if (segments == null) {
-            return;
-        }
-        for (SnakeSegment segment : segments) {
-            if (segment != null) {
-                _segments.add(segment);
-            }
-        }
-    }
 
     public Cell headCell() {
         SnakeSegment head = head();

@@ -6,7 +6,7 @@ import Model.Units.Unit;
 
 public class Snake {
 
-    private final SnakeBody _body = new SnakeBody();
+    private SnakeBody _body = new SnakeBody();
     private final SnakeMovement _movement = new SnakeMovement();
     private final SnakeHunger _hunger;
     private final SnakeGrowthQueue _growthQueue = new SnakeGrowthQueue();
@@ -68,7 +68,7 @@ public class Snake {
         if (direction == null) {
             throw new IllegalArgumentException("direction must not be null");
         }
-        _body.loadSegments(segments);
+        _body = new SnakeBody(segments);
         setDirectionImmediate(direction);
     }
 
