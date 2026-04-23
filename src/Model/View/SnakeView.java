@@ -47,7 +47,12 @@ public class SnakeView extends JPanel {
             if (_boardView != null) _boardView.repaint();
         };
         _gameOverListener = () -> {
-            if (_boardView != null) _boardView.dispose();
+            if (_boardView != null) {
+                _boardView.dispose();
+                if (!_boardView.validateFieldState()) {
+                    System.err.println("Обнаружена несогласованность состояния игрового поля!");
+                }
+            }
             onGameOver();
         };
         _game.addSnakeMovedListener(_snakeMovedListener);
