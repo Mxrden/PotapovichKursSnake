@@ -16,7 +16,6 @@ public class Snake {
     private boolean _rodentEaten = false;
     private final java.util.List<TemporaryExpansion> _expansions = new java.util.ArrayList<>();
     private Direction _requestedDirection = null;
-    // поле _rodentCellForExpansion УДАЛЕНО
 
     public Snake(int minLength, int initialLife,
                  int shrinkInterval, int hpLossInterval, int hungerDamage) {
@@ -89,7 +88,6 @@ public class Snake {
         return headCell == null ? null : _movement.computeTarget(headCell);
     }
 
-    // Метод handleTargetCell был переименован в resolveTargetCell
     private boolean resolveTargetCell(Cell target) {
         if (target.isEmpty()) return true;
         Unit unit = target.getUnit();
@@ -100,7 +98,6 @@ public class Snake {
         if (unit.grantsExpansion()) {
             _hunger.onRodentEaten();
             _rodentEaten = true;
-            // Строка _rodentCellForExpansion = target; УДАЛЕНА
         }
         unit.onSnakeEntered(this);
         return !_hunger.isDead();
@@ -121,9 +118,8 @@ public class Snake {
     private boolean shouldGrow() { return _growthQueue.shouldGrow(); }
     private void consumeGrowth() { _growthQueue.consumeGrowth(); }
 
-    // Метод setRodentCellForExpansion УДАЛЕН
 
-    public boolean tryAddExpansion(Cell expansionCell) {   // параметр остался
+    public boolean tryAddExpansion() {
         int currentLength = _body.size();
         if (currentLength <= 0) return false;
         try {

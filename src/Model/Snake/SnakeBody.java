@@ -23,7 +23,7 @@ public class SnakeBody {
 
     public void clear() { _segments.clear(); }
 
-    public void loadSegments(List<SnakeSegment> segments) {
+     void loadSegments(List<SnakeSegment> segments) {
         clear();
         if (segments == null) {
             return;

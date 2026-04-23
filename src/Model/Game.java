@@ -123,7 +123,7 @@ public class Game {
         if (moved) {
             notifySnakeMoved();
             if (_snake.wasRodentEaten()) {
-                _snake.tryAddExpansion(null);   // параметр остался
+                _snake.tryAddExpansion();
                 _rodent = _spawner.spawnRodent();
                 _score++;
                 notifyRodentEaten();
@@ -132,7 +132,6 @@ public class Game {
         return moved;
     }
 
-    // ... остальные методы (листенеры, геттеры) без изменений ...
     public void addSnakeMovedListener(SnakeMovedListener l) {
         if (l != null && !_snakeMovedListeners.contains(l)) _snakeMovedListeners.add(l);
     }
@@ -157,7 +156,6 @@ public class Game {
     public boolean isOver() { return _isOver; }
     public int getScore() { return _score; }
     public GameField getField() { return _field; }
-    public Labirint getLabirint() { return _labirint; }
     public Snake getSnake() { return _snake; }
     public Rodent getRodent() { return _rodent; }
 }
