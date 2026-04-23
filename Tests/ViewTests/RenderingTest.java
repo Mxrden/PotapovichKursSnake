@@ -65,7 +65,7 @@ class RenderingTest {
     void gameFieldViewBuildsGridOfCellWidgets() throws Exception {
         Game game = new Game(4, 3, 3);
         SnakeController controller = new SnakeController(game);
-        GameFieldView view = new GameFieldView(game, controller);
+        GameFieldView view = new GameFieldView(game.getField(), controller, () -> {});
 
         try {
             assertTrue(view.getLayout() instanceof GridLayout);

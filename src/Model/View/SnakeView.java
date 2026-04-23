@@ -38,9 +38,18 @@ public class SnakeView extends JPanel {
         updateHud();
 
         _newGameButton.addActionListener(e -> restartGame());
-        _snakeMovedListener = (snake, direction) -> updateHud();
-        _rodentEatenListener = snake -> updateHud();
-        _gameOverListener = this::onGameOver;
+        _snakeMovedListener = (snake, direction) -> {
+            updateHud();
+            if (_boardView != null) _boardView.repaint();
+        };
+        _rodentEatenListener = snake -> {
+            updateHud();
+            if (_boardView != null) _boardView.repaint();
+        };
+        _gameOverListener = () -> {
+            if (_boardView != null) _boardView.dispose();
+            onGameOver();
+        };
         _game.addSnakeMovedListener(_snakeMovedListener);
         _game.addRodentEatenListener(_rodentEatenListener);
         _game.addGameOverListener(_gameOverListener);
@@ -109,7 +118,12 @@ public class SnakeView extends JPanel {
     }
 
     private void rebuildBoard() {
-        _boardView = new GameFieldView(_game, _controller);
+        Runnable onTick = () -> {
+            if (!_game.isOver()) {
+                _game.step();
+            }
+        };
+        _boardView = new GameFieldView(_game.getField(), _controller, onTick);
         _boardLayer.removeAll();
         _boardLayer.setOpaque(false);
         _boardLayer.setLayout(new OverlayLayout(_boardLayer));
