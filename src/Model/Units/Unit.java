@@ -3,6 +3,8 @@ package Model.Units;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
 
+import java.awt.*;
+
 public abstract class Unit {
     private Cell _pos;
 
@@ -41,5 +43,11 @@ public abstract class Unit {
     public boolean grantsExpansion() {
         return false;
     }
+
+    /**
+     * Отрисовывает юнит.
+     * @param g объект Graphics для отрисовки
+     */
+    public abstract void draw(Graphics g);
 
 }

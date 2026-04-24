@@ -3,6 +3,7 @@ package Model.Units;
 import Model.Effects.RodentEffect;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
+import java.awt.*;
 
 /**
  * Базовый класс для грызунов.
@@ -51,5 +52,12 @@ public abstract class Rodent extends Unit {
     @Override
     public boolean grantsExpansion() {
         return true;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        g.setColor(Color.RED);
+        int size = 32;
+        g.fillOval(8, 8, size - 16, size - 16);
     }
 }

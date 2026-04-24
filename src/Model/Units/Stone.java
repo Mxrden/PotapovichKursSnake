@@ -3,6 +3,8 @@ package Model.Units;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
 
+import java.awt.*;
+
 /**
  * Камень - препятствие для змеи.
  * Реализует принцип открытости/закрытости - новый тип юнита без изменения существующего кода.
@@ -30,5 +32,12 @@ public class Stone extends Unit{
         if (cell != null && cell.getUnit() == this) {
             cell.extractUnit();
         }
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        g.setColor(Color.DARK_GRAY);
+        int size = 32;
+        g.fillRect(6, 6, size - 12, size - 12);
     }
 }
