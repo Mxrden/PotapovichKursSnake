@@ -3,7 +3,6 @@ package Model.Snake;
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Units.Unit;
-import Model.View.SnakeViewRenderer;
 
 import java.awt.*;
 
@@ -15,7 +14,6 @@ public class SnakeSegment extends Unit {
     private boolean _isHead;
     private float _thickness;
     private Direction _direction;
-    private static final SnakeViewRenderer RENDERER = new SnakeViewRenderer();
 
     public SnakeSegment(boolean isHead, float thickness, Cell position) {
         _isHead = isHead;

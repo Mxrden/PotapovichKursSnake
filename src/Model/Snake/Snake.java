@@ -155,18 +155,18 @@ public class Snake {
         }
     }
 
-    public boolean move() {
-        prepareMove();
-        Cell target = getTargetCell();
-        if (!canAdvanceTo(target)) return false;
-        if (!resolveTargetCell(target)) return false;
-        if (!addNewHead(target)) {
-            _hunger.kill();
-            return false;
+        public boolean move() {
+            prepareMove();
+            Cell target = getTargetCell();
+            if (!canAdvanceTo(target)) return false;
+            if (!resolveTargetCell(target)) return false;
+            if (!addNewHead(target)) {
+                _hunger.kill();
+                return false;
+            }
+            completeMove();
+            return !isDead();
         }
-        completeMove();
-        return !isDead();
-    }
 
     private void prepareMove() {
         applyRequestedDirection();
