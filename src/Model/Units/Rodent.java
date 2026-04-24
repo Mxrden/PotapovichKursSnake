@@ -54,10 +54,4 @@ public abstract class Rodent extends Unit {
         return true;
     }
 
-    @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.RED);
-        int size = 32;
-        g.fillOval(8, 8, size - 16, size - 16);
-    }
 }

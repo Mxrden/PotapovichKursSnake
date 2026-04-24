@@ -44,10 +44,4 @@ public abstract class Unit {
         return false;
     }
 
-    /**
-     * Отрисовывает юнит.
-     * @param g объект Graphics для отрисовки
-     */
-    public abstract void draw(Graphics g);
-
 }

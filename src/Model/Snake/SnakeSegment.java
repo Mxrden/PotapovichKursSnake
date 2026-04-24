@@ -36,8 +36,4 @@ public class SnakeSegment extends Unit {
     @Override
     public void onSteppedBy(Snake snake) { snake.kill(); }
 
-    @Override
-    public void draw(Graphics g) {
-        RENDERER.drawSnakeSegment(g, this);
-    }
 }

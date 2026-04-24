@@ -34,10 +34,4 @@ public class Stone extends Unit{
         }
     }
 
-    @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.DARK_GRAY);
-        int size = 32;
-        g.fillRect(6, 6, size - 12, size - 12);
-    }
 }
