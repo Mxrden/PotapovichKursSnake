@@ -9,11 +9,6 @@ public class SnakeViewRenderer {
 
     private static final int CELL_SIZE = 32;
 
-    /**
-     *   .
-     * @param g
-     * @param segment
-     */
     public void drawSnakeSegment(Graphics g, SnakeSegment segment) {
         if (segment == null) return;
 
@@ -24,11 +19,6 @@ public class SnakeViewRenderer {
         }
     }
 
-    /**
-     *   .
-     * @param g
-     * @param segment
-     */
     private void drawSnakeBody(Graphics g, SnakeSegment segment) {
         if (segment.getThickness() > 1.0f) {
             g.setColor(new Color(255, 140, 0));
@@ -38,11 +28,6 @@ public class SnakeViewRenderer {
         g.fillRect(4, 4, CELL_SIZE - 8, CELL_SIZE - 8);
     }
 
-    /**
-     *     .
-     * @param g
-     * @param segment
-     */
     private void drawSnakeHead(Graphics g, SnakeSegment segment) {
         g.setColor(Color.GREEN);
         g.fillRect(4, 4, CELL_SIZE - 8, CELL_SIZE - 8);
