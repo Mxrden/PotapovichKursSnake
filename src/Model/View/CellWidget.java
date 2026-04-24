@@ -1,35 +1,37 @@
 package Model.View;
 
 import Model.GameField.Cell;
-import Model.GameField.Direction;
 import Model.Snake.SnakeSegment;
 import Model.Units.Rodent;
 import Model.Units.Stone;
 import Model.Units.Unit;
 import Model.Units.Wall;
+import Model.UnitsView.RodentView;
+import Model.UnitsView.SnakeSegmentView;
+import Model.UnitsView.StoneView;
+import Model.UnitsView.UnitView;
+import Model.UnitsView.WallView;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 /**
  * Виджет клетки игрового поля.
- * Определяет способ отрисовки по реальному типу объекта.
+ * Использует UnitView классы для отрисовки юнитов.
  */
 public class CellWidget extends JComponent {
 
     private final Cell cell;
     private static final int SIZE = 32;
     private static final Color BACKGROUND = new Color(30, 36, 50);
-    private static final Map<Class<?>, BiConsumer<Graphics, Unit>> RENDERERS = new HashMap<>();
-    private static final SnakeViewRenderer SNAKE_RENDERER = new SnakeViewRenderer();
+    private static final Map<Class<?>, UnitView> UNIT_VIEWS = new HashMap<>();
 
     static {
-        RENDERERS.put(Wall.class, (g, unit) -> drawWall(g));
-        RENDERERS.put(Stone.class, (g, unit) -> drawStone(g));
-        RENDERERS.put(Rodent.class, (g, unit) -> drawRodent(g));
-        RENDERERS.put(SnakeSegment.class, (g, unit) -> SNAKE_RENDERER.drawSnakeSegment(g, (SnakeSegment) unit));
+        UNIT_VIEWS.put(Wall.class, new WallView());
+        UNIT_VIEWS.put(Stone.class, new StoneView());
+        UNIT_VIEWS.put(Rodent.class, new RodentView());
+        UNIT_VIEWS.put(SnakeSegment.class, new SnakeSegmentView());
     }
 
     public CellWidget(Cell cell) {
@@ -57,30 +59,13 @@ public class CellWidget extends JComponent {
     private void renderByType(Graphics g, Unit unit) {
         Class<?> type = unit.getClass();
         while (type != null) {
-            BiConsumer<Graphics, Unit> renderer = RENDERERS.get(type);
-            if (renderer != null) {
-                renderer.accept(g, unit);
+            UnitView view = UNIT_VIEWS.get(type);
+            if (view != null) {
+                view.draw(g, unit);
                 return;
             }
             type = type.getSuperclass();
         }
-    }
-
-    private static void drawWall(Graphics g) {
-        g.setColor(new Color(180, 100, 60));
-        g.fillRect(4, 4, SIZE - 8, SIZE - 8);
-        g.setColor(Color.BLACK);
-        g.drawRect(4, 4, SIZE - 8, SIZE - 8);
-    }
-
-    private static void drawStone(Graphics g) {
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(6, 6, SIZE - 12, SIZE - 12);
-    }
-
-    private static void drawRodent(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillOval(8, 8, SIZE - 16, SIZE - 16);
     }
 
 }
