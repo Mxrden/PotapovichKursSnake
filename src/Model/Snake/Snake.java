@@ -1,12 +1,16 @@
+// Model/Snake/Snake.java
 package Model.Snake;
 
 import Model.GameField.Cell;
 import Model.GameField.Direction;
 import Model.Units.Unit;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Snake {
 
-    private SnakeBody _body = new SnakeBody();
+    private final LinkedList<SnakeSegment> _segments = new LinkedList<>();
     private final SnakeMovement _movement = new SnakeMovement();
     private final SnakeHunger _hunger;
     private final SnakeGrowthQueue _growthQueue = new SnakeGrowthQueue();
@@ -14,7 +18,7 @@ public class Snake {
     private boolean _ignoreNextWall = false;
     private boolean _ignoreNextStone = false;
     private boolean _rodentEaten = false;
-    private final java.util.List<TemporaryExpansion> _expansions = new java.util.ArrayList<>();
+    private final List<TemporaryExpansion> _expansions = new java.util.ArrayList<>();
     private Direction _requestedDirection = null;
 
     public Snake(int minLength, int initialLife,
@@ -41,13 +45,11 @@ public class Snake {
     }
     public void setDirectionImmediate(Direction dir) { _movement.setDirection(dir); }
     public Direction getDirection() { return _movement.getDirection(); }
-    public boolean isBodyEmpty() { return _body.isEmpty(); }
-    public int getBodySize() { return _body.size(); }
+    public boolean isBodyEmpty() { return _segments.isEmpty(); }
+    public int getBodySize() { return _segments.size(); }
     public int getLife() { return _hunger.getLife(); }
-    public java.util.List<SnakeSegment> getSegments() {
-        return new java.util.ArrayList<>(_body.all());
-    }
-    public SnakeSegment getHead() { return _body.head(); }
+    public List<SnakeSegment> getSegments() { return new java.util.ArrayList<>(_segments); }
+    public SnakeSegment getHead() { return _segments.peekFirst(); }
     public boolean isDead() { return _hunger.isDead(); }
 
     public void kill() {
@@ -61,14 +63,19 @@ public class Snake {
     }
     public boolean wasRodentEaten() { return _rodentEaten; }
 
-    public void initializeBody(java.util.List<SnakeSegment> segments, Direction direction) {
+    public void initializeBody(List<SnakeSegment> segments, Direction direction) {
         if (segments == null || segments.isEmpty()) {
             throw new IllegalArgumentException("segments must not be empty");
         }
         if (direction == null) {
             throw new IllegalArgumentException("direction must not be null");
         }
-        _body = new SnakeBody(segments);
+        _segments.clear();
+        for (SnakeSegment seg : segments) {
+            if (seg != null) {
+                _segments.add(seg);
+            }
+        }
         setDirectionImmediate(direction);
     }
 
@@ -81,7 +88,10 @@ public class Snake {
         _requestedDirection = null;
     }
 
-    private Cell getHeadCell() { return _body.headCell(); }
+    private Cell getHeadCell() {
+        SnakeSegment head = getHead();
+        return head != null ? head.getPos() : null;
+    }
 
     private Cell getTargetCell() {
         Cell headCell = getHeadCell();
@@ -104,13 +114,34 @@ public class Snake {
     }
 
     private boolean addNewHead(Cell target) {
-        return _body.addNewHead(target, _movement.getDirection());
+        SnakeSegment currentHead = getHead();
+        if (currentHead == null || target == null) {
+            return false;
+        }
+        SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
+        newHead.setDirection(_movement.getDirection());
+        if (!target.putUnit(newHead)) {
+            return false;
+        }
+        _segments.addFirst(newHead);
+        currentHead.setHead(false);
+        updateDirections();
+        return true;
     }
 
-    private void removeTailSegment() { _body.removeTailFromField(); }
+    private void removeTailSegment() {
+        if (_segments.isEmpty()) return;
+        SnakeSegment tail = _segments.peekLast();
+        if (tail == null) return;
+        Cell tailCell = tail.getPos();
+        if (tailCell != null && tailCell.getUnit() == tail) {
+            tailCell.extractUnit();
+        }
+        _segments.removeLast();
+    }
 
     private void applyHungerEffects() {
-        if (_hunger.applyHunger(_body.size())) {
+        if (_hunger.applyHunger(_segments.size())) {
             removeTailSegment();
         }
     }
@@ -118,9 +149,8 @@ public class Snake {
     private boolean shouldGrow() { return _growthQueue.shouldGrow(); }
     private void consumeGrowth() { _growthQueue.consumeGrowth(); }
 
-
     public boolean tryAddExpansion() {
-        int currentLength = _body.size();
+        int currentLength = _segments.size();
         if (currentLength <= 0) return false;
         try {
             TemporaryExpansion exp = new TemporaryExpansion(this, currentLength);
@@ -144,29 +174,52 @@ public class Snake {
     }
 
     private void growFromExpansion() {
-        SnakeSegment tail = _body.tailSegment();
+        SnakeSegment tail = _segments.peekLast();
         if (tail == null) return;
         Direction tailDirection = tail.getDirection();
         if (tailDirection == null) return;
         Cell tailCell = tail.getPos();
         Cell newCell = tailCell.getNeighbor(tailDirection.opposite());
-        if (!_body.growTail(newCell, tailDirection)) {
+        if (!growTail(newCell, tailDirection)) {
             kill();
         }
     }
 
-        public boolean move() {
-            prepareMove();
-            Cell target = getTargetCell();
-            if (!canAdvanceTo(target)) return false;
-            if (!resolveTargetCell(target)) return false;
-            if (!addNewHead(target)) {
-                _hunger.kill();
-                return false;
-            }
-            completeMove();
-            return !isDead();
+    private boolean growTail(Cell cell, Direction direction) {
+        if (cell == null || direction == null || !cell.isEmpty()) {
+            return false;
         }
+        SnakeSegment newSegment = new SnakeSegment(false, 1.0f, null);
+        newSegment.setDirection(direction);
+        if (!cell.putUnit(newSegment)) {
+            return false;
+        }
+        newSegment.setPosition(cell);
+        _segments.addLast(newSegment);
+        return true;
+    }
+
+    private void updateDirections() {
+        for (int i = 1; i < _segments.size(); i++) {
+            SnakeSegment prev = _segments.get(i - 1);
+            SnakeSegment curr = _segments.get(i);
+            Direction dir = curr.getPos().getDirectionTo(prev.getPos());
+            if (dir != null) curr.setDirection(dir);
+        }
+    }
+
+    public boolean move() {
+        prepareMove();
+        Cell target = getTargetCell();
+        if (!canAdvanceTo(target)) return false;
+        if (!resolveTargetCell(target)) return false;
+        if (!addNewHead(target)) {
+            _hunger.kill();
+            return false;
+        }
+        completeMove();
+        return !isDead();
+    }
 
     private void prepareMove() {
         applyRequestedDirection();
@@ -174,7 +227,7 @@ public class Snake {
     }
 
     private boolean canAdvanceTo(Cell target) {
-        if (_body.isEmpty()) {
+        if (_segments.isEmpty()) {
             _hunger.kill();
             return false;
         }
