@@ -1,3 +1,4 @@
+// ViewTests/RenderingTest.java
 package ViewTests;
 
 import Model.Game;
@@ -63,13 +64,15 @@ class RenderingTest {
 
     @Test
     void gameFieldViewBuildsGridOfCellWidgets() throws Exception {
-        Game game = new Game(4, 3, 3);
+        int width = 10;
+        int height = 10;
+        Game game = new Game(width, height, 3);
         SnakeController controller = new SnakeController(game);
         GameFieldView view = new GameFieldView(game.getField(), controller, () -> {});
 
         try {
             assertTrue(view.getLayout() instanceof GridLayout);
-            assertEquals(12, view.getComponentCount());
+            assertEquals(width * height, view.getComponentCount());
             assertTrue(view.getComponent(0) instanceof CellWidget);
         } finally {
             view.dispose();

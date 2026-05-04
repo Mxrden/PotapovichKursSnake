@@ -4,6 +4,8 @@ import Model.GameField.Cell;
 import Model.GameField.GameField;
 import Model.GameField.GridRegion;
 import Model.Labirint.Labirint;
+import Model.Labirint.LabirintGenerator;
+import Model.Labirint.SimpleLabirintGenerator;
 import Model.Units.Wall;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,8 +17,8 @@ class LabirintTest {
         GameField field = new GameField(20, 20);
         int left = 5, top = 5, width = 10, height = 10;
         GridRegion region = new GridRegion(field.getCell(top, left), width, height);
-        Labirint lab = new Labirint(region);
-        lab.generateSimple();
+        LabirintGenerator generator = new SimpleLabirintGenerator();
+        Labirint lab = generator.generate(region);
 
         Cell entrance = lab.getEntranceCell();
         Cell exit = lab.getExitCell();
@@ -30,8 +32,8 @@ class LabirintTest {
         GameField field = new GameField(20, 20);
         int left = 5, top = 5, width = 10, height = 10;
         GridRegion region = new GridRegion(field.getCell(top, left), width, height);
-        Labirint lab = new Labirint(region);
-        lab.generateSimple();
+        LabirintGenerator generator = new SimpleLabirintGenerator();
+        Labirint lab = generator.generate(region);
 
         boolean hasWalls = false;
         for (Cell cell : region) {
@@ -48,8 +50,8 @@ class LabirintTest {
         GameField field = new GameField(20, 20);
         int left = 5, top = 5, width = 10, height = 10;
         GridRegion region = new GridRegion(field.getCell(top, left), width, height);
-        Labirint lab = new Labirint(region);
-        lab.generateSimple();
+        LabirintGenerator generator = new SimpleLabirintGenerator();
+        Labirint lab = generator.generate(region);
 
         for (Cell cell : region) {
             int row = cell.getRow();
@@ -57,5 +59,13 @@ class LabirintTest {
             assertTrue(row >= top && row < top + height, "Row out of region");
             assertTrue(col >= left && col < left + width, "Col out of region");
         }
+    }
+
+    @Test
+    void testGeneratorThrowsOnTooSmallRegion() {
+        GameField field = new GameField(10, 10);
+        GridRegion tiny = new GridRegion(field.getCell(0, 0), 2, 2);
+        LabirintGenerator generator = new SimpleLabirintGenerator();
+        assertThrows(IllegalArgumentException.class, () -> generator.generate(tiny));
     }
 }

@@ -6,6 +6,8 @@ import Model.GameField.Cell;
 import Model.GameField.GameField;
 import Model.GameField.GridRegion;
 import Model.Labirint.Labirint;
+import Model.Labirint.LabirintGenerator;
+import Model.Labirint.SimpleLabirintGenerator;
 import Model.Snake.Snake;
 import Model.Spawner.Spawner;
 import Model.Units.Rodent;
@@ -15,17 +17,16 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-
     private final int _width;
     private final int _height;
     private final int _snakeMinLength;
     private final RodentFactory _rodentFactory;
+    private final Random _rnd = new Random();
 
     private GameField _field;
     private Labirint _labirint;
     private Snake _snake;
     private Spawner _spawner;
-
     private Rodent _rodent;
     private boolean _isOver = false;
     private int _score = 0;
@@ -33,7 +34,6 @@ public class Game {
     private final List<SnakeMovedListener> _snakeMovedListeners = new ArrayList<>();
     private final List<RodentEatenListener> _rodentEatenListeners = new ArrayList<>();
     private final List<GameOverListener> _gameOverListeners = new ArrayList<>();
-    private final Random _rnd = new Random();
 
     public Game(int width, int height, int snakeMinLength) {
         this(width, height, snakeMinLength, new DefaultRodentFactory());
@@ -61,14 +61,37 @@ public class Game {
     }
 
     private void createLabirint() {
-        int labW = _width / 2;
-        int labH = _height / 2;
-        int labLeft = _rnd.nextInt(_width - labW);
-        int labTop = _rnd.nextInt(_height - labH);
+        int baseWidth = _width / 2;
+        int baseHeight = _height / 2;
+
+        int deviation = _rnd.nextInt(5) - 2;
+        int labW = Math.min(_width - 2, Math.max(SimpleLabirintGenerator.MIN_WIDTH, baseWidth + deviation));
+        int labH = Math.min(_height - 2, Math.max(SimpleLabirintGenerator.MIN_HEIGHT, baseHeight + deviation));
+
+        int maxAttempts = 10;
+        for (int attempt = 0; attempt < maxAttempts; attempt++) {
+            int labLeft = _rnd.nextInt(_width - labW + 1);
+            int labTop = _rnd.nextInt(_height - labH + 1);
+            Cell labStart = _field.getCell(labTop, labLeft);
+            GridRegion region = new GridRegion(labStart, labW, labH);
+
+            if (fitsInField(region)) {
+                LabirintGenerator generator = new SimpleLabirintGenerator();
+                _labirint = generator.generate(region);
+                return;
+            }
+        }
+        int labLeft = _rnd.nextInt(_width - labW + 1);
+        int labTop = _rnd.nextInt(_height - labH + 1);
         Cell labStart = _field.getCell(labTop, labLeft);
         GridRegion region = new GridRegion(labStart, labW, labH);
-        _labirint = new Labirint(region);
-        _labirint.generateSimple();
+        LabirintGenerator generator = new SimpleLabirintGenerator();
+        _labirint = generator.generate(region);
+    }
+
+    private boolean fitsInField(GridRegion region) {
+        return region.getLeft() >= 0 && region.getRight() < _width &&
+                region.getTop() >= 0 && region.getBottom() < _height;
     }
 
     private void createSpawner() {
@@ -144,6 +167,7 @@ public class Game {
         if (l != null && !_gameOverListeners.contains(l)) _gameOverListeners.add(l);
     }
     public void removeGameOverListener(GameOverListener l) { _gameOverListeners.remove(l); }
+
     private void notifySnakeMoved() {
         for (SnakeMovedListener l : _snakeMovedListeners) l.onSnakeMoved(_snake, _snake.getDirection());
     }
@@ -153,6 +177,7 @@ public class Game {
     private void notifyGameOver() {
         for (GameOverListener l : _gameOverListeners) l.onGameOver();
     }
+
     public boolean isOver() { return _isOver; }
     public int getScore() { return _score; }
     public GameField getField() { return _field; }
