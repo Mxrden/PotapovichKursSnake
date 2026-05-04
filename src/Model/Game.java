@@ -1,7 +1,7 @@
 package Model;
 
-import Model.FactoryRodents.DefaultRodentFactory;
 import Model.FactoryRodents.RodentFactory;
+import Model.FactoryRodents.SpecialRodentFactory;
 import Model.GameField.Cell;
 import Model.GameField.GameField;
 import Model.GameField.GridRegion;
@@ -36,7 +36,7 @@ public class Game {
     private final List<GameOverListener> _gameOverListeners = new ArrayList<>();
 
     public Game(int width, int height, int snakeMinLength) {
-        this(width, height, snakeMinLength, new DefaultRodentFactory());
+        this(width, height, snakeMinLength, new SpecialRodentFactory());
     }
 
     public Game(int width, int height, int snakeMinLength, RodentFactory rodentFactory) {

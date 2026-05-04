@@ -23,8 +23,12 @@ class LabirintTest {
         Cell entrance = lab.getEntranceCell();
         Cell exit = lab.getExitCell();
 
-        assertFalse(entrance.getUnit() instanceof Wall, "Entrance should not be a wall");
-        assertFalse(exit.getUnit() instanceof Wall, "Exit should not be a wall");
+        for (Model.Units.Unit u : entrance.getUnits()) {
+            assertFalse(u instanceof Wall, "Entrance should not be a wall");
+        }
+        for (Model.Units.Unit u : exit.getUnits()) {
+            assertFalse(u instanceof Wall, "Exit should not be a wall");
+        }
     }
 
     @Test
@@ -37,9 +41,11 @@ class LabirintTest {
 
         boolean hasWalls = false;
         for (Cell cell : region) {
-            if (cell.getUnit() instanceof Wall) {
-                hasWalls = true;
-                break;
+            for (Model.Units.Unit u : cell.getUnits()) {
+                if (u instanceof Wall) {
+                    hasWalls = true;
+                    break;
+                }
             }
         }
         assertTrue(hasWalls, "Region should contain at least one wall");

@@ -1,4 +1,3 @@
-// ViewTests/RenderingTest.java
 package ViewTests;
 
 import Model.Game;
@@ -13,6 +12,8 @@ import Model.View.SnakeView;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
 import Model.Units.Wall;
+import Model.Units.WallIgnoreRodent;
+import Model.Units.StoneIgnoreRodent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -41,21 +42,21 @@ class RenderingTest {
         cell.putUnit(new Wall());
         assertColor(widget, new Color(180, 100, 60), 16, 16);
 
-        cell.extractUnit();
+        for (Model.Units.Unit u : new java.util.ArrayList<>(cell.getUnits())) cell.removeUnit(u);
         cell.putUnit(new Stone());
         assertColor(widget, Color.DARK_GRAY, 16, 16);
 
-        cell.extractUnit();
+        for (Model.Units.Unit u : new java.util.ArrayList<>(cell.getUnits())) cell.removeUnit(u);
         cell.putUnit(new SimpleRodent());
         assertColor(widget, Color.RED, 16, 16);
 
-        cell.extractUnit();
+        for (Model.Units.Unit u : new java.util.ArrayList<>(cell.getUnits())) cell.removeUnit(u);
         SnakeSegment head = new SnakeSegment(true, 1.0f, cell);
         head.setDirection(Direction.east());
         cell.putUnit(head);
         assertColor(widget, Color.GREEN, 6, 6);
 
-        cell.extractUnit();
+        for (Model.Units.Unit u : new java.util.ArrayList<>(cell.getUnits())) cell.removeUnit(u);
         SnakeSegment body = new SnakeSegment(false, 1.5f, cell);
         body.setDirection(Direction.east());
         cell.putUnit(body);
@@ -89,12 +90,16 @@ class RenderingTest {
             JLabel scoreLabel = getField(view, "_scoreLabel", JLabel.class);
             JLabel lengthLabel = getField(view, "_lengthLabel", JLabel.class);
             JLabel hpLabel = getField(view, "_hpLabel", JLabel.class);
+            JLabel wallLabel = getField(view, "_wallLabel", JLabel.class);
+            JLabel stoneLabel = getField(view, "_stoneLabel", JLabel.class);
             JButton newGameButton = getField(view, "_newGameButton", JButton.class);
 
-            assertEquals("\u0421\u0447\u0435\u0442: 0", scoreLabel.getText());
-            assertEquals("\u0414\u043b\u0438\u043d\u0430: 3", lengthLabel.getText());
-            assertEquals("\u0425\u041f: " + game.getSnake().getLife(), hpLabel.getText());
-            assertEquals("\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430", newGameButton.getText());
+            assertEquals("Счет: 0", scoreLabel.getText());
+            assertEquals("Длина: 3", lengthLabel.getText());
+            assertEquals("ХП: " + game.getSnake().getLife(), hpLabel.getText());
+            assertEquals("Стен: 0", wallLabel.getText());
+            assertEquals("Камней: 0", stoneLabel.getText());
+            assertEquals("Новая игра", newGameButton.getText());
         } finally {
             view.dispose();
         }
@@ -114,7 +119,7 @@ class RenderingTest {
 
             JLabel gameOverLabel = getField(view, "_gameOverLabel", JLabel.class);
             assertTrue(gameOverLabel.isVisible());
-            assertEquals("\u0412\u042b \u0423\u041c\u0415\u0420\u041b\u0418", gameOverLabel.getText());
+            assertEquals("ВЫ УМЕРЛИ", gameOverLabel.getText());
         } finally {
             view.dispose();
         }
@@ -139,8 +144,8 @@ class RenderingTest {
 
             SwingUtilities.invokeAndWait(newGameButton::doClick);
 
-            assertEquals("\u0421\u0447\u0435\u0442: 0", scoreLabel.getText());
-            assertEquals("\u0414\u043b\u0438\u043d\u0430: 3", lengthLabel.getText());
+            assertEquals("Счет: 0", scoreLabel.getText());
+            assertEquals("Длина: 3", lengthLabel.getText());
             assertFalse(gameOverLabel.isVisible());
             assertFalse(game.isOver());
         } finally {

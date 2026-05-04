@@ -51,16 +51,17 @@ class GameIntegrationTest {
 
     @Test
     void testSnakeDiesWhenHittingWall() {
-        GameField field = new GameField(10, 10);
-        for (Cell cell : field) {
-            if (cell.getUnit() instanceof Wall) {
-                cell.extractUnit();
+        GameField testField = new GameField(10, 10);
+        // Remove all existing units
+        for (Cell cell : testField) {
+            for (Model.Units.Unit u : new ArrayList<>(cell.getUnits())) {
+                cell.removeUnit(u);
             }
         }
-        Snake snake = new Snake(3, 10, 30, 4, 2);
-        Cell headCell = field.getCell(5, 5);
-        Cell bodyCell = field.getCell(5, 4);
-        Cell tailCell = field.getCell(5, 3);
+        Snake testSnake = new Snake(3, 10, 30, 4, 2);
+        Cell headCell = testField.getCell(5, 5);
+        Cell bodyCell = testField.getCell(5, 4);
+        Cell tailCell = testField.getCell(5, 3);
         List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
@@ -74,23 +75,25 @@ class GameIntegrationTest {
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
-        snake.initializeBody(segments, Direction.east());
-        Cell target = field.getCell(5, 6);
+        testSnake.initializeBody(segments, Direction.east());
+        Cell target = testField.getCell(5, 6);
         target.putUnit(new Wall());
-        snake.move();
-        assertTrue(snake.isDead());
+        testSnake.move();
+        assertTrue(testSnake.isDead());
     }
 
     @Test
     void testSnakeDiesWhenHittingStone() {
-        GameField field = new GameField(10, 10);
-        for (Cell cell : field) {
-            if (cell.getUnit() instanceof Wall) cell.extractUnit();
+        GameField testField = new GameField(10, 10);
+        for (Cell cell : testField) {
+            for (Model.Units.Unit u : new ArrayList<>(cell.getUnits())) {
+                if (!(u instanceof SnakeSegment)) cell.removeUnit(u);
+            }
         }
-        Snake snake = new Snake(3, 10, 30, 4, 2);
-        Cell headCell = field.getCell(5, 5);
-        Cell bodyCell = field.getCell(5, 4);
-        Cell tailCell = field.getCell(5, 3);
+        Snake testSnake = new Snake(3, 10, 30, 4, 2);
+        Cell headCell = testField.getCell(5, 5);
+        Cell bodyCell = testField.getCell(5, 4);
+        Cell tailCell = testField.getCell(5, 3);
         List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
@@ -104,22 +107,24 @@ class GameIntegrationTest {
         headCell.putUnit(head);
         bodyCell.putUnit(body);
         tailCell.putUnit(tail);
-        snake.initializeBody(segments, Direction.east());
-        Cell target = field.getCell(5, 6);
+        testSnake.initializeBody(segments, Direction.east());
+        Cell target = testField.getCell(5, 6);
         target.putUnit(new Stone());
-        snake.move();
-        assertTrue(snake.isDead());
+        testSnake.move();
+        assertTrue(testSnake.isDead());
     }
 
     @Test
     void testSnakeDiesWhenHittingOwnBody() {
-        GameField field = new GameField(10, 10);
-        for (Cell cell : field) {
-            if (cell.getUnit() instanceof Wall) cell.extractUnit();
+        GameField testField = new GameField(10, 10);
+        for (Cell cell : testField) {
+            for (Model.Units.Unit u : new ArrayList<>(cell.getUnits())) {
+                if (!(u instanceof SnakeSegment)) cell.removeUnit(u);
+            }
         }
-        Snake snake = new Snake(2, 10, 30, 4, 2);
-        Cell headCell = field.getCell(5, 5);
-        Cell tailCell = field.getCell(5, 6);
+        Snake testSnake = new Snake(2, 10, 30, 4, 2);
+        Cell headCell = testField.getCell(5, 5);
+        Cell tailCell = testField.getCell(5, 6);
         List<SnakeSegment> segments = new ArrayList<>();
         SnakeSegment head = new SnakeSegment(true, 1.0f, headCell);
         head.setDirection(Direction.east());
@@ -129,8 +134,8 @@ class GameIntegrationTest {
         segments.add(tail);
         headCell.putUnit(head);
         tailCell.putUnit(tail);
-        snake.initializeBody(segments, Direction.east());
-        snake.move();
-        assertTrue(snake.isDead(), "Snake should die when hitting own body");
+        testSnake.initializeBody(segments, Direction.east());
+        testSnake.move();
+        assertTrue(testSnake.isDead(), "Snake should die when hitting own body");
     }
 }

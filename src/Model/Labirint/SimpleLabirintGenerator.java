@@ -28,7 +28,6 @@ public class SimpleLabirintGenerator implements LabirintGenerator {
         int left = region.getLeft();
         int bottom = region.getBottom();
         int right = region.getRight();
-        int width = region.getWidth();
         int height = region.getHeight();
 
         for (int c = left; c <= right; c++) {
@@ -69,15 +68,22 @@ public class SimpleLabirintGenerator implements LabirintGenerator {
     }
 
     private void removeWall(Labirint labirint, Cell cell) {
-        if (cell != null && cell.getUnit() instanceof Wall) {
-            cell.extractUnit();
+        if (cell != null) {
+            for (Model.Units.Unit u : cell.getUnits()) {
+                if (u instanceof Wall) {
+                    cell.removeUnit(u);
+                    break;
+                }
+            }
         }
     }
 
     private void clearWalls(Labirint labirint) {
         for (Cell cell : labirint.getRegion()) {
-            if (cell.getUnit() instanceof Wall) {
-                cell.extractUnit();
+            for (Model.Units.Unit u : cell.getUnits()) {
+                if (u instanceof Wall) {
+                    cell.removeUnit(u);
+                }
             }
         }
     }

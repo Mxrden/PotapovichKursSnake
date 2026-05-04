@@ -1,4 +1,3 @@
-// Model/Snake/Snake.java
 package Model.Snake;
 
 import Model.GameField.Cell;
@@ -15,11 +14,13 @@ public class Snake {
     private final SnakeHunger _hunger;
     private final SnakeGrowthQueue _growthQueue = new SnakeGrowthQueue();
 
-    private boolean _ignoreNextWall = false;
-    private boolean _ignoreNextStone = false;
     private boolean _rodentEaten = false;
     private final List<TemporaryExpansion> _expansions = new java.util.ArrayList<>();
     private Direction _requestedDirection = null;
+
+    private int _wallIgnoreCharges = 0;
+    private int _stoneIgnoreCharges = 0;
+    private int _specialRodentsEaten = 0;
 
     public Snake(int minLength, int initialLife,
                  int shrinkInterval, int hpLossInterval, int hungerDamage) {
@@ -27,18 +28,29 @@ public class Snake {
                 shrinkInterval, hpLossInterval, hungerDamage);
     }
 
-    public void activateIgnoreWall() { _ignoreNextWall = true; }
-    public void activateIgnoreStone() { _ignoreNextStone = true; }
+    public void addWallIgnoreCharge() { _wallIgnoreCharges++; }
+    public void addStoneIgnoreCharge() { _stoneIgnoreCharges++; }
+    public void incrementSpecialRodentsEaten() { _specialRodentsEaten++; }
+    public int getSpecialRodentsEaten() { return _specialRodentsEaten; }
+    public int getWallIgnoreCharges() { return _wallIgnoreCharges; }
+    public int getStoneIgnoreCharges() { return _stoneIgnoreCharges; }
+
     public boolean tryIgnoreWall() {
-        if (!_ignoreNextWall) return false;
-        _ignoreNextWall = false;
-        return true;
+        if (_wallIgnoreCharges > 0) {
+            _wallIgnoreCharges--;
+            return true;
+        }
+        return false;
     }
+
     public boolean tryIgnoreStone() {
-        if (!_ignoreNextStone) return false;
-        _ignoreNextStone = false;
-        return true;
+        if (_stoneIgnoreCharges > 0) {
+            _stoneIgnoreCharges--;
+            return true;
+        }
+        return false;
     }
+
     public void setDirection(Direction dir) {
         if (dir == null) return;
         _requestedDirection = dir;
@@ -99,30 +111,29 @@ public class Snake {
     }
 
     private boolean resolveTargetCell(Cell target) {
-        if (target.isEmpty()) return true;
-        Unit unit = target.getUnit();
-        if (!unit.canSnakeEnter(this)) {
-            unit.onSnakeBlocked(this);
+        Unit topUnit = target.getTopUnit();
+        if (topUnit == null) return true;
+
+        if (!topUnit.canSnakeEnter(this)) {
+            topUnit.onSnakeBlocked(this);
             return false;
         }
-        if (unit.grantsExpansion()) {
+        if (topUnit.grantsExpansion()) {
             _hunger.onRodentEaten();
             _rodentEaten = true;
         }
-        unit.onSnakeEntered(this);
+        topUnit.onSnakeEntered(this);
         return !_hunger.isDead();
     }
 
     private boolean addNewHead(Cell target) {
         SnakeSegment currentHead = getHead();
-        if (currentHead == null || target == null) {
-            return false;
-        }
+        if (currentHead == null || target == null) return false;
+
         SnakeSegment newHead = new SnakeSegment(true, 1.0f, null);
         newHead.setDirection(_movement.getDirection());
-        if (!target.putUnit(newHead)) {
-            return false;
-        }
+        if (!target.putUnit(newHead)) return false;
+
         _segments.addFirst(newHead);
         currentHead.setHead(false);
         updateDirections();
@@ -134,8 +145,8 @@ public class Snake {
         SnakeSegment tail = _segments.peekLast();
         if (tail == null) return;
         Cell tailCell = tail.getPos();
-        if (tailCell != null && tailCell.getUnit() == tail) {
-            tailCell.extractUnit();
+        if (tailCell != null) {
+            tailCell.removeUnit(tail);
         }
         _segments.removeLast();
     }
@@ -149,7 +160,34 @@ public class Snake {
     private boolean shouldGrow() { return _growthQueue.shouldGrow(); }
     private void consumeGrowth() { _growthQueue.consumeGrowth(); }
 
+    private boolean canPlaceExpansion() {
+        SnakeSegment head = getHead();
+        if (head == null) return false;
+        Cell headCell = head.getPos();
+        if (headCell == null) return false;
+        Direction dir = getDirection();
+        if (dir == null) return false;
+        Cell leftCell = getAdjacentCell(headCell, dir, true);
+        Cell rightCell = getAdjacentCell(headCell, dir, false);
+        if (leftCell == null || rightCell == null) return false;
+        for (Unit u : leftCell.getUnits()) {
+            if (u instanceof SnakeSegment) return false;
+        }
+        for (Unit u : rightCell.getUnits()) {
+            if (u instanceof SnakeSegment) return false;
+        }
+        return true;
+    }
+
+    private Cell getAdjacentCell(Cell center, Direction dir, boolean left) {
+        if (dir.equals(Direction.east()) || dir.equals(Direction.west())) {
+            return left ? center.getNeighbor(Direction.north()) : center.getNeighbor(Direction.south());
+        }
+        return left ? center.getNeighbor(Direction.west()) : center.getNeighbor(Direction.east());
+    }
+
     public boolean tryAddExpansion() {
+        if (!canPlaceExpansion()) return false;
         int currentLength = _segments.size();
         if (currentLength <= 0) return false;
         try {
@@ -186,15 +224,13 @@ public class Snake {
     }
 
     private boolean growTail(Cell cell, Direction direction) {
-        if (cell == null || direction == null || !cell.isEmpty()) {
-            return false;
+        if (cell == null || direction == null) return false;
+        for (Unit u : cell.getUnits()) {
+            if (u instanceof SnakeSegment) return false;
         }
         SnakeSegment newSegment = new SnakeSegment(false, 1.0f, null);
         newSegment.setDirection(direction);
-        if (!cell.putUnit(newSegment)) {
-            return false;
-        }
-        newSegment.setPosition(cell);
+        if (!cell.putUnit(newSegment)) return false;
         _segments.addLast(newSegment);
         return true;
     }

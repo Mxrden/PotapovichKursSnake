@@ -6,20 +6,21 @@ import Model.Units.Rodent;
 import Model.Units.Stone;
 import Model.Units.Unit;
 import Model.Units.Wall;
+import Model.Units.WallIgnoreRodent;
+import Model.Units.StoneIgnoreRodent;
 import Model.UnitsView.RodentView;
 import Model.UnitsView.SnakeSegmentView;
 import Model.UnitsView.StoneView;
 import Model.UnitsView.UnitView;
 import Model.UnitsView.WallView;
+import Model.UnitsView.WallIgnoreRodentView;
+import Model.UnitsView.StoneIgnoreRodentView;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Виджет клетки игрового поля.
- * Использует UnitView классы для отрисовки юнитов.
- */
 public class CellWidget extends JComponent {
 
     private final Cell cell;
@@ -32,6 +33,8 @@ public class CellWidget extends JComponent {
         UNIT_VIEWS.put(Stone.class, new StoneView());
         UNIT_VIEWS.put(Rodent.class, new RodentView());
         UNIT_VIEWS.put(SnakeSegment.class, new SnakeSegmentView());
+        UNIT_VIEWS.put(WallIgnoreRodent.class, new WallIgnoreRodentView());
+        UNIT_VIEWS.put(StoneIgnoreRodent.class, new StoneIgnoreRodentView());
     }
 
     public CellWidget(Cell cell) {
@@ -44,19 +47,13 @@ public class CellWidget extends JComponent {
         super.paintComponent(g);
         g.setColor(BACKGROUND);
         g.fillRect(0, 0, SIZE, SIZE);
-        if (!cell.isEmpty()) {
-            drawUnit(g);
+        for (Unit unit : cell.getUnits()) {
+            drawUnit(g, unit);
         }
     }
 
-    private void drawUnit(Graphics g) {
-        Unit unit = cell.getUnit();
+    private void drawUnit(Graphics g, Unit unit) {
         if (unit == null) return;
-
-        renderByType(g, unit);
-    }
-
-    private void renderByType(Graphics g, Unit unit) {
         Class<?> type = unit.getClass();
         while (type != null) {
             UnitView view = UNIT_VIEWS.get(type);
@@ -67,5 +64,4 @@ public class CellWidget extends JComponent {
             type = type.getSuperclass();
         }
     }
-
 }

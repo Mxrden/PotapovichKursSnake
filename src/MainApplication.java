@@ -7,13 +7,7 @@ import javax.swing.*;
 public class MainApplication {
 
     public static void main(String[] args) {
-
-        Game game = new Game(
-                20,
-                15,
-                3
-        );
-
+        Game game = new Game(20, 15, 3);
         SnakeController controller = new SnakeController(game);
         SnakeView view = new SnakeView(game, controller);
 

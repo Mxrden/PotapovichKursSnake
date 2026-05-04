@@ -5,10 +5,6 @@ import Model.*;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Основной экран игры.
- * Отвечает за HUD, кнопку новой игры и игровое поле.
- */
 public class SnakeView extends JPanel {
 
     private final Game _game;
@@ -16,6 +12,8 @@ public class SnakeView extends JPanel {
     private final JLabel _scoreLabel = new JLabel();
     private final JLabel _lengthLabel = new JLabel();
     private final JLabel _hpLabel = new JLabel();
+    private final JLabel _wallLabel = new JLabel();
+    private final JLabel _stoneLabel = new JLabel();
     private final JLabel _gameOverLabel = new JLabel("\u0412\u042b \u0423\u041c\u0415\u0420\u041b\u0418", SwingConstants.CENTER);
     private final JButton _newGameButton = new JButton("\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430");
     private final JPanel _boardLayer = new JPanel();
@@ -57,7 +55,6 @@ public class SnakeView extends JPanel {
         _game.addSnakeMovedListener(_snakeMovedListener);
         _game.addRodentEatenListener(_rodentEatenListener);
         _game.addGameOverListener(_gameOverListener);
-
     }
 
     public void requestGameFocus() {
@@ -85,6 +82,8 @@ public class SnakeView extends JPanel {
         configureStatLabel(_scoreLabel);
         configureStatLabel(_lengthLabel);
         configureStatLabel(_hpLabel);
+        configureStatLabel(_wallLabel);
+        configureStatLabel(_stoneLabel);
 
         _newGameButton.setFocusable(false);
         _newGameButton.setMargin(new Insets(6, 12, 6, 12));
@@ -92,6 +91,8 @@ public class SnakeView extends JPanel {
         stats.add(_scoreLabel);
         stats.add(_lengthLabel);
         stats.add(_hpLabel);
+        stats.add(_wallLabel);
+        stats.add(_stoneLabel);
 
         JPanel buttonWrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         buttonWrap.setOpaque(false);
@@ -149,6 +150,8 @@ public class SnakeView extends JPanel {
         _scoreLabel.setText("\u0421\u0447\u0435\u0442: " + _game.getScore());
         _lengthLabel.setText("\u0414\u043b\u0438\u043d\u0430: " + _game.getSnake().getBodySize());
         _hpLabel.setText("\u0425\u041f: " + _game.getSnake().getLife());
+        _wallLabel.setText("\u0421\u0442\u0435\u043d: " + _game.getSnake().getWallIgnoreCharges());
+        _stoneLabel.setText("\u041a\u0430\u043c\u043d\u0435\u0439: " + _game.getSnake().getStoneIgnoreCharges());
         _gameOverLabel.setVisible(_game.isOver());
         _gameOverLabel.repaint();
     }

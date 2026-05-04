@@ -24,6 +24,11 @@ class TemporaryExpansionTest {
     @BeforeEach
     void setUp() {
         field = new GameField(10, 10);
+        for (Cell cell : field) {
+            for (Model.Units.Unit u : new ArrayList<>(cell.getUnits())) {
+                if (!(u instanceof SnakeSegment)) cell.removeUnit(u);
+            }
+        }
         snake = new Snake(3, 10, 30, 4, 2);
         headCell = field.getCell(5, 5);
 
@@ -56,9 +61,11 @@ class TemporaryExpansionTest {
 
         Cell north = headCell.getNeighbor(Direction.north());
         Cell south = headCell.getNeighbor(Direction.south());
-        assertTrue(north.getUnit() instanceof SnakeSegment);
-        assertTrue(south.getUnit() instanceof SnakeSegment);
-        assertEquals(1.5f, ((SnakeSegment) north.getUnit()).getThickness());
+        assertNotNull(north.getTopUnit());
+        assertNotNull(south.getTopUnit());
+        assertTrue(north.getTopUnit() instanceof SnakeSegment);
+        assertTrue(south.getTopUnit() instanceof SnakeSegment);
+        assertEquals(1.5f, ((SnakeSegment) north.getTopUnit()).getThickness());
     }
 
     @Test
@@ -81,27 +88,32 @@ class TemporaryExpansionTest {
 
         Cell initialNorth = headCell.getNeighbor(Direction.north());
         Cell initialSouth = headCell.getNeighbor(Direction.south());
-        assertTrue(initialNorth.getUnit() instanceof SnakeSegment);
-        assertTrue(initialSouth.getUnit() instanceof SnakeSegment);
+        assertNotNull(initialNorth.getTopUnit());
+        assertNotNull(initialSouth.getTopUnit());
 
         snake.move();
         assertTrue(exp.tick());
 
-        assertTrue(initialNorth.getUnit() instanceof SnakeSegment);
-        assertTrue(initialSouth.getUnit() instanceof SnakeSegment);
+        assertNotNull(initialNorth.getTopUnit());
+        assertNotNull(initialSouth.getTopUnit());
 
         snake.setDirection(Direction.north());
         snake.move();
         assertFalse(exp.tick());
 
-        assertNull(initialNorth.getUnit());
-        assertNull(initialSouth.getUnit());
+        assertTrue(initialNorth.isEmpty());
+        assertTrue(initialSouth.isEmpty());
     }
 
     @Test
     void testVerticalDirectionExpansion() {
         Snake verticalSnake = new Snake(3, 10, 30, 4, 2);
         GameField verticalField = new GameField(10, 10);
+        for (Cell cell : verticalField) {
+            for (Model.Units.Unit u : new ArrayList<>(cell.getUnits())) {
+                if (!(u instanceof SnakeSegment)) cell.removeUnit(u);
+            }
+        }
         Cell center = verticalField.getCell(5, 5);
         Cell body = verticalField.getCell(6, 5);
         Cell tail = verticalField.getCell(7, 5);
@@ -125,8 +137,10 @@ class TemporaryExpansionTest {
         TemporaryExpansion exp = new TemporaryExpansion(verticalSnake, 5);
         Cell west = center.getNeighbor(Direction.west());
         Cell east = center.getNeighbor(Direction.east());
-        assertTrue(west.getUnit() instanceof SnakeSegment);
-        assertTrue(east.getUnit() instanceof SnakeSegment);
+        assertNotNull(west.getTopUnit());
+        assertNotNull(east.getTopUnit());
+        assertTrue(west.getTopUnit() instanceof SnakeSegment);
+        assertTrue(east.getTopUnit() instanceof SnakeSegment);
         assertNotNull(exp);
     }
 }

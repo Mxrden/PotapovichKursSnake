@@ -3,8 +3,6 @@ package Model.Units;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
 
-import java.awt.*;
-
 public class Wall extends Unit {
     @Override
     public boolean canBelongTo(Cell cell) {
@@ -23,9 +21,5 @@ public class Wall extends Unit {
 
     @Override
     public void onSnakeEntered(Snake snake) {
-        Cell cell = getPos();
-        if (cell != null && cell.getUnit() == this) {
-            cell.extractUnit();
-        }
     }
 }

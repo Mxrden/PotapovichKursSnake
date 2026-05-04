@@ -5,10 +5,6 @@ import Model.GameField.Direction;
 
 import java.util.List;
 
-/**
- * Временное утолщение змеи.
- * Оно движется вдоль текущего тела змеи, а не остается на одной клетке поля.
- */
 public class TemporaryExpansion {
 
     private final Snake _snake;
@@ -62,30 +58,22 @@ public class TemporaryExpansion {
 
     private boolean placeCurrent() {
         SnakeSegment center = getCenterSegment();
-        if (center == null) {
-            return false;
-        }
+        if (center == null) return false;
 
         Cell centerCell = center.getPos();
         Direction direction = center.getDirection();
-        if (centerCell == null || direction == null) {
-            return false;
-        }
+        if (centerCell == null || direction == null) return false;
 
         Cell leftCell = getSideCell(centerCell, direction, true);
         Cell rightCell = getSideCell(centerCell, direction, false);
-        if (!isValidExpansionCell(leftCell) || !isValidExpansionCell(rightCell)) {
-            return false;
-        }
+        if (!isValidExpansionCell(leftCell) || !isValidExpansionCell(rightCell)) return false;
 
         _left.setDirection(direction);
         _right.setDirection(direction);
 
-        if (!leftCell.putUnit(_left)) {
-            return false;
-        }
+        if (!leftCell.putUnit(_left)) return false;
         if (!rightCell.putUnit(_right)) {
-            leftCell.extractUnit();
+            leftCell.removeUnit(_left);
             return false;
         }
 
@@ -95,19 +83,17 @@ public class TemporaryExpansion {
     }
 
     private void clearCurrent() {
-        if (_left.getPos() != null && _left.getPos().getUnit() == _left) {
-            _left.getPos().extractUnit();
+        if (_left.getPos() != null && _left.getPos().getTopUnit() == _left) {
+            _left.getPos().removeUnit(_left);
         }
-        if (_right.getPos() != null && _right.getPos().getUnit() == _right) {
-            _right.getPos().extractUnit();
+        if (_right.getPos() != null && _right.getPos().getTopUnit() == _right) {
+            _right.getPos().removeUnit(_right);
         }
     }
 
     private SnakeSegment getCenterSegment() {
         List<SnakeSegment> segments = _snake.getSegments();
-        if (_age < 0 || _age >= segments.size()) {
-            return null;
-        }
+        if (_age < 0 || _age >= segments.size()) return null;
         return segments.get(_age);
     }
 

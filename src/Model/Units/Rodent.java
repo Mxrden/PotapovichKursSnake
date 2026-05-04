@@ -3,12 +3,7 @@ package Model.Units;
 import Model.Effects.RodentEffect;
 import Model.GameField.Cell;
 import Model.Snake.Snake;
-import java.awt.*;
 
-/**
- * Базовый класс для грызунов.
- * Реализует шаблонный метод для обработки поедания.
- */
 public abstract class Rodent extends Unit {
 
     protected final RodentEffect _effect;
@@ -23,17 +18,12 @@ public abstract class Rodent extends Unit {
 
     private void onEaten() {
         Cell cell = getPos();
-        if (cell != null && cell.getUnit() == this) {
-            cell.extractUnit();
+        if (cell != null && cell.getTopUnit() == this) {
+            cell.removeUnit(this);
         }
-
         setPosition(null);
     }
 
-    /**
-     * Вызывается когда змея наступает на грызуна.
-     * @param snake змея которая наступила
-     */
     @Override
     public void onSteppedBy(Snake snake) {
         this.onEaten();
@@ -53,5 +43,4 @@ public abstract class Rodent extends Unit {
     public boolean grantsExpansion() {
         return true;
     }
-
 }
