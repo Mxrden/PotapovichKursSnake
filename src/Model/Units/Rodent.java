@@ -6,7 +6,7 @@ import Model.Snake.Snake;
 
 public abstract class Rodent extends Unit {
 
-    protected final RodentEffect _effect;
+    protected RodentEffect _effect;
 
     public Rodent(RodentEffect effect) {
         this._effect = effect;

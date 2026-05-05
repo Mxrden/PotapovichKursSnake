@@ -1,12 +1,11 @@
 package Model.Units;
 
-import Model.Effects.NoEffect;
 import Model.GameField.Cell;
 
 public class SimpleRodent extends Rodent {
 
     public SimpleRodent() {
-        super(new NoEffect());
+        super(null);
     }
 
     @Override
