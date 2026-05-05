@@ -20,7 +20,6 @@ public class Snake {
 
     private int _wallIgnoreCharges = 0;
     private int _stoneIgnoreCharges = 0;
-    private int _specialRodentsEaten = 0;
 
     public Snake(int minLength, int initialLife,
                  int shrinkInterval, int hpLossInterval, int hungerDamage) {
@@ -30,8 +29,6 @@ public class Snake {
 
     public void addWallIgnoreCharge() { _wallIgnoreCharges++; }
     public void addStoneIgnoreCharge() { _stoneIgnoreCharges++; }
-    public void incrementSpecialRodentsEaten() { _specialRodentsEaten++; }
-    public int getSpecialRodentsEaten() { return _specialRodentsEaten; }
     public int getWallIgnoreCharges() { return _wallIgnoreCharges; }
     public int getStoneIgnoreCharges() { return _stoneIgnoreCharges; }
 
@@ -57,7 +54,6 @@ public class Snake {
     }
     public void setDirectionImmediate(Direction dir) { _movement.setDirection(dir); }
     public Direction getDirection() { return _movement.getDirection(); }
-    public boolean isBodyEmpty() { return _segments.isEmpty(); }
     public int getBodySize() { return _segments.size(); }
     public int getLife() { return _hunger.getLife(); }
     public List<SnakeSegment> getSegments() { return new java.util.ArrayList<>(_segments); }
@@ -157,6 +153,7 @@ public class Snake {
         }
     }
 
+    //ОСТАНОВИЛСЯ ТУТ
     private boolean shouldGrow() { return _growthQueue.shouldGrow(); }
     private void consumeGrowth() { _growthQueue.consumeGrowth(); }
 

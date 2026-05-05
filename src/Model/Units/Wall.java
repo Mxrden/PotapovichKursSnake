@@ -20,6 +20,5 @@ public class Wall extends Unit {
     }
 
     @Override
-    public void onSnakeEntered(Snake snake) {
-    }
+    public void onSnakeEntered(Snake snake) {}
 }

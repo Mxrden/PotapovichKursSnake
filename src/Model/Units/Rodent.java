@@ -12,10 +12,6 @@ public abstract class Rodent extends Unit {
         this._effect = effect;
     }
 
-    public RodentEffect getEffect() {
-        return _effect;
-    }
-
     private void onEaten() {
         Cell cell = getPos();
         if (cell != null && cell.getTopUnit() == this) {

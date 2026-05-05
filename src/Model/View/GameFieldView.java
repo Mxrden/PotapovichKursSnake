@@ -63,10 +63,6 @@ public class GameFieldView extends JPanel {
                 widget.repaint();
     }
 
-    public GameField getField() {
-        return _field;
-    }
-
     public boolean validateFieldState() {
         if (_field == null) return false;
         int h = _field.getHeight();

@@ -17,7 +17,6 @@ public class StoneIgnoreRodent extends Rodent {
     @Override
     public void onSnakeEntered(Snake snake) {
         snake.addStoneIgnoreCharge();
-        snake.incrementSpecialRodentsEaten();
         super.onSnakeEntered(snake);
     }
 }

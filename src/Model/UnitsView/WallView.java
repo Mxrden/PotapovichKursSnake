@@ -5,9 +5,6 @@ import Model.Units.Wall;
 
 import java.awt.*;
 
-/**
- * Класс для отрисовки стен.
- */
 public class WallView extends UnitView {
 
     @Override

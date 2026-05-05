@@ -6,10 +6,6 @@ import Model.View.SnakeViewRenderer;
 
 import java.awt.*;
 
-/**
- * Класс для отрисовки сегментов змеи.
- * Наследуется от UnitView и использует SnakeViewRenderer для рендеринга.
- */
 public class SnakeSegmentView extends UnitView {
 
     private final SnakeViewRenderer renderer = new SnakeViewRenderer();

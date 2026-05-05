@@ -5,7 +5,7 @@ import Model.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class SnakeView extends JPanel {
+public class GameView extends JPanel {
 
     private final Game _game;
     private final SnakeController _controller;
@@ -22,7 +22,7 @@ public class SnakeView extends JPanel {
     private final RodentEatenListener _rodentEatenListener;
     private final GameOverListener _gameOverListener;
 
-    public SnakeView(Game game, SnakeController controller) {
+    public GameView(Game game, SnakeController controller) {
         _game = game;
         _controller = controller;
 

@@ -2,7 +2,6 @@ package Model.UnitsView;
 
 import Model.Units.Rodent;
 import Model.Units.Unit;
-
 import java.awt.*;
 
 public class StoneIgnoreRodentView extends RodentView {

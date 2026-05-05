@@ -8,12 +8,10 @@ import Model.Snake.SnakeSegment;
 import Model.SnakeController;
 import Model.View.CellWidget;
 import Model.View.GameFieldView;
-import Model.View.SnakeView;
+import Model.View.GameView;
 import Model.Units.SimpleRodent;
 import Model.Units.Stone;
 import Model.Units.Wall;
-import Model.Units.WallIgnoreRodent;
-import Model.Units.StoneIgnoreRodent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +82,7 @@ class RenderingTest {
     void snakeViewShowsHudValues() throws Exception {
         Game game = new Game(20, 15, 3);
         SnakeController controller = new SnakeController(game);
-        SnakeView view = new SnakeView(game, controller);
+        GameView view = new GameView(game, controller);
 
         try {
             JLabel scoreLabel = getField(view, "_scoreLabel", JLabel.class);
@@ -109,7 +107,7 @@ class RenderingTest {
     void snakeViewShowsGameOverOverlay() throws Exception {
         Game game = new Game(20, 15, 3);
         SnakeController controller = new SnakeController(game);
-        SnakeView view = new SnakeView(game, controller);
+        GameView view = new GameView(game, controller);
 
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -129,7 +127,7 @@ class RenderingTest {
     void newGameButtonResetsHudAndHidesOverlay() throws Exception {
         Game game = new Game(20, 15, 3);
         SnakeController controller = new SnakeController(game);
-        SnakeView view = new SnakeView(game, controller);
+        GameView view = new GameView(game, controller);
 
         try {
             SwingUtilities.invokeAndWait(() -> {

@@ -5,9 +5,6 @@ import Model.Units.Unit;
 
 import java.awt.*;
 
-/**
- * Класс для отрисовки камней.
- */
 public class StoneView extends UnitView {
 
     @Override

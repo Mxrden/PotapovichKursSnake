@@ -1,9 +1,5 @@
 package Model.Snake;
 
-/**
- * Очередь роста змеи.
- * Отдельно хранит только факт накопленного роста, не смешивая это с голодом.
- */
 public class SnakeGrowthQueue {
 
     private int _growthQueue = 0;

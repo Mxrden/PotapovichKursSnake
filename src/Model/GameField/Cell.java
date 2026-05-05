@@ -62,20 +62,6 @@ public class Cell {
         return _units.isEmpty();
     }
 
-    public boolean hasWall() {
-        for (Unit u : _units) {
-            if (u instanceof Model.Units.Wall) return true;
-        }
-        return false;
-    }
-
-    public boolean hasStone() {
-        for (Unit u : _units) {
-            if (u instanceof Model.Units.Stone) return true;
-        }
-        return false;
-    }
-
     public Direction getDirectionTo(Cell other) {
         if (other == null) return null;
         for (Map.Entry<Direction, Cell> entry : _neighbors.entrySet()) {

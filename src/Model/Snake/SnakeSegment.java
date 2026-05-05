@@ -24,7 +24,6 @@ public class SnakeSegment extends Unit {
     public boolean isHead() { return _isHead; }
     public void setHead(boolean isHead) {_isHead = isHead; }
     public float getThickness() { return _thickness; }
-    public void setThickness(float thickness) {_thickness = thickness; }
     public Direction getDirection() { return _direction; }
     public void setDirection(Direction dir) { _direction = dir; }
 

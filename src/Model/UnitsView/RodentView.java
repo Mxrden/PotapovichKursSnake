@@ -1,16 +1,10 @@
 package Model.UnitsView;
 
 import Model.Units.Rodent;
-
 import java.awt.*;
-
 import Model.Units.Unit;
-
 import java.awt.*;
 
-/**
- * Класс для отрисовки грызунов.
- */
 public class RodentView extends UnitView {
 
     @Override

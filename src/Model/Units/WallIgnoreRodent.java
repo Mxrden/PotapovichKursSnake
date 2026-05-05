@@ -17,7 +17,6 @@ public class WallIgnoreRodent extends Rodent {
     @Override
     public void onSnakeEntered(Snake snake) {
         snake.addWallIgnoreCharge();
-        snake.incrementSpecialRodentsEaten();
         super.onSnakeEntered(snake);
     }
 }

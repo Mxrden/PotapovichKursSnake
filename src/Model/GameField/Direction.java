@@ -1,9 +1,6 @@
 package Model.GameField;
 
-// Направление - "север/юг/запад/восток"
 public class Direction {
-
-    // ----------------------- Свойства --------------------------
 
     private final int _hours;
 
@@ -12,8 +9,6 @@ public class Direction {
         if (hours < 0) hours += 12;
         _hours = hours;
     }
-
-    // ----------------------- SINGLETON-ы --------------------------
 
     private static final Direction NORTH = new Direction(0);
     private static final Direction EAST  = new Direction(3);
@@ -24,8 +19,6 @@ public class Direction {
     public static Direction east()  { return EAST; }
     public static Direction south() { return SOUTH; }
     public static Direction west()  { return WEST; }
-
-    // ------------------ Новые направления ---------------------
 
     public Direction clockwise() {
         return new Direction(_hours + 3);
@@ -47,7 +40,6 @@ public class Direction {
         return anticlockwise();
     }
 
-    // ------------------ Сравнение направлений ---------------------
 
     @Override
     public boolean equals(Object other) {
